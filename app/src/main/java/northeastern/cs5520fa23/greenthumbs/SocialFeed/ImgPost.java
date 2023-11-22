@@ -1,6 +1,12 @@
 package northeastern.cs5520fa23.greenthumbs.SocialFeed;
 
 public class ImgPost {
+    private int _id;
+    private String username;
+    private String time;
+    private String postText;
+    private int likes;
+    private int replies;
     public ImgPost () {}
 
     /**
@@ -25,6 +31,35 @@ public class ImgPost {
      */
 
     public ImgPost (int _id, String username, String time, String postText, int likes, int replies ) {
+        this._id = _id;
+        this.username = username;
+        this.time = time;
+        this.postText = postText;
+        this.likes = likes;
+        this.replies = replies;
+    }
 
+    public int get_id() {
+        return _id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public String getPostText() {
+        return postText;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public int getReplies() {
+        return replies;
     }
 }
