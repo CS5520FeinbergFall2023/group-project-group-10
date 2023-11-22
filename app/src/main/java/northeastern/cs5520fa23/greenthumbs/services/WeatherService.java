@@ -8,18 +8,26 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
-import android.util.Log;
+import northeastern.cs5520fa23.greenthumbs.model.WeatherForecast;
+import northeastern.cs5520fa23.greenthumbs.model.WeatherResponse;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+import com.google.gson.Gson;
+
 
 public class WeatherService extends Service {
-    public static final String EXTRA_BOX_X = "EXTRA_BOX_X";
-    public static final String EXTRA_BOX_Y = "EXTRA_BOX_Y";
+    public static final String latitude = "42.3458";
+    public static final String longitude = "-71.0947";
+    private static final OkHttpClient client = new OkHttpClient();
+    private static final Gson gson = new Gson();
 
     @Nullable
     @Override
@@ -29,31 +37,46 @@ public class WeatherService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        final int boxX = intent.getIntExtra(EXTRA_BOX_X, 70);
-        final int boxY = intent.getIntExtra(EXTRA_BOX_Y, 89);
+        final double boxX = intent.getIntExtra(latitude, 70); // default value 70
+        final double boxY = intent.getIntExtra(longitude, 89); // default value 89
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                fetchWeatherData(boxX, boxY);
+                String urlString = getForecastUrl(boxX, boxY);
+                fetchTemperatureData(urlString);
             }
         }).start();
 
         return START_NOT_STICKY;
     }
 
-    private void fetchWeatherData(int boxX, int boxY) {
-        try {
-            String urlString = String.format("https://api.weather.gov/gridpoints/BOX/%d,%d/forecast", boxX, boxY);
-            URL url = new URL(urlString);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            try {
-                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-            } finally {
-                urlConnection.disconnect();
-            }
+    public static String getForecastUrl(double latitude, double longitude) {
+        String url = String.format("https://api.weather.gov/points/%f,%f", latitude, longitude);
+        Request request = new Request.Builder().url(url).build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+
+            WeatherResponse weatherResponse = gson.fromJson(response.body().string(), WeatherResponse.class);
+            return weatherResponse.getForecastUrl();
         } catch (Exception e) {
-            Log.e("WeatherService", "Error fetching weather data", e);
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<WeatherForecast.Period> fetchTemperatureData(String url) {
+        Request request = new Request.Builder().url(url).build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+
+            WeatherForecast forecast = gson.fromJson(response.body().string(), WeatherForecast.class);
+            return forecast.getPeriods();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

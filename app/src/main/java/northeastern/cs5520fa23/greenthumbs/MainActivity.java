@@ -18,8 +18,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void startWeatherService() {
         Intent serviceIntent = new Intent(this, WeatherService.class);
-        serviceIntent.putExtra(WeatherService.EXTRA_BOX_X, 70);
-        serviceIntent.putExtra(WeatherService.EXTRA_BOX_Y, 89);
+        // Update with home location fetched from user
+        serviceIntent.putExtra(WeatherService.latitude, 42.3458);
+        serviceIntent.putExtra(WeatherService.longitude, -71.0947);
         startService(serviceIntent);
     }
 }
