@@ -3,15 +3,10 @@ package northeastern.cs5520fa23.greenthumbs.services;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 
 import northeastern.cs5520fa23.greenthumbs.model.WeatherForecast;
@@ -21,7 +16,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import com.google.gson.Gson;
-
 
 public class WeatherService extends Service {
     public static final String latitude = "42.3458";
@@ -44,7 +38,7 @@ public class WeatherService extends Service {
             @Override
             public void run() {
                 String urlString = getForecastUrl(boxX, boxY);
-                fetchTemperatureData(urlString);
+                fetchPeriodData(urlString);
             }
         }).start();
 
@@ -66,7 +60,12 @@ public class WeatherService extends Service {
         }
     }
 
-    public static List<WeatherForecast.Period> fetchTemperatureData(String url) {
+    /** Returns a list of periods with each of them an hour different from the previous.
+     * The period 0 marks the current weather conditions.
+     * @param url URL to fetch temperature from
+     * @return list of periods
+     */
+    public static List<WeatherForecast.Period> fetchPeriodData(String url) {
         Request request = new Request.Builder().url(url).build();
 
         try (Response response = client.newCall(request).execute()) {
