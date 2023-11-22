@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "northeastern.cs5520fa23.greenthumbs"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "northeastern.cs5520fa23.greenthumbs"
