@@ -19,12 +19,18 @@ public class WeatherForecast {
         private int number;
         private int temperature; // Assuming temperature is always an integer
 
+        private String shortForecast;
+
         public int getNumber() {
             return number;
         }
 
         public int getTemperature() {
             return temperature;
+        }
+
+        public String getShortForecast() {
+            return shortForecast;
         }
     }
 }

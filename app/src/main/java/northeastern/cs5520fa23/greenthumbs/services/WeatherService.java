@@ -37,8 +37,8 @@ public class WeatherService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        final double boxX = intent.getIntExtra(latitude, 70); // default value 70
-        final double boxY = intent.getIntExtra(longitude, 89); // default value 89
+        final double boxX = intent.getDoubleExtra(latitude, 42.3458);
+        final double boxY = intent.getDoubleExtra(longitude, -71.0947);
 
         new Thread(new Runnable() {
             @Override
