@@ -29,6 +29,7 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
             String time = post.getTime();
             Integer likes = post.getLikes();
             Integer replies = post.getReplies();
+            String postText = post.getPostText();
 
             if (username != null) {
                 holder.username.setText(username);
@@ -38,6 +39,9 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
             }
             if (replies != null) {
                 holder.replies.setText(replies.toString());
+            }
+            if (postText != null) {
+                holder.postText.setText(postText);
             }
 
         }
