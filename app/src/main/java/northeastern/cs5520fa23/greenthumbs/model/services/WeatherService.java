@@ -1,4 +1,4 @@
-package northeastern.cs5520fa23.greenthumbs.services;
+package northeastern.cs5520fa23.greenthumbs.model.services;
 
 import android.app.Service;
 import android.content.Intent;

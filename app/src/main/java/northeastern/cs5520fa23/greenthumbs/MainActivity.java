@@ -2,7 +2,6 @@ package northeastern.cs5520fa23.greenthumbs;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.Context;
@@ -13,39 +12,34 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
-import northeastern.cs5520fa23.greenthumbs.services.WeatherService;
+import northeastern.cs5520fa23.greenthumbs.model.services.WeatherService;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.SetLocationFragment;
 
 public class MainActivity extends AppCompatActivity {
-    private LocationManager locationManager;
-    private LocationListener locationListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new LocationListener() {
+        if (!isHomeLocationSet()) {
+            showSetLocationFragment();
+        } else {
+            startWeatherService();
+        }
+
+        Button btnShowSetLocation = findViewById(R.id.btnShowSetLocation);
+        btnShowSetLocation.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onLocationChanged(Location location) {
-                startWeatherService();
+            public void onClick(View view) {
+                showSetLocationFragment();
             }
 
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
-
-            @Override
-            public void onProviderEnabled(String provider) {}
-
-            @Override
-            public void onProviderDisabled(String provider) {}
-
-        };
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        }
+        });
     }
 
     private void startWeatherService() {
@@ -59,16 +53,20 @@ public class MainActivity extends AppCompatActivity {
             serviceIntent.putExtra(WeatherService.longitude, longitude);
             startService(serviceIntent);
         } else {
-            // Ask user to set home location
+            // Handle the case where location is not set at this point
         }
     }
 
-    public void saveHomeLocation(double latitude, double longitude) {
+    private boolean isHomeLocationSet() {
         SharedPreferences sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putFloat("HomeLatitude", (float) latitude);
-        editor.putFloat("HomeLongitude", (float) longitude);
-        editor.apply();
+        return sharedPreferences.contains("HomeLatitude") && sharedPreferences.contains("HomeLongitude");
+    }
+
+    private void showSetLocationFragment() {
+        SetLocationFragment setLocationFragment = new SetLocationFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, setLocationFragment)
+                .commit();
     }
 
 }
