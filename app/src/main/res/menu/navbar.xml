@@ -13,8 +13,21 @@
         android:icon="@drawable/baseline_people_24"
         android:id="@+id/social_menu_item"/>
     <item
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Create Post" />
+    <item
 
         android:title="Garden"
         android:icon="@drawable/garden_icon_bee"
         android:id="@+id/garden_menu_item"/>
+    <item
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Messages" />
+    <item
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Settings" />
+
 </menu>
