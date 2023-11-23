@@ -11,6 +11,7 @@ import com.google.android.material.navigation.NavigationBarView;
 
 import northeastern.cs5520fa23.greenthumbs.Dashboard.DashboardFragment;
 import northeastern.cs5520fa23.greenthumbs.Garden.GardenFragment;
+import northeastern.cs5520fa23.greenthumbs.SocialFeed.CreatePostFragment;
 import northeastern.cs5520fa23.greenthumbs.SocialFeed.SocialFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private DashboardFragment dashboardFragment = new DashboardFragment();
     private SocialFragment socialFragment = new SocialFragment();
     private GardenFragment gardenFragment = new GardenFragment();
+    private CreatePostFragment createPostFragment = new CreatePostFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,9 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 } else if (item.getItemId() == R.id.garden_menu_item) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, gardenFragment).commit();
+                    return true;
+                } else if (item.getItemId() == R.id.create_post_menu_item) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, createPostFragment).commit();
                     return true;
                 }
 

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/social_post_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SocialFeed.SocialFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#8BC34A"
+        android:orientation="vertical"
+        android:id="@+id/create_post_layout">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Write Post"
+            android:minHeight="30dp"
+            android:id="@+id/create_post_text"/>
+
+        <TextView
+            android:id="@+id/create_post_tags"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Add Tags"
+            android:minHeight="30dp"
+            />
+
+        <ImageView
+            android:id="@+id/create_post_image"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            app:srcCompat="@drawable/baseline_image_24" />
+
+        <Button
+            android:id="@+id/create_post_button"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="104dp"
+            android:layout_height="50dp"
+            android:background="#4FC3F7"
+            android:text="Post"
+            app:backgroundTint="#4FC3F7"
+            android:layout_gravity="end"/>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

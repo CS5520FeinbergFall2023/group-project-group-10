@@ -13,21 +13,18 @@
         android:icon="@drawable/baseline_people_24"
         android:id="@+id/social_menu_item"/>
     <item
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:title="Create Post" />
+        android:title="Create Post"
+        android:id="@+id/create_post_menu_item"
+        android:icon="@drawable/write_post"/>
     <item
 
         android:title="Garden"
         android:icon="@drawable/garden_icon_bee"
-        android:id="@+id/garden_menu_item"/>
+        android:id="@+id/garden_menu_item"
+        />
     <item
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:title="Messages" />
-    <item
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:title="Settings" />
+        android:title="Messages"
+        android:icon="@drawable/messages_icon"
+        android:id="@+id/messages_menu_item"/>
 
 </menu>
