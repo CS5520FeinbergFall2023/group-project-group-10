@@ -2,6 +2,7 @@ package northeastern.cs5520fa23.greenthumbs;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -17,6 +18,7 @@ import northeastern.cs5520fa23.greenthumbs.SocialFeed.SocialFragment;
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView navBar;
+    private Toolbar toolbar;
     private DashboardFragment dashboardFragment = new DashboardFragment();
     private SocialFragment socialFragment = new SocialFragment();
     private GardenFragment gardenFragment = new GardenFragment();
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         navBar = findViewById(R.id.bottom_nav_menu);
+        toolbar = findViewById(R.id.toolbar);
 
         // When app is opened go to dashboard
         getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).commit();
