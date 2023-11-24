@@ -12,17 +12,20 @@
         android:layout_height="match_parent"
         tools:layout_editor_absoluteX="-16dp"
         tools:layout_editor_absoluteY="347dp">
+
+        <ImageButton
+            android:id="@+id/btnShowSetLocation"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/home2"
+            android:contentDescription="@string/set_location_description"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp" />
     </FrameLayout>
 
-    <Button
-        android:id="@+id/btnShowSetLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Show/Set Home Location"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
 
     <TextView
         android:id="@+id/textView"

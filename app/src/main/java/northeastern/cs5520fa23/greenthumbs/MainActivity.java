@@ -14,6 +14,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import northeastern.cs5520fa23.greenthumbs.model.services.WeatherService;
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
             startWeatherService();
         }
 
-        Button btnShowSetLocation = findViewById(R.id.btnShowSetLocation);
+        ImageButton btnShowSetLocation = findViewById(R.id.btnShowSetLocation);
         btnShowSetLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         SetLocationFragment setLocationFragment = new SetLocationFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, setLocationFragment)
+                .addToBackStack(null)
                 .commit();
     }
 
