@@ -74,7 +74,7 @@ public class CreatePostFragment extends Fragment {
         postText = view.findViewById(R.id.create_post_text);
         postTags = view.findViewById(R.id.create_post_tags);
         addImgButton = view.findViewById(R.id.create_post_add_image_button);
-        postButton = view.findViewById(R.id.create_post_button);
+        //postButton = view.findViewById(R.id.create_post_button);
 
         return view;
     }

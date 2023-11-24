@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         navBar = findViewById(R.id.bottom_nav_menu);
         toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         // When app is opened go to dashboard
         getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).commit();

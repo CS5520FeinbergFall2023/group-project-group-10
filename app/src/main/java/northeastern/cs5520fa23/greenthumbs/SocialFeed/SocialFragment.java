@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -87,11 +88,22 @@ public class SocialFragment extends Fragment {
         socialAdapter = new SocialAdapter(postList, getContext());
         socialRecyclerView.setAdapter(socialAdapter);
         fab = view.findViewById(R.id.post_fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openCreatePostDialog();
+            }
+        });
         addPosts();
         socialAdapter.notifyItemInserted(0);
     }
 
     private void addPosts() {
         this.postList.add(new ImgPost(1, "gardener_1", "01:10", "Check out this plant!", 0, 0));
+    }
+
+    private void openCreatePostDialog() {
+        DialogFragment createPostDialog = new CreatePostDialog();
+        createPostDialog.show(getActivity().getSupportFragmentManager(), "Post");
     }
 }
