@@ -1,26 +1,32 @@
 package northeastern.cs5520fa23.greenthumbs;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import northeastern.cs5520fa23.greenthumbs.model.services.WeatherService;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SetLocationFragment;
 
+import android.view.MenuItem;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
+
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.DashboardFragment;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Garden.GardenFragment;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.SocialFragment;
+
 public class MainActivity extends AppCompatActivity {
+
+    private BottomNavigationView navBar;
+    private DashboardFragment dashboardFragment = new DashboardFragment();
+    private SocialFragment socialFragment = new SocialFragment();
+    private GardenFragment gardenFragment = new GardenFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +47,29 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+        navBar = findViewById(R.id.bottom_nav_menu);
+
+        // When app is opened go to dashboard
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).commit();
+
+        navBar.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.dash_menu_item) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).commit();
+                    return true;
+                } else if (item.getItemId() == R.id.social_menu_item) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, socialFragment).commit();
+                    return true;
+                } else if (item.getItemId() == R.id.garden_menu_item) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, gardenFragment).commit();
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
     }
 
     private void startWeatherService() {
@@ -66,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
     private void showSetLocationFragment() {
         SetLocationFragment setLocationFragment = new SetLocationFragment();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, setLocationFragment)
+                .replace(R.id.main_frame, setLocationFragment)
                 .addToBackStack(null)
                 .commit();
     }
