@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,9 +30,9 @@ public class CreatePostFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    TextView postText;
-    TextView postTags;
-    ImageView postImage;
+    EditText postText;
+    EditText postTags;
+    Button addImgButton;
     Button postButton;
 
     public CreatePostFragment() {
@@ -72,7 +73,7 @@ public class CreatePostFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_create_post, container, false);
         postText = view.findViewById(R.id.create_post_text);
         postTags = view.findViewById(R.id.create_post_tags);
-        postImage = view.findViewById(R.id.create_post_image);
+        addImgButton = view.findViewById(R.id.create_post_add_image_button);
         postButton = view.findViewById(R.id.create_post_button);
 
         return view;

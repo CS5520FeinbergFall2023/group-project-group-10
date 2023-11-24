@@ -5,6 +5,7 @@
     android:id="@+id/social_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFBE6"
     tools:context=".SocialFeed.SocialFragment">
 
     <androidx.recyclerview.widget.RecyclerView
