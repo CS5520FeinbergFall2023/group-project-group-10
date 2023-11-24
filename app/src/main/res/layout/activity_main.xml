@@ -17,7 +17,7 @@
             android:id="@+id/btnShowSetLocation"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/home2"
+            android:src="@drawable/cloud_24"
             android:contentDescription="@string/set_location_description"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
