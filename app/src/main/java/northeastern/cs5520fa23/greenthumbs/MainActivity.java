@@ -33,41 +33,33 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*if (!isHomeLocationSet()) {
+        if (!isHomeLocationSet()) {
             showSetLocationFragment();
         } else {
             startWeatherService();
         }
 
         ImageButton btnShowSetLocation = findViewById(R.id.btnShowSetLocation);
-        btnShowSetLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showSetLocationFragment();
-            }
+        btnShowSetLocation.setOnClickListener(view -> showSetLocationFragment());
 
-        });*/
         navBar = findViewById(R.id.bottom_nav_menu);
 
         // When app is opened go to dashboard
         getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).commit();
 
-        navBar.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.dash_menu_item) {
-                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).commit();
-                    return true;
-                } else if (item.getItemId() == R.id.social_menu_item) {
-                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, socialFragment).commit();
-                    return true;
-                } else if (item.getItemId() == R.id.garden_menu_item) {
-                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, gardenFragment).commit();
-                    return true;
-                }
-
-                return false;
+        navBar.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.dash_menu_item) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).commit();
+                return true;
+            } else if (item.getItemId() == R.id.social_menu_item) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, socialFragment).commit();
+                return true;
+            } else if (item.getItemId() == R.id.garden_menu_item) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, gardenFragment).commit();
+                return true;
             }
+
+            return false;
         });
 
     }
@@ -93,11 +85,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showSetLocationFragment() {
-        SetLocationFragment setLocationFragment = new SetLocationFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_frame, setLocationFragment)
-                .addToBackStack(null)
-                .commit();
+        if (findViewById(R.id.overlay_frame).getVisibility() == View.GONE) {
+            findViewById(R.id.overlay_frame).setVisibility(View.VISIBLE);
+            SetLocationFragment setLocationFragment = new SetLocationFragment();
+            setLocationFragment.show(getSupportFragmentManager(), "setLocationFragment");
+            findViewById(R.id.overlay_frame).setVisibility(View.GONE);
+        }
     }
 
 }
