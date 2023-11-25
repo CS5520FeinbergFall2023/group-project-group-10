@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editTextLatitude"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Enter Latitude"
+        android:padding="8dp"/>
+
+    <EditText
+        android:id="@+id/editTextLongitude"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Enter Longitude"
+        android:padding="8dp"/>
+
+    <Button
+        android:id="@+id/btnSaveLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save Location"/>
+
+    <Button
+        android:id="@+id/btnFetchLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Fetch Current Location"/>
+
+</LinearLayout>
+

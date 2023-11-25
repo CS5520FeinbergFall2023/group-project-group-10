@@ -1,4 +1,4 @@
-package northeastern.cs5520fa23.greenthumbs.Garden;
+package northeastern.cs5520fa23.greenthumbs.viewmodel.Garden;
 
 import android.os.Bundle;
 
