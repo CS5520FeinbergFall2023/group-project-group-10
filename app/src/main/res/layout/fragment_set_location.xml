@@ -3,20 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
-    android:padding="16dp">
+    android:padding="18dp">
 
     <EditText
         android:id="@+id/editTextLatitude"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="40dp"
         android:hint="Enter Latitude"
         android:padding="8dp"/>
 
     <EditText
         android:id="@+id/editTextLongitude"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="40dp"
         android:hint="Enter Longitude"
         android:padding="8dp"/>
 
@@ -24,7 +23,8 @@
         android:id="@+id/btnSaveLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save Location"/>
+        android:text="Save Location"
+        android:layout_marginTop="10dp"/>
 
     <Button
         android:id="@+id/btnFetchLocation"
