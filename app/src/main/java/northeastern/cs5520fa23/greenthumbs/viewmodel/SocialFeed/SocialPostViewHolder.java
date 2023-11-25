@@ -1,4 +1,4 @@
-package northeastern.cs5520fa23.greenthumbs.SocialFeed;
+package northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed;
 
 import android.content.Intent;
 import android.view.View;
@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import northeastern.cs5520fa23.greenthumbs.R;
-import northeastern.cs5520fa23.greenthumbs.SocialFeed.SocialPostDetails.SocialPostDetailsActivity;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.SocialPostDetails.SocialPostDetailsActivity;
 
 public class SocialPostViewHolder extends RecyclerView.ViewHolder {
     public TextView username;

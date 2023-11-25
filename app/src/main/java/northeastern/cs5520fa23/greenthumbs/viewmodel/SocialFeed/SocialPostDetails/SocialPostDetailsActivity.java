@@ -1,4 +1,4 @@
-package northeastern.cs5520fa23.greenthumbs.SocialFeed.SocialPostDetails;
+package northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.SocialPostDetails;
 
 import androidx.appcompat.app.AppCompatActivity;
 

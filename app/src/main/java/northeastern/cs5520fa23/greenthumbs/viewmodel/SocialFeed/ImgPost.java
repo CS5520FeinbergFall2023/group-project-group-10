@@ -1,4 +1,4 @@
-package northeastern.cs5520fa23.greenthumbs.SocialFeed;
+package northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed;
 
 public class ImgPost {
     private int _id;
