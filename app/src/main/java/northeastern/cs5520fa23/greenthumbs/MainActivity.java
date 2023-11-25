@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (!isHomeLocationSet()) {
+        /*if (!isHomeLocationSet()) {
             showSetLocationFragment();
         } else {
             startWeatherService();
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
                 showSetLocationFragment();
             }
 
-        });
+        });*/
         navBar = findViewById(R.id.bottom_nav_menu);
 
         // When app is opened go to dashboard

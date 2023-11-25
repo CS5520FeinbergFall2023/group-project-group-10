@@ -13,7 +13,7 @@
         tools:layout_editor_absoluteX="-16dp"
         tools:layout_editor_absoluteY="347dp">
 
-        <ImageButton
+        <!--<ImageButton
             android:id="@+id/btnShowSetLocation"
             android:layout_width="100dp"
             android:layout_height="100dp"
@@ -22,7 +22,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp" />-->
     </FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
