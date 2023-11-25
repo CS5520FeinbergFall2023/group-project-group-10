@@ -13,7 +13,6 @@ public class MessageHistoryViewHolder extends RecyclerView.ViewHolder {
     private TextView username;
     private TextView lastMsg;
     private ImageView profPic;
-    private View.OnClickListener listener;
 
     public MessageHistoryViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -46,14 +45,4 @@ public class MessageHistoryViewHolder extends RecyclerView.ViewHolder {
         this.profPic = profPic;
     }
 
-    public View.OnClickListener getListener() {
-        if (listener != null) {
-            return listener;
-        }
-        return null;
-    }
-
-    public void setListener(View.OnClickListener listener) {
-        this.listener = listener;
-    }
 }
