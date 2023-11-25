@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import northeastern.cs5520fa23.greenthumbs.model.services.WeatherService;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.MessageHomeFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SetLocationFragment;
 
 import android.view.MenuItem;
@@ -34,14 +35,15 @@ public class MainActivity extends AppCompatActivity {
     private SocialFragment socialFragment = new SocialFragment();
     private GardenFragment gardenFragment = new GardenFragment();
     private CreatePostFragment createPostFragment = new CreatePostFragment();
+    private MessageHomeFragment messageHomeFragment = new MessageHomeFragment();
 
     @Override
     protected void onStart() {
         super.onStart();
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) {
-            Intent i = new Intent(MainActivity.this, LogInActivity.class);
-            startActivity(i);
+            //Intent i = new Intent(MainActivity.this, LogInActivity.class);
+            //startActivity(i);
         }
     }
 
@@ -82,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
             } else if (item.getItemId() == R.id.settings_menu_item) {
                 //getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, createPostFragment).commit();
                 //return true;
+            } else if (item.getItemId() == R.id.messages_menu_item) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment).commit();
+                return true;
             }
 
             return false;
