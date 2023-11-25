@@ -1,4 +1,4 @@
-package northeastern.cs5520fa23.greenthumbs.viewmodel.Messages;
+package northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat;
 
 import androidx.appcompat.app.AppCompatActivity;
 

@@ -19,7 +19,7 @@
         android:theme="@style/Theme.GreenThumbs"
         tools:targetApi="31">
         <activity
-            android:name=".viewmodel.Messages.ChatActivity"
+            android:name=".viewmodel.Messages.Chat.ChatActivity"
             android:exported="false" />
         <activity
             android:name=".RegisterActivity"
