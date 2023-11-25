@@ -4,11 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import northeastern.cs5520fa23.greenthumbs.Dashboard.DashboardFragment;
 import northeastern.cs5520fa23.greenthumbs.Garden.GardenFragment;
@@ -17,6 +20,7 @@ import northeastern.cs5520fa23.greenthumbs.SocialFeed.SocialFragment;
 
 public class MainActivity extends AppCompatActivity {
 
+    private FirebaseAuth mAuth;
     private BottomNavigationView navBar;
     private Toolbar toolbar;
     private DashboardFragment dashboardFragment = new DashboardFragment();
@@ -25,9 +29,20 @@ public class MainActivity extends AppCompatActivity {
     private CreatePostFragment createPostFragment = new CreatePostFragment();
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null) {
+            Intent i = new Intent(MainActivity.this, LogInActivity.class);
+            startActivity(i);
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mAuth = FirebaseAuth.getInstance();
 
         navBar = findViewById(R.id.bottom_nav_menu);
         toolbar = findViewById(R.id.toolbar);
@@ -56,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+
 
     }
 }
