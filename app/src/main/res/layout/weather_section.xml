@@ -30,6 +30,49 @@
             android:textAlignment="center" />
     </LinearLayout>
 
-    <!-- Repeat the above LinearLayout for 'Tomorrow' and 'Friday'
-         with respective @+id's like layout_tomorrow, img_weather_tomorrow, etc. -->
+    <LinearLayout
+        android:id="@+id/layout_tomorrow"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/img_weather_tomorrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/sunny_24" />
+
+        <TextView
+            android:id="@+id/txt_weather_tomorrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sunny"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_day_after"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/img_weather_day_after"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/sunny_24" />
+
+        <TextView
+            android:id="@+id/txt_weather_day_after"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sunny"
+            android:textAlignment="center" />
+    </LinearLayout>
 </LinearLayout>
