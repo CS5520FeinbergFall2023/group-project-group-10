@@ -48,9 +48,9 @@ public class MainActivity extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.garden_menu_item) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, gardenFragment).commit();
                     return true;
-                } else if (item.getItemId() == R.id.create_post_menu_item) {
-                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, createPostFragment).commit();
-                    return true;
+                } else if (item.getItemId() == R.id.settings_menu_item) {
+                    //getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, createPostFragment).commit();
+                    //return true;
                 }
 
                 return false;
