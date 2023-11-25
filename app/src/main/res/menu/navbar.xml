@@ -12,9 +12,21 @@
         android:title="Social"
         android:icon="@drawable/baseline_people_24"
         android:id="@+id/social_menu_item"/>
+
     <item
 
         android:title="Garden"
         android:icon="@drawable/garden_icon_bee"
-        android:id="@+id/garden_menu_item"/>
+        android:id="@+id/garden_menu_item"
+        />
+    <item
+        android:title="Messages"
+        android:icon="@drawable/messages_icon"
+        android:id="@+id/messages_menu_item"/>
+
+    <item
+        android:title="Settings"
+        android:id="@+id/settings_menu_item"
+        android:icon="@drawable/baseline_settings_24"/>
+
 </menu>
