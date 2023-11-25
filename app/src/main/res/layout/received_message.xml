@@ -10,6 +10,7 @@
         android:id="@+id/received_msg_ll"
         android:orientation="horizontal">
         <TextView
+            android:id="@+id/msg_content"
             android:background="#356859"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -18,6 +19,7 @@
             android:textColor="#FFFBE6"/>
 
         <TextView
+            android:id="@+id/msg_timestamp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
