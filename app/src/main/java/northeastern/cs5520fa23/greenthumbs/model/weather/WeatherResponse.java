@@ -1,4 +1,4 @@
-package northeastern.cs5520fa23.greenthumbs.model;
+package northeastern.cs5520fa23.greenthumbs.model.weather;
 
 public class WeatherResponse {
     private Properties properties;

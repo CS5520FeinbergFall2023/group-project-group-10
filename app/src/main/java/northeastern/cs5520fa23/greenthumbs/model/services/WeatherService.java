@@ -10,8 +10,8 @@ import androidx.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
 
-import northeastern.cs5520fa23.greenthumbs.model.WeatherForecast;
-import northeastern.cs5520fa23.greenthumbs.model.WeatherResponse;
+import northeastern.cs5520fa23.greenthumbs.model.weather.WeatherForecast;
+import northeastern.cs5520fa23.greenthumbs.model.weather.WeatherResponse;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -69,7 +69,6 @@ public class WeatherService extends Service {
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
             assert response.body() != null;
             WeatherForecast forecast = gson.fromJson(response.body().string(), WeatherForecast.class);
             return forecast.getPeriods();
