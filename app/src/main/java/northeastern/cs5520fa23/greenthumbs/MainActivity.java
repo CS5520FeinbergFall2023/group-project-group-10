@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             startWeatherService();
         }
+
         ImageButton btnShowSetLocation = findViewById(R.id.btnShowSetLocation);
         btnShowSetLocation.setOnClickListener(view -> showSetLocationFragment());
         // ######
