@@ -1,66 +1,64 @@
 package northeastern.cs5520fa23.greenthumbs.model.weather;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Looper;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+
+import northeastern.cs5520fa23.greenthumbs.R;
+
 public class WeatherUpdateReceiver extends BroadcastReceiver {
 
-    private final ImageView weatherTodayIcon;
-    private final TextView weatherTodayText;
-    private final Gson gson;
+    private final Activity activity;
 
-    // Constructor to initialize the UI components and Gson instance
-    public WeatherUpdateReceiver(ImageView weatherTodayIcon, TextView weatherTodayText) {
-        this.weatherTodayIcon = weatherTodayIcon;
-        this.weatherTodayText = weatherTodayText;
-        this.gson = new Gson();
+    // Constructor to pass the Activity
+    public WeatherUpdateReceiver(Activity activity) {
+        this.activity = activity;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        /*if ("ACTION_WEATHER_UPDATE".equals(intent.getAction())) {
-            // Extract the JSON string from the intent
-            String weatherJson = intent.getStringExtra("WEATHER_DATA");
-            if (weatherJson != null && !weatherJson.isEmpty()) {
-                // Parse the JSON string to WeatherForecast object
-                WeatherForecast forecast = gson.fromJson(weatherJson, WeatherForecast.class);
+        ArrayList<String> forecasts = intent.getStringArrayListExtra("WEATHER_FORECASTS");
+        if (forecasts != null && forecasts.size() >= 3) {
+            // Get references to the UI components
+            ImageView imgToday = activity.findViewById(R.id.img_weather_today);
+            TextView txtToday = activity.findViewById(R.id.txt_weather_today);
+            ImageView imgTomorrow = activity.findViewById(R.id.img_weather_tomorrow);
+            TextView txtTomorrow = activity.findViewById(R.id.txt_weather_tomorrow);
+            ImageView imgDayAfter = activity.findViewById(R.id.img_weather_day_after);
+            TextView txtDayAfter = activity.findViewById(R.id.txt_weather_day_after);
 
-                // Update the UI with the first period of weather data (today's weather)
-                if (forecast != null && forecast.getPeriods() != null && !forecast.getPeriods().isEmpty()) {
-                    WeatherForecast.Period todayWeather = forecast.getPeriods().get(0);
-
-                    // Update the weather icon and text on the main thread
-                    Handler mainHandler = new Handler(Looper.getMainLooper());
-                    mainHandler.post(() -> {
-                        weatherTodayIcon.setImageResource(getWeatherIconResource(todayWeather.getIcon()));
-                        weatherTodayText.setText(todayWeather.getShortForecast());
-                    });
-                }
-            }
-        }*/
+            // Update the UI components with the new data
+            updateWeatherView(imgToday, txtToday, forecasts.get(0));
+            updateWeatherView(imgTomorrow, txtTomorrow, forecasts.get(1));
+            updateWeatherView(imgDayAfter, txtDayAfter, forecasts.get(2));
+        }
     }
 
-    // Method to map the weather condition to an image resource
-    private int getWeatherIconResource(String iconName) {
-        // This method should map the icon name to a drawable resource.
-        // For example:
-        /*
-        if ("clear-day".equals(iconName)) {
-            return R.drawable.ic_weather_clear_day;
-        } else if ("rain".equals(iconName)) {
-            return R.drawable.ic_weather_rain;
+    private void updateWeatherView(ImageView weatherIcon, TextView weatherText, String forecast) {
+        int resourceIcon = getWeatherIconResource(forecast);
+        weatherIcon.setImageResource(resourceIcon);
+        weatherText.setText(forecast);
+    }
+
+    private int getWeatherIconResource(String forecast) {
+        switch (forecast.toLowerCase()) {
+            case "sunny":
+                return R.drawable.sunny_24;
+            case "cloudy":
+                return R.drawable.cloud_24;
+            case "rainy":
+                return R.drawable.water_drop_24;
+            default:
+                return R.drawable.baseline_question_mark_24;
         }
-        // Add more conditions for different weather icons.
-        return R.drawable.ic_weather_default; // Default icon
-         */
-        return 0;
     }
 }
+
 

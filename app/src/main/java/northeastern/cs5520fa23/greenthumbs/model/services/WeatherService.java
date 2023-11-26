@@ -8,6 +8,8 @@ import android.os.IBinder;
 import androidx.annotation.Nullable;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import northeastern.cs5520fa23.greenthumbs.model.weather.WeatherForecast;
@@ -64,18 +66,34 @@ public class WeatherService extends Service {
      * @param url URL to fetch temperature from
      * @return list of periods
      */
-    public static List<WeatherForecast.Period> fetchPeriodData(String url) {
+    public static List<String> fetchPeriodData(String url) {
         Request request = new Request.Builder().url(url).build();
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
             assert response.body() != null;
             WeatherForecast forecast = gson.fromJson(response.body().string(), WeatherForecast.class);
-            return forecast.getPeriods();
+            List requiredPeriods = new ArrayList<String>();
+            List<WeatherForecast.Period> periods = forecast.getPeriods();
+            requiredPeriods.add(checkWeatherCondition(periods.get(0).getShortForecast()));
+            requiredPeriods.add(checkWeatherCondition(periods.get(24).getShortForecast()));
+            requiredPeriods.add(checkWeatherCondition(periods.get(48).getShortForecast()));
+            return requiredPeriods;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static String checkWeatherCondition(String inputString) {
+        List<String> conditions = Arrays.asList("sunny", "cloudy", "rainy");
+
+        for (String condition : conditions) {
+            if (inputString.toLowerCase().contains(condition)) {
+                return condition;
+            }
+        }
+        return "";
     }
 }
 
