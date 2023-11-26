@@ -70,12 +70,12 @@ public class SetLocationFragment extends DialogFragment {
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(@NonNull Location location) {
-                showLoadingDialog();
+                //showLoadingDialog();
                 double lat = location.getLatitude();
                 editTextLatitude.setText(String.valueOf(lat));
                 editTextLongitude.setText(String.valueOf(location.getLongitude()));
                 locationManager.removeUpdates(this); // Stop updates to save battery
-                hideLoadingDialog();
+                //hideLoadingDialog();
             }
 
             @Override

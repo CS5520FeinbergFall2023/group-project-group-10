@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             showSetLocationFragment();
         } else {
             startWeatherService();
+            //From the recommendations page start the recommendation service and stop
             //startPlantRecommendationService();
         }
         ImageButton btnShowSetLocation = findViewById(R.id.btnShowSetLocation);

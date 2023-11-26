@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="GreenThumbs"
+        app:title="         GreenThumbs"
         app:titleTextColor="#356859" />
     <FrameLayout
         android:id="@+id/main_frame"
@@ -25,14 +25,15 @@
 
         <ImageButton
             android:id="@+id/btnShowSetLocation"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/cloud_24"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/home_image"
             android:contentDescription="@string/set_location_description"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp" />
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:backgroundTint="#FFFBE6"/>
     </FrameLayout>
 
     <FrameLayout
