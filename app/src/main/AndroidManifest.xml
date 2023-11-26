@@ -24,7 +24,7 @@
             android:name=".LogInActivity"
             android:exported="false" />
         <activity
-            android:name=".SocialFeed.SocialPostDetails.SocialPostDetailsActivity"
+            android:name=".viewmodel.SocialFeed.SocialPostDetails.SocialPostDetailsActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
@@ -35,6 +35,7 @@
             </intent-filter>
         </activity>
         <service android:name=".model.services.WeatherService" />
+        <service android:name=".model.services.PlantRecommendationService" />
     </application>
 
 </manifest>
