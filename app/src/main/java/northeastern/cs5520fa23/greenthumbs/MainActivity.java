@@ -11,18 +11,13 @@ import android.widget.ImageButton;
 
 import northeastern.cs5520fa23.greenthumbs.model.services.WeatherService;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SetLocationFragment;
-
-import android.view.MenuItem;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.DashboardFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Garden.GardenFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.SocialFragment;
 
 public class MainActivity extends AppCompatActivity {
-
     private BottomNavigationView navBar;
     private DashboardFragment dashboardFragment = new DashboardFragment();
     private SocialFragment socialFragment = new SocialFragment();

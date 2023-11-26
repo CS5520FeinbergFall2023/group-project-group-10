@@ -35,7 +35,6 @@ public class SetLocationFragment extends DialogFragment {
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     private EditText editTextLatitude;
     private EditText editTextLongitude;
-
     private LocationManager locationManager;
     private LocationListener locationListener;
 
