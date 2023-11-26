@@ -10,10 +10,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 
+import northeastern.cs5520fa23.greenthumbs.model.services.PlantRecommendationService;
 import northeastern.cs5520fa23.greenthumbs.model.services.WeatherService;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SetLocationFragment;
 
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             showSetLocationFragment();
         } else {
             startWeatherService();
+            //startPlantRecommendationService();
         }
         ImageButton btnShowSetLocation = findViewById(R.id.btnShowSetLocation);
         btnShowSetLocation.setOnClickListener(view -> showSetLocationFragment());
@@ -100,7 +103,22 @@ public class MainActivity extends AppCompatActivity {
             serviceIntent.putExtra(WeatherService.longitude, longitude);
             startService(serviceIntent);
         } else {
-            // Handle the case where location is not set at this point
+            Toast.makeText(getBaseContext(), "Please set a location", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void startPlantRecommendationService() {
+        SharedPreferences sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE);
+        float latitude = sharedPreferences.getFloat("HomeLatitude", 0);
+        float longitude = sharedPreferences.getFloat("HomeLongitude", 0);
+
+        if (latitude != 0 && longitude != 0) {
+            Intent serviceIntent = new Intent(this, PlantRecommendationService.class);
+            serviceIntent.putExtra(PlantRecommendationService.latitude, latitude);
+            serviceIntent.putExtra(PlantRecommendationService.longitude, longitude);
+            startService(serviceIntent);
+        } else {
+            Toast.makeText(getBaseContext(), "Please set a location", Toast.LENGTH_SHORT).show();
         }
     }
 

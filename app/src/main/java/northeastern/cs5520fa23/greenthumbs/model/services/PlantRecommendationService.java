@@ -21,7 +21,7 @@ import java.util.Locale;
 
 import northeastern.cs5520fa23.greenthumbs.model.PlantInfo;
 
-public class HardinessService extends Service {
+public class PlantRecommendationService extends Service {
     public static final String latitude = "42.3458";
     public static final String longitude = "-71.0947";
     @Nullable
