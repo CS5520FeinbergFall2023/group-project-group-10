@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/light_yellow"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/dark_green"
+        android:fontFamily="@font/youngserifregular"
+        android:textSize="42sp"
+        android:text="@string/sign_up"
+        app:layout_constraintBottom_toTopOf="@id/editTextUserName"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <EditText
+        android:id="@+id/editTextUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/textView"
+        app:layout_constraintBottom_toTopOf="@id/editTextFirstName"
+        android:hint="@string/username"
+        android:textColorHint="@color/dark_green"
+        android:fontFamily="@font/youngserifregular"
+        android:ems="10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <EditText
+        android:id="@+id/editTextFirstName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/first_name"
+        android:textColorHint="@color/dark_green"
+        android:fontFamily="@font/youngserifregular"
+        android:ems="10"
+        app:layout_constraintTop_toBottomOf="@id/editTextUserName"
+        app:layout_constraintBottom_toTopOf="@id/editTextLastName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <EditText
+        android:id="@+id/editTextLastName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/last_name"
+        android:textColorHint="@color/dark_green"
+        android:fontFamily="@font/youngserifregular"
+        app:layout_constraintTop_toBottomOf="@id/editTextFirstName"
+        app:layout_constraintBottom_toTopOf="@id/editTextemail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <EditText
+        android:id="@+id/editTextemail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/email"
+        android:textColorHint="@color/dark_green"
+        android:fontFamily="@font/youngserifregular"
+        app:layout_constraintTop_toBottomOf="@id/editTextLastName"
+        app:layout_constraintBottom_toTopOf="@id/editTextTextPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <EditText
+        android:id="@+id/editTextTextPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:hint="@string/password"
+        android:fontFamily="@font/youngserifregular"
+        android:textColorHint="@color/dark_green"
+        app:layout_constraintTop_toBottomOf="@id/editTextemail"
+        app:layout_constraintBottom_toTopOf="@id/SignUpbutton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <Button
+        android:id="@+id/SignUpbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sign_up"
+        android:backgroundTint="@color/dark_green"
+        android:fontFamily="@font/youngserifregular"
+        android:ems="10"
+        android:textColor="@color/light_green"
+        app:layout_constraintTop_toBottomOf="@id/editTextTextPassword"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,4 @@
-package northeastern.cs5520fa23.greenthumbs.SocialFeed;
+package northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard;
 
 import android.os.Bundle;
 
@@ -12,10 +12,10 @@ import northeastern.cs5520fa23.greenthumbs.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link SocialFragment#newInstance} factory method to
+ * Use the {@link DashboardFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SocialFragment extends Fragment {
+public class DashboardFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class SocialFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public SocialFragment() {
+    public DashboardFragment() {
         // Required empty public constructor
     }
 
@@ -36,11 +36,11 @@ public class SocialFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment SocialFragment.
+     * @return A new instance of fragment DashboardFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SocialFragment newInstance(String param1, String param2) {
-        SocialFragment fragment = new SocialFragment();
+    public static DashboardFragment newInstance(String param1, String param2) {
+        DashboardFragment fragment = new DashboardFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,6 +61,6 @@ public class SocialFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_social, container, false);
+        return inflater.inflate(R.layout.fragment_dashboard, container, false);
     }
 }

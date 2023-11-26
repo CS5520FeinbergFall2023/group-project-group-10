@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/light_yellow"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/primary_logo_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GreenThumbs"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/sign_up_page_start_button"
+        android:textColor="@color/dark_green"
+        android:fontFamily="@font/youngserifregular"
+        android:textSize="42sp"/>
+
+    <Button
+        android:id="@+id/sign_up_page_start_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sign_up"
+        android:ems="8"
+        android:textColor="@color/light_green"
+        app:layout_constraintTop_toBottomOf="@id/primary_logo_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/log_in_start_button"
+        android:fontFamily="@font/youngserifregular"
+        android:backgroundTint="@color/dark_green"
+        />
+
+    <Button
+        android:id="@+id/log_in_start_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="8"
+        android:text="@string/log_in"
+        android:textColor="@color/light_green"
+        app:layout_constraintTop_toBottomOf="@id/primary_logo_text"
+        app:layout_constraintEnd_toStartOf="@id/sign_up_page_start_button"
+        android:fontFamily="@font/youngserifregular"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:backgroundTint="@color/dark_green"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
