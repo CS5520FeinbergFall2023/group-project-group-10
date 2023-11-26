@@ -19,6 +19,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.Locale;
 
+import northeastern.cs5520fa23.greenthumbs.model.PlantInfo;
+
 public class HardinessService extends Service {
     public static final String latitude = "42.3458";
     public static final String longitude = "-71.0947";
@@ -36,7 +38,8 @@ public class HardinessService extends Service {
         new Thread(() -> {
             String zipCode = getZipCode(lat, lon);
             if (zipCode != null) {
-                getHardiness(zipCode); // Implement this method
+                String hardinessZone = getHardiness(zipCode);
+                List<String> plants = PlantInfo.getPlantsForZone(hardinessZone);
             }
         }).start();
 
