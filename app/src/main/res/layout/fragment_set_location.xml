@@ -23,14 +23,15 @@
         android:id="@+id/btnSaveLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_green_button"
         android:text="Save Location"
+        android:backgroundTint="#379665"
         android:layout_marginTop="10dp"/>
 
     <Button
         android:id="@+id/btnFetchLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="#379665"
         android:text="Fetch Current Location"/>
 
 </LinearLayout>

@@ -2,11 +2,21 @@ package northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import northeastern.cs5520fa23.greenthumbs.R;
 
@@ -25,6 +35,11 @@ public class SocialFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private RecyclerView socialRecyclerView;
+    private SocialAdapter socialAdapter;
+    private List<ImgPost> postList;
+    private FloatingActionButton fab;
 
     public SocialFragment() {
         // Required empty public constructor
@@ -55,12 +70,40 @@ public class SocialFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        postList = new ArrayList<>();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_social, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        socialRecyclerView = view.findViewById(R.id.social_recycler_view);
+        socialRecyclerView.setHasFixedSize(true);
+        socialRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        socialAdapter = new SocialAdapter(postList, getContext());
+        socialRecyclerView.setAdapter(socialAdapter);
+        fab = view.findViewById(R.id.post_fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openCreatePostDialog();
+            }
+        });
+        addPosts();
+        socialAdapter.notifyItemInserted(0);
+    }
+
+    private void addPosts() {
+        this.postList.add(new ImgPost(1, "gardener_1", "01:10", "Check out this plant!", 0, 0));
+    }
+
+    private void openCreatePostDialog() {
+        DialogFragment createPostDialog = new CreatePostDialog();
+        createPostDialog.show(getActivity().getSupportFragmentManager(), "Post");
     }
 }
