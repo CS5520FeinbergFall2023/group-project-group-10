@@ -9,33 +9,31 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class LogInActivity extends AppCompatActivity {
-    private Button toRegisterButton;
-    private Button loginButton;
-    EditText email;
-    EditText password;
+
+    private Button goToSignUpButton;
+    private Button goToLogInButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_log_in);
-        toRegisterButton = findViewById(R.id.register_button_login_activity);
-        loginButton = findViewById(R.id.login_button_login_activity);
-        email = findViewById(R.id.login_email);
-        password = findViewById(R.id.login_password);
-        toRegisterButton.setOnClickListener(new View.OnClickListener() {
+        setContentView(R.layout.sign_in_or_log_in);
+        goToLogInButton = findViewById(R.id.log_in_start_button);
+        goToSignUpButton = findViewById(R.id.sign_up_page_start_button);
+
+        goToLogInButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(LogInActivity.this, RegisterActivity.class);
+                Intent i = new Intent(LogInActivity.this, LogInPageActivity.class);
                 startActivity(i);
             }
         });
-        loginButton.setOnClickListener(new View.OnClickListener() {
+
+        goToSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String emailString = email.toString();
-                String passwordString = password.toString();
-                // log in user here and if log in successful start activity
-                Intent i = new Intent(LogInActivity.this, MainActivity.class);
+                Intent i = new Intent(LogInActivity.this, SignUpPageActivity.class);
+                startActivity(i);
             }
         });
     }
