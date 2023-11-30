@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/received_msg_card">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/received_msg_ll"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/msg_content"
+            android:background="#356859"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Message Content Message Content Message Content Message Content Message Content Message Content "
+            android:textColor="#FFFBE6"/>
+
+        <TextView
+            android:id="@+id/msg_timestamp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="TimeStamp"
+            android:textColor="#6F5329"/>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

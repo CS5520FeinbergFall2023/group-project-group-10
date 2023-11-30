@@ -12,6 +12,7 @@ public class LogInActivity extends AppCompatActivity {
     private Button goToSignUpButton;
     private Button goToLogInButton;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,10 +36,5 @@ public class LogInActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
-
-
-
-
     }
 }
