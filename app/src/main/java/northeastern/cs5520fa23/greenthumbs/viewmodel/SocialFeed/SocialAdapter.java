@@ -35,17 +35,21 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
     public void onBindViewHolder(@NonNull SocialPostViewHolder holder, int position) {
         ImgPost post = posts.get(position);
         if (post != null) {
+            holder.set_id(post.get_id());
             String username = post.getUsername();
             String time = post.getTimestamp();
-            Integer likes = post.getNum_likes();
+            Integer num_likes = post.getNum_likes();
             Integer replies = post.getNum_comments();
             String post_text = post.getPost_text();
             String postUri;
             if (username != null) {
                 holder.getUsername().setText(username);
             }
-            if (likes != null) {
-                holder.getLikes().setText(likes.toString());
+            if (num_likes != null) {
+                holder.getLikes().setText(num_likes.toString());
+                //if (num_likes > 0) {
+                //    holder.getLikesIcon().setImageResource(R.drawable.like_filled);
+                //}
             }
             if (replies != null) {
                 holder.getReplies().setText(replies.toString());

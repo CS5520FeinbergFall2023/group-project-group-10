@@ -97,6 +97,7 @@ public class CreatePostDialog extends DialogFragment {
 
                 String postId = dbRef.child("posts").push().getKey();
                 String currentTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).format(new Date());
+                post.put("_id", postId);
                 post.put("num_likes", 0);
                 post.put("timestamp", currentTimestamp);
                 post.put("num_comments", 0);

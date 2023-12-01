@@ -7,10 +7,12 @@ import android.os.Bundle;
 import northeastern.cs5520fa23.greenthumbs.R;
 
 public class SocialPostDetailsActivity extends AppCompatActivity {
+    private String _id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.social_post_detailed);
+        this._id = getIntent().getStringExtra("_id");
     }
 }

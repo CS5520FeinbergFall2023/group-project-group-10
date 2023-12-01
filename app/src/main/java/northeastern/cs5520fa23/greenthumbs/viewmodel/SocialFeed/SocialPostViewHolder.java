@@ -12,10 +12,13 @@ import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.SocialPostDetails.SocialPostDetailsActivity;
 
 public class SocialPostViewHolder extends RecyclerView.ViewHolder {
+    private String _id;
+    private int num_likes;
     public TextView username;
     public TextView postText;
     public ImageView postImg;
     public ImageView commentIcon;
+    private ImageView likesIcon;
     public TextView likes;
     public TextView replies;
     public TextView time;
@@ -31,6 +34,7 @@ public class SocialPostViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(itemView.getContext(), SocialPostDetailsActivity.class);
+                i.putExtra("_id", get_id());
                 itemView.getContext().startActivity(i);
             }
         });
@@ -62,5 +66,29 @@ public class SocialPostViewHolder extends RecyclerView.ViewHolder {
 
     public TextView getTime() {
         return time;
+    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
+    }
+
+    public int getNum_likes() {
+        return num_likes;
+    }
+
+    public void setNum_likes(int num_likes) {
+        this.num_likes = num_likes;
+    }
+
+    public ImageView getLikesIcon() {
+        return likesIcon;
+    }
+
+    public void setLikesIcon(ImageView likesIcon) {
+        this.likesIcon = likesIcon;
     }
 }

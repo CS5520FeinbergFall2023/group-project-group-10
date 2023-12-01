@@ -1,7 +1,7 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed;
 
 public class ImgPost {
-    private int _id;
+    private String _id;
     private String uid;
     private String username;
     private String timestamp;
@@ -35,7 +35,7 @@ public class ImgPost {
      *   },
      */
 
-    public ImgPost (int _id, String uid, String username, boolean has_img, String img_uri, String timestamp, String tags, String post_text, int num_likes, int num_comments ) {
+    public ImgPost (String _id, String uid, String username, boolean has_img, String img_uri, String timestamp, String tags, String post_text, int num_likes, int num_comments ) {
         this._id = _id;
         this.uid = uid;
         this.username = username;
@@ -52,11 +52,11 @@ public class ImgPost {
         this.tags = tags;
     }
 
-    public int get_id() {
+    public String get_id() {
         return _id;
     }
 
-    public void set_id(int _id) {
+    public void set_id(String _id) {
         this._id = _id;
     }
 
