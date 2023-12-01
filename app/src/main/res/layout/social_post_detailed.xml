@@ -17,23 +17,27 @@
         tools:layout_editor_absoluteX="0dp">
 
         <TextView
+            android:id="@+id/post_detail_username"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:text="USERNAME" />
 
         <TextView
+            android:id="@+id/post_detail_post_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="5"
             android:text="POST DETAILS" />
 
         <ImageView
+            android:id="@+id/post_detail_post_image"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="15"/>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/comment_rv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="15"/>
@@ -56,6 +60,7 @@
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <EditText
+            android:id="@+id/comment_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Add a comment"
