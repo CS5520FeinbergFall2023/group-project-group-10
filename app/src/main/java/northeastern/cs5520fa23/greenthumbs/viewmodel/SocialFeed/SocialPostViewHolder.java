@@ -35,6 +35,8 @@ public class SocialPostViewHolder extends RecyclerView.ViewHolder {
             public void onClick(View v) {
                 Intent i = new Intent(itemView.getContext(), SocialPostDetailsActivity.class);
                 i.putExtra("_id", get_id());
+                i.putExtra("post_text", postText.getText().toString());
+                i.putExtra("post_username", username.getText().toString());
                 itemView.getContext().startActivity(i);
             }
         });
