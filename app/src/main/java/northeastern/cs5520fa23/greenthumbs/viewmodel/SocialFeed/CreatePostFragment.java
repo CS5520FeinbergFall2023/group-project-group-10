@@ -19,9 +19,7 @@ import android.widget.Toast;
 import northeastern.cs5520fa23.greenthumbs.R;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link CreatePostFragment#newInstance} factory method to
- * create an instance of this fragment.
+THIS IS AN OLD CLASS AND CAN PROBABLY BE DELETED
  */
 public class CreatePostFragment extends Fragment {
 

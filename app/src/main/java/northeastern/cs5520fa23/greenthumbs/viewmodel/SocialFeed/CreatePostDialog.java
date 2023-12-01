@@ -34,7 +34,10 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import northeastern.cs5520fa23.greenthumbs.R;
@@ -93,7 +96,9 @@ public class CreatePostDialog extends DialogFragment {
 
 
                 String postId = dbRef.child("posts").push().getKey();
+                String currentTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).format(new Date());
                 post.put("num_likes", 0);
+                post.put("timestamp", currentTimestamp);
                 post.put("num_comments", 0);
                 post.put("tags", postTags.getText().toString());
                 post.put("post_text", postText.getText().toString());

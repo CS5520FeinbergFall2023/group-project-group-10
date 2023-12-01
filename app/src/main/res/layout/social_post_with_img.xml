@@ -62,12 +62,12 @@
                 android:layout_marginStart="16dp"
                 android:text="TextView"
                 android:textColor="@android:color/white"
-                app:layout_constraintBottom_toTopOf="@+id/msg_sticker"
+                app:layout_constraintBottom_toTopOf="@+id/social_post_image"
                 app:layout_constraintStart_toEndOf="@id/post_prof_pic"
                 app:layout_constraintTop_toBottomOf="@+id/post_username" />
 
             <ImageView
-                android:id="@+id/msg_sticker"
+                android:id="@+id/social_post_image"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_alignParentEnd="true"

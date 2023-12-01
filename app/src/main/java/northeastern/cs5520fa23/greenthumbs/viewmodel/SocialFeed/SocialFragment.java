@@ -1,5 +1,7 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed;
 
+import static android.content.ContentValues.TAG;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,11 +11,17 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,11 +103,23 @@ public class SocialFragment extends Fragment {
             }
         });
         addPosts();
-        socialAdapter.notifyItemInserted(0);
+        //socialAdapter.notifyItemInserted(0);
     }
 
     private void addPosts() {
-        this.postList.add(new ImgPost(1, "gardener_1", "01:10", "Check out this plant!", 0, 0));
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("posts");
+        dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                for (DataSnapshot dataSnapshot : task.getResult().getChildren()) {
+                    ImgPost currPost = dataSnapshot.getValue(ImgPost.class);
+                    Log.d(TAG, currPost.toString());
+                    postList.add(currPost);
+                    socialAdapter.notifyDataSetChanged();
+                }
+
+            }
+        });
     }
 
     private void openCreatePostDialog() {

@@ -22,6 +22,7 @@ public class SocialPostViewHolder extends RecyclerView.ViewHolder {
     public SocialPostViewHolder(@NonNull View itemView) {
         super(itemView);
         this.username = itemView.findViewById(R.id.post_username);
+        this.postImg = itemView.findViewById(R.id.social_post_image);
         this.postText = itemView.findViewById(R.id.post_text);
         this.likes = itemView.findViewById(R.id.num_likes);
         this.replies = itemView.findViewById(R.id.num_comments);
@@ -35,4 +36,31 @@ public class SocialPostViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
+    public TextView getUsername() {
+        return username;
+    }
+
+    public TextView getPostText() {
+        return postText;
+    }
+
+    public ImageView getPostImg() {
+        return postImg;
+    }
+
+    public ImageView getCommentIcon() {
+        return commentIcon;
+    }
+
+    public TextView getLikes() {
+        return likes;
+    }
+
+    public TextView getReplies() {
+        return replies;
+    }
+
+    public TextView getTime() {
+        return time;
+    }
 }
