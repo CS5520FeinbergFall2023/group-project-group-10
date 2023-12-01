@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -61,14 +64,14 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
         currUser = FirebaseAuth.getInstance().getCurrentUser();
         newComment = new HashMap<>();
         db = FirebaseDatabase.getInstance();
-        String postPath = "posts/" + this._id;
-        dbRef = db.getReference(postPath);
+        //String postPath = "posts/" + this._id;
+        dbRef = db.getReference("posts").child(this._id);
         commentRef = dbRef.child("comments");
         commentList = new ArrayList<>();
         commentRV = findViewById(R.id.comment_rv);
         commentRV.setHasFixedSize(true);
         commentRV.setLayoutManager(new LinearLayoutManager(this));
-        commentAdapter = new CommentAdapter();
+        commentAdapter = new CommentAdapter(commentList, this);
         commentRV.setAdapter(commentAdapter);
         commentText = findViewById(R.id.comment_edit_text);
         addCommentButton = findViewById(R.id.add_comment_button);
@@ -104,13 +107,29 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
         newComment.put("comment_text", commentContent);
         newComment.put("comment_likes", 0);
 
-        dbRef.child("users").child(currUser.getUid()).child("username").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        FirebaseDatabase.getInstance().getReference().child("users").child(currUser.getUid()).child("username").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (!task.isSuccessful()) {
                     Toast.makeText(SocialPostDetailsActivity.this, "Unable to fetch data", Toast.LENGTH_LONG);
                 } else {
                     newComment.put("username", String.valueOf(task.getResult().getValue()));
+                    DatabaseReference cRef = FirebaseDatabase.getInstance().getReference("posts").child(_id).child("comments");
+                    cRef.child(commentId).setValue(newComment).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Toast.makeText(SocialPostDetailsActivity.this, "Comment Added", Toast.LENGTH_SHORT);
+                            commentText.setText("");
+                            hideKeyboard();
+                            getComments();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(SocialPostDetailsActivity.this, "Comment Not Added", Toast.LENGTH_SHORT);
+                        }
+                    });
+                    /*
                     commentRef.child(commentId).setValue(newComment).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
@@ -118,10 +137,20 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
                             getComments();
                         }
                     });
+
+                     */
                 }
             }
         });
 
+    }
+
+    private void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     private void getComments() {

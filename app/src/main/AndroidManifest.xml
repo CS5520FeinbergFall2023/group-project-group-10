@@ -31,7 +31,7 @@
             android:name=".LogInActivity"
             android:exported="false" />
         <activity
-            android:name=".SocialFeed.SocialPostDetails.SocialPostDetailsActivity"
+            android:name=".viewmodel.SocialFeed.SocialPostDetails.SocialPostDetailsActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

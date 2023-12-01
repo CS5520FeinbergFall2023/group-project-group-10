@@ -51,22 +51,23 @@
 
         <ImageButton
             android:id="@+id/add_comment_button"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:src="@drawable/baseline_send_24"
+            android:layout_width="50dp"
+            android:layout_height="42dp"
             android:background="#356859"
+            android:src="@drawable/baseline_send_24"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintHorizontal_weight="4"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/comment_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="356dp"
+            android:layout_height="46dp"
             android:hint="Add a comment"
-            tools:layout_editor_absoluteX="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintHorizontal_weight="10"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
