@@ -42,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) {
-            //Intent i = new Intent(MainActivity.this, LogInActivity.class);
-            //startActivity(i);
+            Intent i = new Intent(MainActivity.this, LogInActivity.class);
+            startActivity(i);
         }
     }
 
@@ -59,11 +59,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             startWeatherService();
         }
-
         ImageButton btnShowSetLocation = findViewById(R.id.btnShowSetLocation);
         btnShowSetLocation.setOnClickListener(view -> showSetLocationFragment());
-        // ######
-
+        // #####
         // ### Nav bar and toolbar ###
         navBar = findViewById(R.id.bottom_nav_menu);
         toolbar = findViewById(R.id.toolbar);
