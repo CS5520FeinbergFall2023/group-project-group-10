@@ -2,8 +2,10 @@ package northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed;
 
 public class ImgPost {
     private int _id;
+    private int uid;
     private String username;
     private String time;
+    private String tags;
     private String postText;
     private int likes;
     private int replies;

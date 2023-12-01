@@ -16,7 +16,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import northeastern.cs5520fa23.greenthumbs.R;
+
+/*
+Notes:
+
+ */
 
 public class CreatePostDialog extends DialogFragment {
     Button postButton;
@@ -24,11 +35,15 @@ public class CreatePostDialog extends DialogFragment {
     private Button addImgButton;
     private ImageView postImage;
     private ActivityResultLauncher<PickVisualMediaRequest> imgSelect;
+    private FirebaseDatabase db;
+   //private FirebaseFirestore  fsDB;
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View view = getLayoutInflater().inflate(R.layout.fragment_create_post, null);
+        db = FirebaseDatabase.getInstance();
+        //fsDB = FirebaseFirestore.getInstance();
         postButton = view.findViewById(R.id.create_post_button);
         cancelButton = view.findViewById(R.id.cancel_create_post_button);
         addImgButton = view.findViewById(R.id.create_post_add_image_button);
@@ -51,7 +66,8 @@ public class CreatePostDialog extends DialogFragment {
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //
+                Map<String, Object> post = new HashMap<>();
+                //post.put("")
             }
         });
 

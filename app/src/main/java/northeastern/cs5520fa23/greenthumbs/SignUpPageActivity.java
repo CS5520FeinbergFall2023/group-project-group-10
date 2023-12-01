@@ -15,6 +15,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -76,6 +78,10 @@ public class SignUpPageActivity extends AppCompatActivity {
                             user.put("firstName", firstName);
                             user.put("lastName", lastName);
                             user.put("email", email);
+
+                            FirebaseDatabase fdb = FirebaseDatabase.getInstance();
+                            DatabaseReference dbref = fdb.getReference("users");
+                            dbref.child(fbUser.getUid()).setValue(user);
 
                             db.collection("users").document(fbUser.getUid()).set(user).addOnSuccessListener(aVoid ->
                             {Toast.makeText(SignUpPageActivity.this, "User Created!", Toast.LENGTH_SHORT).show();
