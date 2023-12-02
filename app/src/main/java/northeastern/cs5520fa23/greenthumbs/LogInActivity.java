@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class LogInActivity extends AppCompatActivity {
-
     private Button goToSignUpButton;
     private Button goToLogInButton;
 
