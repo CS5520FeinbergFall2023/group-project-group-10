@@ -79,11 +79,9 @@ public class SignUpPageActivity extends AppCompatActivity {
                             user.put("lastName", lastName);
                             user.put("email", email);
                             user.put("user_id", fbUser.getUid());
-
                             FirebaseDatabase fdb = FirebaseDatabase.getInstance();
                             DatabaseReference dbref = fdb.getReference("users");
                             dbref.child(fbUser.getUid()).setValue(user);
-
                             db.collection("users").document(fbUser.getUid()).set(user).addOnSuccessListener(aVoid ->
                             {Toast.makeText(SignUpPageActivity.this, "User Created!", Toast.LENGTH_SHORT).show();
                             moveToLogin();
