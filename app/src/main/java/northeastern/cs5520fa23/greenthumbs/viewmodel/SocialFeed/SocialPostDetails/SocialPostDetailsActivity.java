@@ -162,7 +162,7 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
     }
 
     private void getComments() {
-        commentRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        commentRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
