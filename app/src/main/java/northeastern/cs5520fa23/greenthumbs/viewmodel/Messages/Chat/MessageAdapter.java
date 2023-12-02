@@ -15,21 +15,27 @@ import northeastern.cs5520fa23.greenthumbs.R;
 public class MessageAdapter extends RecyclerView.Adapter<MessageViewHolder> {
     private List<ChatMessage> messages;
     private Context context;
-    private final int SENT_MESSAGE_TYPE = 0;
-    private final int RECEIVED_MESSAGE_TYPE = 1;
 
     public MessageAdapter(List<ChatMessage> messages, Context context) {
         this.messages = messages;
         this.context = context;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (messages.get(position).getViewType() == ChatMessage.Sent_View) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
     @NonNull
     @Override
     public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == SENT_MESSAGE_TYPE) {
-            return new MessageViewHolder(LayoutInflater.from(context).inflate(R.layout.sent_message, null));
+        if (viewType == 1) {
+            return new SentMessageViewHolder(LayoutInflater.from(context).inflate(R.layout.sent_message, null));
         } else {
-            return new MessageViewHolder(LayoutInflater.from(context).inflate(R.layout.received_message, null));
+            return new SentMessageViewHolder(LayoutInflater.from(context).inflate(R.layout.received_message, null));
         }
     }
 

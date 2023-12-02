@@ -1,43 +1,48 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat;
 
 public class ChatMessage {
-    private int senderId;
-    private int receiverId;
-    private int userId;
+    private String senderId;
+    private String receiverId;
+    private String userId;
     private String timestamp;
     private String messageContent;
-    private String chatID;
+    private String chatId;
+    public static final int Received_View = 0;
+    public static final int Sent_View = 1;
+    private int viewType;
 
-    public ChatMessage(int senderId, int receiverId, int userId, String timestamp, String messageContent, String chatID) {
+    public ChatMessage() {}
+
+    public ChatMessage(String senderId, String receiverId, String userId, String timestamp, String messageContent, String chatId) {
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.userId = userId;
         this.timestamp = timestamp;
         this.messageContent = messageContent;
-        this.chatID = chatID;
+        this.chatId = chatId;
     }
 
-    public int getSenderId() {
+    public String getSenderId() {
         return senderId;
     }
 
-    public void setSenderId(int senderId) {
+    public void setSenderId(String senderId) {
         this.senderId = senderId;
     }
 
-    public int getReceiverId() {
+    public String getReceiverId() {
         return receiverId;
     }
 
-    public void setReceiverId(int receiverId) {
+    public void setReceiverId(String receiverId) {
         this.receiverId = receiverId;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -57,11 +62,19 @@ public class ChatMessage {
         this.messageContent = messageContent;
     }
 
-    public String getChatID() {
-        return chatID;
+    public String getChatId() {
+        return chatId;
     }
 
-    public void setChatID(String chatID) {
-        this.chatID = chatID;
+    public void setChatId(String chatId) {
+        this.chatId = chatId;
+    }
+
+    public int getViewType() {
+        return viewType;
+    }
+
+    public void setViewType(int viewType) {
+        this.viewType = viewType;
     }
 }

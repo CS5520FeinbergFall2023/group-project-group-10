@@ -4,14 +4,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import northeastern.cs5520fa23.greenthumbs.R;
 
-abstract class MessageViewHolder extends RecyclerView.ViewHolder {
+public class SentMessageViewHolder extends MessageViewHolder {
     private TextView timestamp;
     private TextView messageContent;
-    public MessageViewHolder(@NonNull View itemView) {
+    public SentMessageViewHolder(@NonNull View itemView) {
         super(itemView);
         timestamp = itemView.findViewById(R.id.msg_timestamp);
         messageContent = itemView.findViewById(R.id.msg_content);
@@ -32,4 +31,5 @@ abstract class MessageViewHolder extends RecyclerView.ViewHolder {
     public void setMessageContent(TextView messageContent) {
         this.messageContent = messageContent;
     }
+
 }

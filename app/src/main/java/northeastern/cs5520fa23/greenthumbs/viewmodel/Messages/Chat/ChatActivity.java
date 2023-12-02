@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -27,9 +28,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import northeastern.cs5520fa23.greenthumbs.R;
@@ -48,7 +52,7 @@ public class ChatActivity extends AppCompatActivity {
     private String otherUserID;
     private String currUsername;
     private String otherUsername;
-    private String chatName;
+    private String chatID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +89,37 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void getMessages() {
-        db.getReference("chats");
+        DatabaseReference msgRef = db.getReference("chats").child(chatID).child("messages");
+        msgRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    msgList.clear();
+                    for (DataSnapshot msgSnapshot : snapshot.getChildren()) {
+                        ChatMessage msg = msgSnapshot.getValue(ChatMessage.class);
+                        if (msg.getSenderId().equals(currUser.getUid())) {
+                            msg.setViewType(1);
+                        } else {
+                            msg.setViewType(0);
+                        }
+                        msgList.add(msg);
+                    }
+                    msgAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w("MessagesError", "Failed to get messages.", error.toException());
+            }
+        });
+    }
+    private void setChatID () {
+        if (compareUsernames(currUsername, otherUsername) < 0) {
+            this.chatID = currUsername + "_" + otherUsername;
+        } else {
+            this.chatID = otherUsername + "_" + currUsername;
+        }
     }
     private void sendMsg() {
         /*
@@ -99,10 +133,40 @@ public class ChatActivity extends AppCompatActivity {
         String messageContent = msgInput.getText().toString();
         Map<String, Object> msgMap = new HashMap<>();
         msgMap.put("messageContent", messageContent);
+        msgMap.put("chatId", chatID);
+        msgMap.put("senderId", currUser.getUid());
+        msgMap.put("userId", currUser.getUid());
+        msgMap.put("receiverId", otherUserID);
+        String currentTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).format(new Date());
+        msgMap.put("timestamp", currentTimestamp);
 
-        getMessages();
-        msgInput.setText("");
-        hideKeyboard();
+        uploadMessage(msgMap);
+    }
+
+    private void uploadMessage(Map<String, Object> msgMap) {
+        DatabaseReference msgRef = db.getReference("chats").child(chatID).child("messages");
+        msgRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Toast.makeText(ChatActivity.this, "Unable to fetch messages", Toast.LENGTH_LONG);
+                } else {
+                    String msgId = msgRef.push().getKey();
+                    msgRef.child(msgId).setValue(msgMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(ChatActivity.this, "Unable to upload chat", Toast.LENGTH_LONG);
+                            } else {
+                                msgInput.setText("");
+                                hideKeyboard();
+                                getMessages();
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void hideKeyboard() {
@@ -137,6 +201,8 @@ public class ChatActivity extends AppCompatActivity {
 
                                 if (other.getUsername().equals(otherUsername)) {
                                     otherUserID = other.getUser_id();
+                                    setChatID();
+                                    getMessages();
                                     //Toast.makeText(ChatActivity.this, otherUserID, Toast.LENGTH_SHORT).show();
                                 }
                             }
