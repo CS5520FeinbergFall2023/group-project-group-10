@@ -14,6 +14,7 @@ import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.SocialPostDetail
 public class SocialPostViewHolder extends RecyclerView.ViewHolder {
     private String _id;
     private int num_likes;
+    private String storageUri;
     public TextView username;
     public TextView postText;
     public ImageView postImg;
@@ -22,6 +23,10 @@ public class SocialPostViewHolder extends RecyclerView.ViewHolder {
     public TextView likes;
     public TextView replies;
     public TextView time;
+    private boolean hasImg;
+
+
+
     public SocialPostViewHolder(@NonNull View itemView) {
         super(itemView);
         this.username = itemView.findViewById(R.id.post_username);
@@ -30,6 +35,8 @@ public class SocialPostViewHolder extends RecyclerView.ViewHolder {
         this.likes = itemView.findViewById(R.id.num_likes);
         this.replies = itemView.findViewById(R.id.num_comments);
         this.commentIcon = itemView.findViewById(R.id.comment_icon);
+        this.storageUri = null;
+        this.hasImg = false;
         this.commentIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -37,6 +44,8 @@ public class SocialPostViewHolder extends RecyclerView.ViewHolder {
                 i.putExtra("_id", get_id());
                 i.putExtra("post_text", postText.getText().toString());
                 i.putExtra("post_username", username.getText().toString());
+                i.putExtra("img_source", storageUri);
+                i.putExtra("has_img", hasImg);
                 itemView.getContext().startActivity(i);
             }
         });
@@ -93,4 +102,20 @@ public class SocialPostViewHolder extends RecyclerView.ViewHolder {
     public void setLikesIcon(ImageView likesIcon) {
         this.likesIcon = likesIcon;
     }
+    public String getStorageUri() {
+        return storageUri;
+    }
+
+    public void setStorageUri(String storageUri) {
+        this.storageUri = storageUri;
+    }
+
+    public boolean isHasImg() {
+        return hasImg;
+    }
+
+    public void setHasImg(boolean hasImg) {
+        this.hasImg = hasImg;
+    }
+
 }

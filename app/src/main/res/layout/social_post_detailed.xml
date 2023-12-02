@@ -27,14 +27,15 @@
             android:id="@+id/post_detail_post_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="5"
+
             android:text="POST DETAILS" />
 
         <ImageView
             android:id="@+id/post_detail_post_image"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="15"/>
+            android:layout_weight="15"
+            />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/comment_rv"

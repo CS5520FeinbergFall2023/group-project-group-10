@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -28,6 +30,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,6 +53,7 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
     private List<Comment> commentList;
     private CommentAdapter commentAdapter;
     private ImageView postImage;
+    private String storageUri;
     private FirebaseDatabase db;
     private DatabaseReference dbRef;
     private DatabaseReference commentRef;
@@ -86,21 +91,34 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
         usernameText = findViewById(R.id.post_detail_username);
         usernameText.setText(getIntent().getStringExtra("post_username"));
         postImage = findViewById(R.id.post_detail_post_image);
-        getComments();
+        storageUri = getIntent().getStringExtra("img_source");
+        boolean hasImg = getIntent().getExtras().getBoolean("has_img");
+        //Toast.makeText(this, "hasimg="+hasImg, Toast.LENGTH_SHORT).show();
+        if (hasImg == true && storageUri != null) {
+                // https://firebase.google.com/docs/storage/android/download-files
+                //Uri imgUri = Uri.parse(storageUri);
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference imgRef = storage.getReferenceFromUrl(storageUri);
+                imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Glide.with(SocialPostDetailsActivity.this).load(uri).into(postImage);
+                        getComments();
+                    }
+                });
+            } else {
+                Toast.makeText(this, "NO IMAGE", Toast.LENGTH_SHORT).show();
+                postImage.setVisibility(View.GONE);
+                getComments();
+            }
+
+
     }
 
     private void addComment() {
         String commentContent = commentText.getText().toString();
         String commentId = commentRef.push().getKey();
         String currentTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).format(new Date());
-        /*
-        this._id = _id;
-        this.post_id = post_id;
-        this.user_id = user_id;
-        this.username = username;
-        this.comment_text = comment_text;
-        this.comment_likes = comment_likes;
-         */
         newComment.put("_id", commentId);
         newComment.put("post_id", _id);
         newComment.put("user_id", currUser.getUid().toString());
@@ -129,16 +147,6 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
                             Toast.makeText(SocialPostDetailsActivity.this, "Comment Not Added", Toast.LENGTH_SHORT);
                         }
                     });
-                    /*
-                    commentRef.child(commentId).setValue(newComment).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-                            Toast.makeText(SocialPostDetailsActivity.this, "Comment Added", Toast.LENGTH_SHORT);
-                            getComments();
-                        }
-                    });
-
-                     */
                 }
             }
         });

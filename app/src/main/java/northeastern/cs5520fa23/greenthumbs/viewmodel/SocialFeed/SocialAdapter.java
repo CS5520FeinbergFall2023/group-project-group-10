@@ -60,6 +60,8 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
             if (post.isHas_img()) {
                 // https://firebase.google.com/docs/storage/android/download-files
                 postUri = post.getImg_uri();
+                holder.setStorageUri(postUri);
+                holder.setHasImg(true);
                 Log.d(TAG, "onBindViewHolder: " + postUri);
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference imgRef = storage.getReferenceFromUrl(postUri);
@@ -72,6 +74,8 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
             } else {
                 postUri = null;
                 holder.getPostImg().setVisibility(View.GONE);
+                holder.setStorageUri(null);
+                holder.setHasImg(false);
             }
 
 
