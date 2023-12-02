@@ -78,6 +78,7 @@ public class SignUpPageActivity extends AppCompatActivity {
                             user.put("firstName", firstName);
                             user.put("lastName", lastName);
                             user.put("email", email);
+                            user.put("user_id", fbUser.getUid());
 
                             FirebaseDatabase fdb = FirebaseDatabase.getInstance();
                             DatabaseReference dbref = fdb.getReference("users");

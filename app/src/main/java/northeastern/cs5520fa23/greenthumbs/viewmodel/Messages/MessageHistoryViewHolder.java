@@ -45,4 +45,5 @@ public class MessageHistoryViewHolder extends RecyclerView.ViewHolder {
         this.profPic = profPic;
     }
 
+
 }

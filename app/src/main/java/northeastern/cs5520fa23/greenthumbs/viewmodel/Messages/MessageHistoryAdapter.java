@@ -49,7 +49,14 @@ public class MessageHistoryAdapter extends RecyclerView.Adapter<MessageHistoryVi
             if (lastMessage != null) {
                 holder.getLast_message().setText(lastMessage);
             }
-
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(context, ChatActivity.class);
+                    i.putExtra("other_username", username);
+                    context.startActivity(i);
+                }
+            });
         }
     }
 

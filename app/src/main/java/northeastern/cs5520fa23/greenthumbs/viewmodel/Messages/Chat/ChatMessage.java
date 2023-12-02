@@ -1,28 +1,20 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat;
 
 public class ChatMessage {
-    private MessageType msgType;
     private int senderId;
     private int receiverId;
     private int userId;
     private String timestamp;
     private String messageContent;
+    private String chatID;
 
-    public ChatMessage(MessageType msgType, int senderId, int receiverId, int userId, String timestamp, String messageContent) {
-        this.msgType = msgType;
+    public ChatMessage(int senderId, int receiverId, int userId, String timestamp, String messageContent, String chatID) {
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.userId = userId;
         this.timestamp = timestamp;
         this.messageContent = messageContent;
-    }
-
-    public MessageType getMsgType() {
-        return msgType;
-    }
-
-    public void setMsgType(MessageType msgType) {
-        this.msgType = msgType;
+        this.chatID = chatID;
     }
 
     public int getSenderId() {
@@ -63,5 +55,13 @@ public class ChatMessage {
 
     public void setMessageContent(String messageContent) {
         this.messageContent = messageContent;
+    }
+
+    public String getChatID() {
+        return chatID;
+    }
+
+    public void setChatID(String chatID) {
+        this.chatID = chatID;
     }
 }
