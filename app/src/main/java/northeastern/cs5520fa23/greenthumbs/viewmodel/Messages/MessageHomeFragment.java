@@ -8,58 +8,39 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.SocialAdapter;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.SocialPostDetails.Comment;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MessageHomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- *
- */
 public class MessageHomeFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private RecyclerView msgHistoryRV;
     private MessageHistoryAdapter msgHistoryAdapter;
     private List<MessageHistoryItem> chats;
     private FloatingActionButton fab;
 
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MessageHomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MessageHomeFragment newInstance(String param1, String param2) {
-        MessageHomeFragment fragment = new MessageHomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private FirebaseDatabase db;
+    private DatabaseReference allChatRef;
+    private DatabaseReference userChatRef;
+    private FirebaseUser currUser;
+    private String currUsername;
+    private List<String> otherUsers;
 
     public MessageHomeFragment() {
         // Required empty public constructor
@@ -68,11 +49,13 @@ public class MessageHomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
         chats = new ArrayList<>();
+        currUser = FirebaseAuth.getInstance().getCurrentUser();
+        currUsername = currUser.getUid();
+        db = FirebaseDatabase.getInstance();
+        allChatRef = db.getReference().child("chats");
+        userChatRef = db.getReference().child("users").child(currUsername).child("chats");
+        populateOtherUsers();
     }
 
     @Override
@@ -97,7 +80,28 @@ public class MessageHomeFragment extends Fragment {
     }
 
     private void addChats() {
-        this.chats.add(new MessageHistoryItem("garden_star", "Isn't that plant great :O ?!"));
+        //this.chats.add(new MessageHistoryItem("garden_star", "Isn't that plant great :O ?!"));
+        userChatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    chats.clear();
+                    for (DataSnapshot chatSnapshot : snapshot.getChildren()) {
+                        MessageHistoryItem chat = chatSnapshot.getValue(MessageHistoryItem.class);
+                        chats.add(chat);
+                    }
+                    msgHistoryAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w("CommentsError", "Failed to get comments.", error.toException());
+            }
+        });
     }
 
+    private void populateOtherUsers() {
+
+    }
 }

@@ -1,26 +1,37 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.Messages;
 
 public class MessageHistoryItem {
-    private String username;
-    private String lastMessage;
-    public MessageHistoryItem(String username, String lastMessage) {
-        this.username = username;
-        this.lastMessage = lastMessage;
+    private String other_username;
+    private String last_message;
+    private String timestamp;
+    public MessageHistoryItem() {}
+    public MessageHistoryItem(String other_username, String last_message, String timestamp) {
+        this.other_username = other_username;
+        this.last_message = last_message;
+        this.timestamp = timestamp;
     }
 
-    public String getUsername() {
-        return username;
+    public String getOther_username() {
+        return other_username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setOther_username(String other_username) {
+        this.other_username = other_username;
     }
 
-    public String getLastMessage() {
-        return lastMessage;
+    public String getLast_message() {
+        return last_message;
     }
 
-    public void setLastMessage(String lastMessage) {
-        this.lastMessage = lastMessage;
+    public void setLast_message(String last_message) {
+        this.last_message = last_message;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 }

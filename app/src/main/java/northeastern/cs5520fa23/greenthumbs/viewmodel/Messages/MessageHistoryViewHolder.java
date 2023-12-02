@@ -10,31 +10,31 @@ import androidx.recyclerview.widget.RecyclerView;
 import northeastern.cs5520fa23.greenthumbs.R;
 
 public class MessageHistoryViewHolder extends RecyclerView.ViewHolder {
-    private TextView username;
-    private TextView lastMsg;
+    private TextView other_username;
+    private TextView last_message;
     private ImageView profPic;
 
     public MessageHistoryViewHolder(@NonNull View itemView) {
         super(itemView);
-        this.username = itemView.findViewById(R.id.message_history_username);
-        this.lastMsg = itemView.findViewById(R.id.message_history_last_message);
+        this.other_username = itemView.findViewById(R.id.message_history_username);
+        this.last_message = itemView.findViewById(R.id.message_history_last_message);
         this.profPic = itemView.findViewById(R.id.msg_history_profile_pic);
     }
 
-    public TextView getUsername() {
-        return username;
+    public TextView getOther_username() {
+        return other_username;
     }
 
-    public void setUsername(TextView username) {
-        this.username = username;
+    public void setOther_username(TextView other_username) {
+        this.other_username = other_username;
     }
 
-    public TextView getLastMsg() {
-        return lastMsg;
+    public TextView getLast_message() {
+        return last_message;
     }
 
-    public void setLastMsg(TextView lastMsg) {
-        this.lastMsg = lastMsg;
+    public void setLast_message(TextView last_message) {
+        this.last_message = last_message;
     }
 
     public ImageView getProfPic() {

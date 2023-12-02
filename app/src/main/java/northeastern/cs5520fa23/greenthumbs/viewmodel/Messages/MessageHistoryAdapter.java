@@ -41,13 +41,13 @@ public class MessageHistoryAdapter extends RecyclerView.Adapter<MessageHistoryVi
         MessageHistoryItem chat = chats.get(position);
 
         if (chat != null) {
-            String username = chat.getUsername();
-            String lastMessage = chat.getLastMessage();
+            String username = chat.getOther_username();
+            String lastMessage = chat.getLast_message();
             if (username != null) {
-                holder.getUsername().setText(username);
+                holder.getOther_username().setText(username);
             }
             if (lastMessage != null) {
-                holder.getLastMsg().setText(lastMessage);
+                holder.getLast_message().setText(lastMessage);
             }
 
         }
