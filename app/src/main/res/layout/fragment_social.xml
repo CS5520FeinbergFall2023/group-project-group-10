@@ -7,17 +7,35 @@
     android:layout_height="match_parent"
     android:background="#FFFBE6"
     tools:context=".viewmodel.SocialFeed.SocialFragment">
+
+    <ImageView
+        android:id="@+id/social_search_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_person_search_24"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/social_search_view"
+        app:layout_constraintStart_toStartOf="parent"/>
+    <SearchView
+        android:id="@+id/social_search_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/social_search_icon"
+        app:layout_constraintHeight_percent=".08"/>
     <Switch
         android:id="@+id/friends_switch"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent=".08"
         android:text="Toggle Friends Only"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent=".92"
         android:id="@+id/social_swipe_refresh"
         app:layout_constraintTop_toBottomOf="@id/friends_switch"
         app:layout_constraintStart_toStartOf="parent">
@@ -29,6 +47,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/friends_switch" />
+
+
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

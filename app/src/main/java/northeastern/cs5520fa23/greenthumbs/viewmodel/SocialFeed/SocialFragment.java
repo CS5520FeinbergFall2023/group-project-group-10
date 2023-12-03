@@ -1,7 +1,9 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed;
 
 import static android.content.ContentValues.TAG;
+import static android.content.Intent.getIntent;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.SearchView;
 import android.widget.Switch;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -60,6 +63,7 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
     private List<ImgPost> postList;
     private FloatingActionButton fab;
     private Switch friendsSwitch;
+    private SearchView userSearch;
     private SwipeRefreshLayout swipeRefreshLayout;
     FirebaseUser currUser;
 
@@ -104,6 +108,8 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
         currUser = FirebaseAuth.getInstance().getCurrentUser();
         this.friendsSwitch = view.findViewById(R.id.friends_switch);
         this.swipeRefreshLayout = view.findViewById(R.id.social_swipe_refresh);
