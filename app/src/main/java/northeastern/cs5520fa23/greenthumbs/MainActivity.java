@@ -1,26 +1,20 @@
 package northeastern.cs5520fa23.greenthumbs;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import northeastern.cs5520fa23.greenthumbs.model.services.WeatherService;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.MessageHomeFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SetLocationFragment;
-
-import android.view.MenuItem;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.DashboardFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Garden.GardenFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Settings.SettingsFragment;
@@ -28,17 +22,13 @@ import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.SocialFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.CreatePostFragment;
 
 public class MainActivity extends AppCompatActivity {
-
     private FirebaseAuth mAuth;
-    private BottomNavigationView navBar;
-    private Toolbar toolbar;
-    private DashboardFragment dashboardFragment = new DashboardFragment();
-    private SocialFragment socialFragment = new SocialFragment();
-    private GardenFragment gardenFragment = new GardenFragment();
-
-    private SettingsFragment settingsFragment = new SettingsFragment();
-    private CreatePostFragment createPostFragment = new CreatePostFragment();
-    private MessageHomeFragment messageHomeFragment = new MessageHomeFragment();
+    private final DashboardFragment dashboardFragment = new DashboardFragment();
+    private final SocialFragment socialFragment = new SocialFragment();
+    private final GardenFragment gardenFragment = new GardenFragment();
+    private final SettingsFragment settingsFragment = new SettingsFragment();
+    private final CreatePostFragment createPostFragment = new CreatePostFragment();
+    private final MessageHomeFragment messageHomeFragment = new MessageHomeFragment();
 
     @Override
     protected void onStart() {
@@ -47,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         if (user == null) {
             Intent i = new Intent(MainActivity.this, LogInActivity.class);
             startActivity(i);
+            finish();
         }
     }
 
@@ -66,10 +57,9 @@ public class MainActivity extends AppCompatActivity {
         btnShowSetLocation.setOnClickListener(view -> showSetLocationFragment());
         // #####
         // ### Nav bar and toolbar ###
-        navBar = findViewById(R.id.bottom_nav_menu);
-        toolbar = findViewById(R.id.toolbar);
+        BottomNavigationView navBar = findViewById(R.id.bottom_nav_menu);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         // When app is opened go to dashboard
         getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).commit();
 
@@ -90,24 +80,22 @@ public class MainActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment).commit();
                 return true;
             }
-
             return false;
         });
-
     }
 
     private void startWeatherService() {
         SharedPreferences sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE);
         float latitude = sharedPreferences.getFloat("HomeLatitude", 0);
         float longitude = sharedPreferences.getFloat("HomeLongitude", 0);
-
         if (latitude != 0 && longitude != 0) {
             Intent serviceIntent = new Intent(this, WeatherService.class);
             serviceIntent.putExtra(WeatherService.latitude, latitude);
             serviceIntent.putExtra(WeatherService.longitude, longitude);
             startService(serviceIntent);
         } else {
-            // Handle the case where location is not set at this point
+            Toast.makeText(this, "Location Undetermined. Please update your location " +
+                    "in the settings menu.", Toast.LENGTH_LONG).show();
         }
     }
 
