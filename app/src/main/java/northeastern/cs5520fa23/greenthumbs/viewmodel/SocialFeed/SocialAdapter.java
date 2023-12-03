@@ -25,25 +25,41 @@ import northeastern.cs5520fa23.greenthumbs.R;
 public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
     private List<ImgPost> posts;
     private Context context;
+    public interface UsernameCallback {
+        void openProfileCallback(String username, String posterId);
+    }
+    private UsernameCallback usernameCallback;
 
-    public SocialAdapter(List<ImgPost> posts, Context context) {
+    public SocialAdapter(List<ImgPost> posts, Context context, UsernameCallback usernameCallback) {
         this.posts = posts;
         this.context = context;
+        if (usernameCallback != null) {
+            this.usernameCallback = usernameCallback;
+        }
     }
 
     @Override
     public void onBindViewHolder(@NonNull SocialPostViewHolder holder, int position) {
         ImgPost post = posts.get(position);
         if (post != null) {
+
             holder.set_id(post.get_id());
             String username = post.getUsername();
+
             String time = post.getTimestamp();
             Integer num_likes = post.getNum_likes();
             Integer replies = post.getNum_comments();
             String post_text = post.getPost_text();
             String postUri;
+            String posterId = post.getUid();
             if (username != null) {
                 holder.getUsername().setText(username);
+                holder.getUsername().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        usernameCallback.openProfileCallback(username, posterId);
+                    }
+                });
             }
             if (num_likes != null) {
                 holder.getLikes().setText(num_likes.toString());

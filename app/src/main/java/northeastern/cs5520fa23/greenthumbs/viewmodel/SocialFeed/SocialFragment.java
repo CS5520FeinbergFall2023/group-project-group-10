@@ -21,6 +21,7 @@ import android.widget.Switch;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,13 +34,14 @@ import java.util.Collections;
 import java.util.List;
 
 import northeastern.cs5520fa23.greenthumbs.R;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileFragment;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link SocialFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SocialFragment extends Fragment {
+public class SocialFragment extends Fragment implements SocialAdapter.UsernameCallback {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -107,7 +109,7 @@ public class SocialFragment extends Fragment {
         socialRecyclerView = view.findViewById(R.id.social_recycler_view);
         socialRecyclerView.setHasFixedSize(true);
         socialRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        socialAdapter = new SocialAdapter(postList, getContext());
+        socialAdapter = new SocialAdapter(postList, getContext(), this);
         socialRecyclerView.setAdapter(socialAdapter);
         fab = view.findViewById(R.id.post_fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -173,5 +175,14 @@ public class SocialFragment extends Fragment {
     private void openCreatePostDialog() {
         DialogFragment createPostDialog = new CreatePostDialog();
         createPostDialog.show(getActivity().getSupportFragmentManager(), "Post");
+    }
+
+    @Override
+    public void openProfileCallback(String username, String posterId) {
+        //Bundle args = new Bundle();
+        //args.putString("ARG_USERNAME", username);
+        Fragment profileFragment = ProfileFragment.newInstance(username, posterId);
+        //profileFragment.setArguments(args);
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, profileFragment).commit();
     }
 }

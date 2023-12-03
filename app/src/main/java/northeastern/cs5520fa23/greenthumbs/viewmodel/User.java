@@ -6,16 +6,22 @@ public class User {
     private String lastName;
     private String user_id;
     private String username;
+    private String profile_pic;
+    private String header_image;
+    private String user_bio;
 
     public User() {
     }
 
-    public User(String email, String firstName, String lastName, String user_id, String username) {
+    public User(String email, String firstName, String lastName, String user_id, String username, String profile_pic, String header_image, String user_bio) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.user_id = user_id;
         this.username = username;
+        this.header_image = header_image;
+        this.profile_pic = profile_pic;
+        this.user_bio = user_bio;
     }
 
     public String getEmail() {
@@ -57,4 +63,29 @@ public class User {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public String getProfile_pic() {
+        return profile_pic;
+    }
+
+    public void setProfile_pic(String profile_pic) {
+        this.profile_pic = profile_pic;
+    }
+
+    public String getHeader_image() {
+        return header_image;
+    }
+
+    public void setHeader_image(String header_image) {
+        this.header_image = header_image;
+    }
+
+    public String getUser_bio() {
+        return user_bio;
+    }
+
+    public void setUser_bio(String user_bio) {
+        this.user_bio = user_bio;
+    }
+
 }
