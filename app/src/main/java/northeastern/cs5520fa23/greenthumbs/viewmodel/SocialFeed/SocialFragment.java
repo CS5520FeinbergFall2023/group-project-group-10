@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -48,6 +49,7 @@ public class SocialFragment extends Fragment {
     private SocialAdapter socialAdapter;
     private List<ImgPost> postList;
     private FloatingActionButton fab;
+    private Switch friendsSwitch;
 
     public SocialFragment() {
         // Required empty public constructor
@@ -90,6 +92,7 @@ public class SocialFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        this.friendsSwitch = view.findViewById(R.id.friends_switch);
         socialRecyclerView = view.findViewById(R.id.social_recycler_view);
         socialRecyclerView.setHasFixedSize(true);
         socialRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -111,12 +114,15 @@ public class SocialFragment extends Fragment {
         dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
+                postList.clear();
                 for (DataSnapshot dataSnapshot : task.getResult().getChildren()) {
                     ImgPost currPost = dataSnapshot.getValue(ImgPost.class);
                     Log.d(TAG, currPost.toString());
+                    if (friendsSwitch.isChecked()) {
+                    }
                     postList.add(currPost);
-                    socialAdapter.notifyDataSetChanged();
                 }
+                socialAdapter.notifyDataSetChanged();
 
             }
         });
