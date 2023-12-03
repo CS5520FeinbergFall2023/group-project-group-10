@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.DashboardFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Garden.GardenFragment;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Settings.SettingsFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.SocialFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.CreatePostFragment;
 
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private DashboardFragment dashboardFragment = new DashboardFragment();
     private SocialFragment socialFragment = new SocialFragment();
     private GardenFragment gardenFragment = new GardenFragment();
+
+    private SettingsFragment settingsFragment = new SettingsFragment();
     private CreatePostFragment createPostFragment = new CreatePostFragment();
     private MessageHomeFragment messageHomeFragment = new MessageHomeFragment();
 
@@ -81,8 +84,8 @@ public class MainActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, gardenFragment).commit();
                 return true;
             } else if (item.getItemId() == R.id.settings_menu_item) {
-                //getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, createPostFragment).commit();
-                //return true;
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, settingsFragment).commit();
+                return true;
             } else if (item.getItemId() == R.id.messages_menu_item) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment).commit();
                 return true;

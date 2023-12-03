@@ -101,4 +101,9 @@
     <string name="enter">Enter</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
+    <string name="account_settings">Account Settings</string>
+    <string name="notifications">Notifications</string>
+    <string name="log_out">Log Out</string>
+    <string name="set_activity_status">Set Activity Status</string>
+    <string name="privacy">Privacy</string>
 </resources>
