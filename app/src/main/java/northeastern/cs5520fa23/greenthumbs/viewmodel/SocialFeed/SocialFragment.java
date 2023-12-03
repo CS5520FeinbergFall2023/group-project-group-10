@@ -146,7 +146,7 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         Friend user_friend = dataSnapshot.getValue(Friend.class);
-                        if (user_friend.getStatus().equals("approved")) {
+                        if (user_friend.getStatus().equals("friends")) {
                             friend_ids.add(user_friend.getFriend_id());
                         }
                         //socialAdapter.notifyDataSetChanged();

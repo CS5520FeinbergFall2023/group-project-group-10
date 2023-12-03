@@ -76,7 +76,7 @@ public class MessageHomeFragment extends Fragment {
         fab = view.findViewById(R.id.post_fab);
 
         addChats();
-        msgHistoryAdapter.notifyItemInserted(0);
+        //msgHistoryAdapter.notifyItemInserted(0);
     }
 
     private void addChats() {
@@ -89,6 +89,7 @@ public class MessageHomeFragment extends Fragment {
                     for (DataSnapshot chatSnapshot : snapshot.getChildren()) {
                         MessageHistoryItem chat = chatSnapshot.getValue(MessageHistoryItem.class);
                         chats.add(chat);
+                        msgHistoryAdapter.notifyDataSetChanged();
                     }
                     msgHistoryAdapter.notifyDataSetChanged();
                 }

@@ -456,30 +456,45 @@ public class ProfileFragment extends Fragment {
             Map<String, Object> request = new HashMap<>();
             request.put("approved", "false");
             request.put("from_uid", currUser.getUid());
-            db.getReference("users").child(profUid).child("friend_requests").child(currUser.getUid()).updateChildren(request).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+            db.getReference("users").child(currUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
-                public void onComplete(@NonNull Task<Void> task) {
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
                     if (!task.isSuccessful()) {
-                        Toast.makeText(getContext(), "Unable to send friend request", Toast.LENGTH_LONG).show();
+
                     } else {
-                        Map<String, Object> userFriendUpdate = new HashMap<>();
-                        userFriendUpdate.put("status", "requested");
-                        userFriendUpdate.put("friend_id", profUid);
-                        db.getReference("users").child(currUser.getUid()).child("friends").child(profUid).updateChildren(userFriendUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        User fromUser = task.getResult().getValue(User.class);
+                        String fromUsername = fromUser.getUsername();
+                        request.put("from_username", fromUsername);
+                        db.getReference("users").child(profUid).child("friend_requests").child(currUser.getUid()).updateChildren(request).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (!task.isSuccessful()) {
                                     Toast.makeText(getContext(), "Unable to send friend request", Toast.LENGTH_LONG).show();
                                 } else {
-                                    Toast.makeText(getContext(), "Friend Request Sent", Toast.LENGTH_LONG).show();
-                                    addFriendButton.setText("Requested");
-                                    addFriendButton.setEnabled(false);
+                                    Map<String, Object> userFriendUpdate = new HashMap<>();
+                                    userFriendUpdate.put("status", "requested");
+                                    userFriendUpdate.put("friend_id", profUid);
+                                    userFriendUpdate.put("friend_username", username);
+                                    db.getReference("users").child(currUser.getUid()).child("friends").child(profUid).updateChildren(userFriendUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (!task.isSuccessful()) {
+                                                Toast.makeText(getContext(), "Unable to send friend request", Toast.LENGTH_LONG).show();
+                                            } else {
+                                                Toast.makeText(getContext(), "Friend Request Sent", Toast.LENGTH_LONG).show();
+                                                addFriendButton.setText("Requested");
+                                                addFriendButton.setEnabled(false);
+                                            }
+                                        }
+                                    });
                                 }
                             }
                         });
                     }
                 }
             });
+
         }
     }
 }

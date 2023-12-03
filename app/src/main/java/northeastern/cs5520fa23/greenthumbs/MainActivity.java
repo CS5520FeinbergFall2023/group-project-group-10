@@ -91,13 +91,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // ### Home Location ###
-        if (!isHomeLocationSet()) {
-            showSetLocationFragment();
-        } else {
-            startWeatherService();
-        }
-        ImageButton btnShowSetLocation = findViewById(R.id.btnShowSetLocation);
-        btnShowSetLocation.setOnClickListener(view -> showSetLocationFragment());
+        //if (!isHomeLocationSet()) {
+            //showSetLocationFragment();
+        //} else {
+            //startWeatherService();
+        //}
+        //ImageButton btnShowSetLocation = findViewById(R.id.btnShowSetLocation);
+        //btnShowSetLocation.setOnClickListener(view -> showSetLocationFragment());
         // #####
         // ### Nav bar and toolbar ###
         navBar = findViewById(R.id.bottom_nav_menu);
