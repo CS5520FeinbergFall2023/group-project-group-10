@@ -88,4 +88,17 @@ public class User {
         this.user_bio = user_bio;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "email='" + email + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", user_id='" + user_id + '\'' +
+                ", username='" + username + '\'' +
+                ", profile_pic='" + profile_pic + '\'' +
+                ", header_image='" + header_image + '\'' +
+                ", user_bio='" + user_bio + '\'' +
+                '}';
+    }
 }

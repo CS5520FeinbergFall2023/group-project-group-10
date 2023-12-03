@@ -169,7 +169,6 @@ public class ProfileFragment extends Fragment {
                 // something here like a toast or something
             }
         });
-        loadData();
         //uploadProfilePic();
 
         // hide message and add friend button if this is their own profile and enable edit profile
@@ -222,18 +221,22 @@ public class ProfileFragment extends Fragment {
         }
 
         loadPosts();
+        //Toast.makeText(getContext(), "post loaded not data", Toast.LENGTH_LONG).show();
+        loadData();
     }
 
     private void getImg(ActivityResultLauncher<PickVisualMediaRequest> request) {
         request.launch(new PickVisualMediaRequest.Builder().setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE).build());
     }
     private void saveProfileUpdates() {
+        uploadProfilePic();
+        uploadHeaderImage();
         Map<String, Object> updates = new HashMap<>();
         updates.put("header_image", headerUri.toString());
         updates.put("profile_pic", profPicUri.toString());
         updates.put("username", usernameView.getText().toString());
         updates.put("user_bio", userBioView.getText().toString());
-        db.getReference("users").child(currUser.getUid()).setValue(updates).addOnCompleteListener(new OnCompleteListener<Void>() {
+        db.getReference("users").child(currUser.getUid()).updateChildren(updates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (!task.isSuccessful()) {
@@ -245,15 +248,21 @@ public class ProfileFragment extends Fragment {
         });
     }
     private void loadData() {
+        //Toast.makeText(getContext(), "post loaded not data", Toast.LENGTH_LONG).show();
+
         Query profileQuery = db.getReference("users").orderByChild("user_id").equalTo(profUid);
         profileQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     User user = dataSnapshot.getValue(User.class);
+                    Toast.makeText(getActivity(), user.toString(), Toast.LENGTH_LONG).show();
+
                     //Boolean t = user.getHeader_image() == null; true
                     //Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_LONG).show();
                     if (user.getHeader_image() != null) {
+                        Toast.makeText(getActivity(), "HERE", Toast.LENGTH_LONG).show();
+
                         loadHeaderImage(user.getHeader_image());
                     }
                     if (user.getProfile_pic() != null) {
@@ -276,7 +285,7 @@ public class ProfileFragment extends Fragment {
         });
     }
     private void loadPosts() {
-        Query postQuery = db.getReference("posts").orderByChild("uid").equalTo(currUser.getUid());
+        Query postQuery = db.getReference("posts").orderByChild("uid").equalTo(profUid);
         postQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -299,20 +308,26 @@ public class ProfileFragment extends Fragment {
     }
 
     private void loadHeaderImage(String headerImgUri) {
+
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference imgRef = storage.getReferenceFromUrl(headerImgUri);
+        //StorageReference imgRef = storage.getReferenceFromUrl(headerImgUri);
+        StorageReference imgRef = storage.getReference().child(profUid);
         imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
+
                 headerUri = uri;
-                Glide.with(getContext()).load(uri).into(headerImage);
+                Glide.with(getContext()).load(uri).skipMemoryCache(true).into(headerImage);
+                headerImage.setImageURI(uri);
             }
         });
     }
 
     private void loadProfPic(String profPictureUri) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference imgRef = storage.getReferenceFromUrl(profPictureUri);
+        //StorageReference imgRef = storage.getReferenceFromUrl(profPictureUri);
+        StorageReference imgRef = storage.getReference().child(profUid);
+
         imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -329,7 +344,6 @@ public class ProfileFragment extends Fragment {
         profPicStorageRef.delete();
         //Boolean t = profPicStorageRef == null;
         //Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_LONG).show();
-
         Bitmap bitmap = ((BitmapDrawable) profilePicture.getDrawable()).getBitmap();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
@@ -343,7 +357,8 @@ public class ProfileFragment extends Fragment {
                 taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        db.getReference("users").child(currUser.getUid()).child("profile_pic").setValue(uri.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        String link = uri.toString();
+                        db.getReference("users").child(currUser.getUid()).child("profile_pic").setValue(link).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
                                 saveProfileUpdates();
@@ -379,7 +394,8 @@ public class ProfileFragment extends Fragment {
                 taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        db.getReference("users").child(currUser.getUid()).child("header_image").setValue(uri.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        String link = uri.toString();
+                        db.getReference("users").child(currUser.getUid()).child("header_image").setValue(link).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
                                 saveProfileUpdates();

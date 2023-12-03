@@ -12,7 +12,9 @@
         android:layout_height="0dp"
         android:background="@color/black"
         app:layout_constraintHeight_percent=".2"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"/>
     <ImageView
         android:id="@+id/profile_prof_pic"
         android:background="@color/white"
@@ -20,7 +22,9 @@
         android:layout_height="60dp"
         app:layout_constraintBottom_toBottomOf="@id/profile_header_image"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"/>
 
     <Button
         android:id="@+id/profile_edit_button"
