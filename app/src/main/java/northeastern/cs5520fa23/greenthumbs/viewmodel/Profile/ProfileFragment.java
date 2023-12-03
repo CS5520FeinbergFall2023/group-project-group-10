@@ -89,6 +89,10 @@ public class ProfileFragment extends Fragment {
     private ActivityResultLauncher<PickVisualMediaRequest> profPicSelect;
     private Uri profPicUri;
     private Uri headerUri;
+    private Map<String, String> friends;
+    private boolean isFriend;
+    private boolean isRequested;
+    Friend userFriend;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -136,6 +140,8 @@ public class ProfileFragment extends Fragment {
         this.headerImage = view.findViewById(R.id.profile_header_image);
         this.profilePicture = view.findViewById(R.id.profile_prof_pic);
         this.isEditing = false;
+        this.friends = new HashMap<>();
+        getFriends();
         this.usernameView.setText(this.username);
         this.usernameView.setEnabled(false);
         this.userBioView = view.findViewById(R.id.profile_user_bio);
@@ -144,6 +150,12 @@ public class ProfileFragment extends Fragment {
         this.userBioView.setTextColor(getResources().getColor(R.color.black));
         this.sendMsgButton = view.findViewById(R.id.profile_msg_button);
         this.addFriendButton = view.findViewById(R.id.profile_friend_button);
+        this.addFriendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleFriendClick();
+            }
+        });
         this.editProfileButton = view.findViewById(R.id.profile_edit_button);
         socialRecyclerView = view.findViewById(R.id.profile_posts_rv);
         socialRecyclerView.setHasFixedSize(true);
@@ -408,5 +420,66 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+    }
+
+    private void getFriends() {
+        Query friendQuery = db.getReference("users").child(currUser.getUid()).child("friends").orderByKey().equalTo(profUid);
+        friendQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Friend friend = dataSnapshot.getValue(Friend.class);
+                    userFriend = friend;
+                    if (friend.getStatus() != null) {
+                        //Toast.makeText(getActivity(), "HERE", Toast.LENGTH_LONG).show();
+                        if (friend.getStatus().equals("requested")) {
+                            addFriendButton.setText("Requested");
+                            addFriendButton.setEnabled(false);
+                        } else {
+                            addFriendButton.setText("Unfriend");
+                            addFriendButton.setEnabled(true);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void handleFriendClick() {
+        if (!isRequested) {
+            //String otherId = userFriend.getFriend_id();
+            Map<String, Object> request = new HashMap<>();
+            request.put("approved", "false");
+            request.put("from_uid", currUser.getUid());
+            db.getReference("users").child(profUid).child("friend_requests").updateChildren(request).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (!task.isSuccessful()) {
+                        Toast.makeText(getContext(), "Unable to send friend request", Toast.LENGTH_LONG).show();
+                    } else {
+                        Map<String, Object> userFriendUpdate = new HashMap<>();
+                        userFriendUpdate.put("status", "requested");
+                        userFriendUpdate.put("friend_id", profUid);
+                        db.getReference("users").child(currUser.getUid()).child("friends").updateChildren(userFriendUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (!task.isSuccessful()) {
+                                    Toast.makeText(getContext(), "Unable to send friend request", Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(getContext(), "Friend Request Sent", Toast.LENGTH_LONG).show();
+                                    addFriendButton.setText("Requested");
+                                    addFriendButton.setEnabled(false);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
     }
 }
