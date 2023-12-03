@@ -15,8 +15,8 @@ import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat.ChatActivity;
 
 public class MessageHistoryAdapter extends RecyclerView.Adapter<MessageHistoryViewHolder> {
-    List<MessageHistoryItem> chats;
-    Context context;
+    private List<MessageHistoryItem> chats;
+    private Context context;
     public MessageHistoryAdapter(List<MessageHistoryItem> chats, Context context) {
         this.chats = chats;
         this.context = context;
