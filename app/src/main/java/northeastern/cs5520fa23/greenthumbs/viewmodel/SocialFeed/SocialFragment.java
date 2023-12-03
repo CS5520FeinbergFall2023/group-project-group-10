@@ -16,12 +16,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 
 import northeastern.cs5520fa23.greenthumbs.R;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.Friend;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileFragment;
 
 /**
@@ -58,6 +61,7 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
     private FloatingActionButton fab;
     private Switch friendsSwitch;
     private SwipeRefreshLayout swipeRefreshLayout;
+    FirebaseUser currUser;
 
     public SocialFragment() {
         // Required empty public constructor
@@ -100,6 +104,7 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        currUser = FirebaseAuth.getInstance().getCurrentUser();
         this.friendsSwitch = view.findViewById(R.id.friends_switch);
         this.swipeRefreshLayout = view.findViewById(R.id.social_swipe_refresh);
         this.swipeRefreshLayout.setOnRefreshListener(() -> {
@@ -119,6 +124,12 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
             }
         });
         addPosts();
+        friendsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                addPosts();
+            }
+        });
         //socialAdapter.notifyItemInserted(0);
     }
 
@@ -126,30 +137,74 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
         postList.clear();
         socialAdapter.notifyDataSetChanged();
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("posts");
-        Query query = dbRef.orderByChild("timestamp").limitToLast(100);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    ImgPost currPost = dataSnapshot.getValue(ImgPost.class);
-                    Log.d(TAG, currPost.toString());
-                    if (friendsSwitch.isChecked()) {
+        if (friendsSwitch.isChecked()) {
+            List<String> friend_ids = new ArrayList<>();
+            DatabaseReference friendRef = FirebaseDatabase.getInstance().getReference("users").child(currUser.getUid()).child("friends");
+            Query query = friendRef.orderByChild("friend_id").limitToLast(100);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        Friend user_friend = dataSnapshot.getValue(Friend.class);
+                        if (user_friend.getStatus().equals("approved")) {
+                            friend_ids.add(user_friend.getFriend_id());
+                        }
+                        //socialAdapter.notifyDataSetChanged();
                     }
-                    postList.add(currPost);
-                    socialAdapter.notifyDataSetChanged();
+                    Query query = dbRef.orderByChild("timestamp").limitToLast(100);
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                ImgPost currPost = dataSnapshot.getValue(ImgPost.class);
+                                if (friend_ids.contains(currPost.getUid())) {
+                                    postList.add(currPost);
+                                    socialAdapter.notifyDataSetChanged();
+                                }
+                            }
 
+                            Collections.reverse(postList);
+                            socialAdapter.notifyDataSetChanged();
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                 }
 
-                Collections.reverse(postList);
-                socialAdapter.notifyDataSetChanged();
-                swipeRefreshLayout.setRefreshing(false);
-            }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
+        } else {
+            Query query = dbRef.orderByChild("timestamp").limitToLast(100);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        ImgPost currPost = dataSnapshot.getValue(ImgPost.class);
+                        postList.add(currPost);
+                        socialAdapter.notifyDataSetChanged();
 
-            }
-        });
+                    }
+
+                    Collections.reverse(postList);
+                    socialAdapter.notifyDataSetChanged();
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+
+
 
         /*
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("posts");

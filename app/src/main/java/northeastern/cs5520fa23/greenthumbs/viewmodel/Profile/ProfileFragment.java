@@ -456,7 +456,7 @@ public class ProfileFragment extends Fragment {
             Map<String, Object> request = new HashMap<>();
             request.put("approved", "false");
             request.put("from_uid", currUser.getUid());
-            db.getReference("users").child(profUid).child("friend_requests").updateChildren(request).addOnCompleteListener(new OnCompleteListener<Void>() {
+            db.getReference("users").child(profUid).child("friend_requests").child(currUser.getUid()).updateChildren(request).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (!task.isSuccessful()) {
@@ -465,7 +465,7 @@ public class ProfileFragment extends Fragment {
                         Map<String, Object> userFriendUpdate = new HashMap<>();
                         userFriendUpdate.put("status", "requested");
                         userFriendUpdate.put("friend_id", profUid);
-                        db.getReference("users").child(currUser.getUid()).child("friends").updateChildren(userFriendUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        db.getReference("users").child(currUser.getUid()).child("friends").child(profUid).updateChildren(userFriendUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (!task.isSuccessful()) {
