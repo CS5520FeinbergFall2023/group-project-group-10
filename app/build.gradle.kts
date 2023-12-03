@@ -42,6 +42,7 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-database")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
+    implementation("com.squareup.picasso:picasso:2.8")
     implementation("com.google.firebase:firebase-storage")
     implementation("com.firebaseui:firebase-ui-storage:7.2.0")
     implementation("com.google.code.gson:gson:2.8.9")
