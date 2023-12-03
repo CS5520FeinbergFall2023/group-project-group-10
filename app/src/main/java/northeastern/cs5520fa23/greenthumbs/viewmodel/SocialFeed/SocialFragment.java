@@ -130,7 +130,6 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
                 addPosts();
             }
         });
-        //socialAdapter.notifyItemInserted(0);
     }
 
     private void addPosts() {
@@ -203,28 +202,6 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
                 }
             });
         }
-
-
-
-        /*
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("posts");
-        dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-
-                for (DataSnapshot dataSnapshot : task.getResult().getChildren()) {
-                    ImgPost currPost = dataSnapshot.getValue(ImgPost.class);
-                    Log.d(TAG, currPost.toString());
-                    if (friendsSwitch.isChecked()) {
-                    }
-                    postList.add(currPost);
-                }
-                socialAdapter.notifyDataSetChanged();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
-
-         */
     }
 
     private void openCreatePostDialog() {

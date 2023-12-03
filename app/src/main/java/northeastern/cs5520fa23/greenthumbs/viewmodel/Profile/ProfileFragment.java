@@ -34,6 +34,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -438,6 +439,7 @@ public class ProfileFragment extends Fragment {
                         } else {
                             addFriendButton.setText("Unfriend");
                             addFriendButton.setEnabled(true);
+                            isFriend = true;
                         }
                     }
                 }
@@ -451,7 +453,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void handleFriendClick() {
-        if (!isRequested) {
+        if (!isRequested && !isFriend) {
             //String otherId = userFriend.getFriend_id();
             Map<String, Object> request = new HashMap<>();
             request.put("approved", "false");
@@ -495,6 +497,17 @@ public class ProfileFragment extends Fragment {
                 }
             });
 
+        }
+        else {
+            if (isFriend) {
+                DatabaseReference frRef = db.getReference("users").child(currUser.getUid()).child("friends").child(profUid);
+                frRef.removeValue();
+                DatabaseReference othersFriendRef = db.getReference("users").child(profUid).child("friends").child(currUser.getUid());
+                othersFriendRef.removeValue();
+                isFriend = false;
+                addFriendButton.setText("Add Friend");
+                Toast.makeText(getContext(), "Unfriended", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }
