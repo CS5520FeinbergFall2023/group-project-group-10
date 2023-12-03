@@ -10,6 +10,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,10 +22,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import northeastern.cs5520fa23.greenthumbs.R;
@@ -50,6 +55,7 @@ public class SocialFragment extends Fragment {
     private List<ImgPost> postList;
     private FloatingActionButton fab;
     private Switch friendsSwitch;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public SocialFragment() {
         // Required empty public constructor
@@ -93,6 +99,11 @@ public class SocialFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         this.friendsSwitch = view.findViewById(R.id.friends_switch);
+        this.swipeRefreshLayout = view.findViewById(R.id.social_swipe_refresh);
+        this.swipeRefreshLayout.setOnRefreshListener(() -> {
+            addPosts();
+
+        });
         socialRecyclerView = view.findViewById(R.id.social_recycler_view);
         socialRecyclerView.setHasFixedSize(true);
         socialRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -110,11 +121,40 @@ public class SocialFragment extends Fragment {
     }
 
     private void addPosts() {
+        postList.clear();
+        socialAdapter.notifyDataSetChanged();
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("posts");
+        Query query = dbRef.orderByChild("timestamp").limitToLast(100);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    ImgPost currPost = dataSnapshot.getValue(ImgPost.class);
+                    Log.d(TAG, currPost.toString());
+                    if (friendsSwitch.isChecked()) {
+                    }
+                    postList.add(currPost);
+                    socialAdapter.notifyDataSetChanged();
+
+                }
+
+                Collections.reverse(postList);
+                socialAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        /*
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("posts");
         dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
-                postList.clear();
+
                 for (DataSnapshot dataSnapshot : task.getResult().getChildren()) {
                     ImgPost currPost = dataSnapshot.getValue(ImgPost.class);
                     Log.d(TAG, currPost.toString());
@@ -123,9 +163,11 @@ public class SocialFragment extends Fragment {
                     postList.add(currPost);
                 }
                 socialAdapter.notifyDataSetChanged();
-
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
+
+         */
     }
 
     private void openCreatePostDialog() {
