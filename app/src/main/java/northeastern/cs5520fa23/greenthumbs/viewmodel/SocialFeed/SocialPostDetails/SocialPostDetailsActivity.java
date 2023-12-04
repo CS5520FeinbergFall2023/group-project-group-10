@@ -35,6 +35,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -132,7 +133,8 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
                 imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Glide.with(SocialPostDetailsActivity.this).load(uri).into(postImage);
+                        Picasso.get().load(uri).resize(postImage.getWidth(), postImage.getHeight()).centerCrop().into(postImage);
+                        //Glide.with(SocialPostDetailsActivity.this).load(uri).into(postImage);
                         getComments();
                     }
                 });

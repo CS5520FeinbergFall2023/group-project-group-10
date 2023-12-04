@@ -4,6 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".viewmodel.FriendsUsers.UsersActivity">
+    tools:context=".viewmodel.FriendsUsers.UsersActivity"
+    android:background="@color/light_yellow">
+    <SearchView
+        android:id="@+id/users_activity_search"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:queryHint="Search Users and Friends"
+        app:layout_constraintHeight_percent=".1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/users_activity_rv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent=".9"
+        app:layout_constraintTop_toBottomOf="@id/users_activity_search"
+        app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

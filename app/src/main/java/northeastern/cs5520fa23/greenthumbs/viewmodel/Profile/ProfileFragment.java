@@ -41,6 +41,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -245,8 +246,12 @@ public class ProfileFragment extends Fragment {
         uploadProfilePic();
         uploadHeaderImage();
         Map<String, Object> updates = new HashMap<>();
-        updates.put("header_image", headerUri.toString());
-        updates.put("profile_pic", profPicUri.toString());
+        if (headerUri != null) {
+            updates.put("header_image", headerUri.toString());
+        }
+        if (profPicUri != null) {
+            updates.put("profile_pic", profPicUri.toString());
+        }
         updates.put("username", usernameView.getText().toString());
         updates.put("user_bio", userBioView.getText().toString());
         db.getReference("users").child(currUser.getUid()).updateChildren(updates).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -324,14 +329,15 @@ public class ProfileFragment extends Fragment {
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         //StorageReference imgRef = storage.getReferenceFromUrl(headerImgUri);
-        StorageReference imgRef = storage.getReference().child(profUid);
+        StorageReference imgRef = storage.getReference().child("header_images").child(profUid);
         imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
 
                 headerUri = uri;
-                Glide.with(getContext()).load(uri).skipMemoryCache(true).into(headerImage);
-                headerImage.setImageURI(uri);
+                Picasso.get().load(uri).resize(headerImage.getWidth(), headerImage.getHeight()).centerCrop().into(headerImage);
+                //Glide.with(getContext()).load(uri).skipMemoryCache(true).into(headerImage);
+                //headerImage.setImageURI(uri);
             }
         });
     }
@@ -339,18 +345,22 @@ public class ProfileFragment extends Fragment {
     private void loadProfPic(String profPictureUri) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         //StorageReference imgRef = storage.getReferenceFromUrl(profPictureUri);
-        StorageReference imgRef = storage.getReference().child(profUid);
+        StorageReference imgRef = storage.getReference().child("profile_pics").child(profUid);
 
         imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 profPicUri = uri;
-                Glide.with(getContext()).load(uri).into(profilePicture);
+                Picasso.get().load(uri).resize(profilePicture.getWidth(), profilePicture.getHeight()).centerCrop().into(profilePicture);
+                //Glide.with(getContext()).load(uri).into(profilePicture);
             }
         });
     }
 
     private void uploadProfilePic() {
+        if (((BitmapDrawable) profilePicture.getDrawable()).getBitmap() == null) {
+            return;
+        }
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
         String imgPath = "profile_pics/" + profUid;
         StorageReference profPicStorageRef = storageReference.child(imgPath);
@@ -387,13 +397,15 @@ public class ProfileFragment extends Fragment {
     }
 
     private void uploadHeaderImage() {
+        if (((BitmapDrawable) headerImage.getDrawable()) == null) {
+            return;
+        }
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
         String imgPath = "header_images/" + profUid;
         StorageReference headerStorageRef = storageReference.child(imgPath);
         headerStorageRef.delete();
         //Boolean t = profPicStorageRef == null;
         //Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_LONG).show();
-
         Bitmap bitmap = ((BitmapDrawable) headerImage.getDrawable()).getBitmap();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);

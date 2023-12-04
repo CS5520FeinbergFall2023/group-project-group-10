@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import android.content.Context;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -23,6 +25,7 @@ import northeastern.cs5520fa23.greenthumbs.R;
 
 
 public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
+
     private List<ImgPost> posts;
     private Context context;
     public interface UsernameCallback {
@@ -85,7 +88,12 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
                     @Override
                     public void onSuccess(Uri uri) {
                         holder.getPostImg().setVisibility(View.VISIBLE);
-                        Glide.with(context).load(uri).into(holder.getPostImg());
+                        try {
+                            Picasso.get().load(uri).resize(holder.getPostImg().getWidth(), holder.getPostImg().getHeight()).centerCrop().into(holder.getPostImg());
+                        } catch (IllegalArgumentException e) {
+                            Log.d("ERROR IMG", holder.postText.getText() + " " + holder.getPostImg().getWidth() + " " + holder.getPostImg().getHeight());
+                        }
+                        //Glide.with(context).load(uri).into(holder.getPostImg());
                     }
                 });
             } else {
