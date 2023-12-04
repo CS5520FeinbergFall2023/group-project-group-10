@@ -191,6 +191,8 @@ public class ProfileFragment extends Fragment {
             this.sendMsgButton.setVisibility(View.GONE);
             this.sendMsgButton.setEnabled(false);
             this.addFriendButton.setVisibility(View.GONE);
+            this.profilePicture.setEnabled(false);
+            this.headerImage.setEnabled(false);
             this.editProfileButton.setEnabled(true);
             this.editProfileButton.setVisibility(View.VISIBLE);
             this.editProfileButton.setOnClickListener(new View.OnClickListener() {
@@ -201,28 +203,31 @@ public class ProfileFragment extends Fragment {
                         editProfileButton.setText("Finish");
                         usernameView.setEnabled(true);
                         userBioView.setEnabled(true);
+                        headerImage.setEnabled(true);
+                        profilePicture.setEnabled(true);
                     } else {
                         saveProfileUpdates();
                         editProfileButton.setText("Edit Profile");
+                        isEditing = false;
                     }
                 }
             });
             this.headerImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    getImg(headerImgSelect);
-
+                    if (isEditing) {
+                        getImg(headerImgSelect);
+                    }
                 }
             });
             this.profilePicture.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    getImg(profPicSelect);
-
+                    if (isEditing) {
+                        getImg(profPicSelect);
+                    }
                 }
             });
-            this.headerImage.setEnabled(true);
-            this.profilePicture.setEnabled(true);
         } else {
             this.sendMsgButton.setEnabled(true);
             this.sendMsgButton.setVisibility(View.VISIBLE);
