@@ -40,7 +40,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import northeastern.cs5520fa23.greenthumbs.MainActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.FriendsUsers.UsersActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.Friend;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileFragment;
 
@@ -63,6 +65,7 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
     private RecyclerView socialRecyclerView;
     private SocialAdapter socialAdapter;
     private List<ImgPost> postList;
+    private List<ImgPost> originalPosts;
     private FloatingActionButton fab;
     private Switch friendsSwitch;
     private SearchView userSearch;
@@ -100,6 +103,7 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         postList = new ArrayList<>();
+        originalPosts = new ArrayList<>();
     }
 
     @Override
@@ -115,6 +119,13 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
 
         currUser = FirebaseAuth.getInstance().getCurrentUser();
         this.usersIcon = view.findViewById(R.id.social_search_icon);
+        this.usersIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), UsersActivity.class);
+                getActivity().startActivity(i);
+            }
+        });
         this.userSearch = view.findViewById(R.id.social_search_view);
         this.userSearch.setQueryHint("Filter by user/content");
         this.userSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -160,6 +171,7 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
 
     private void addPosts() {
         postList.clear();
+        originalPosts.clear();
         socialAdapter.notifyDataSetChanged();
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("posts");
         if (friendsSwitch.isChecked()) {
@@ -184,11 +196,13 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
                                 ImgPost currPost = dataSnapshot.getValue(ImgPost.class);
                                 if (friend_ids.contains(currPost.getUid())) {
                                     postList.add(currPost);
+                                    originalPosts.add(currPost);
                                     socialAdapter.notifyDataSetChanged();
                                 }
                             }
 
                             Collections.reverse(postList);
+                            Collections.reverse(originalPosts);
                             socialAdapter.notifyDataSetChanged();
                             swipeRefreshLayout.setRefreshing(false);
                         }
@@ -213,11 +227,13 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         ImgPost currPost = dataSnapshot.getValue(ImgPost.class);
                         postList.add(currPost);
+                        originalPosts.add(currPost);
                         socialAdapter.notifyDataSetChanged();
 
                     }
 
                     Collections.reverse(postList);
+                    Collections.reverse(originalPosts);
                     socialAdapter.notifyDataSetChanged();
                     swipeRefreshLayout.setRefreshing(false);
                 }
@@ -256,9 +272,12 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
     }
     private void filterPosts(String filterQuery) {
         List<ImgPost> filteredPosts = new ArrayList<>();
-        for (ImgPost post : postList) {
-            Boolean t = post.getPost_text().contains(filterQuery);
-            Toast.makeText(getContext(), t.toString(), Toast.LENGTH_SHORT).show();
+        //List<ImgPost> temp = new ArrayList<>();
+
+        for (ImgPost post : originalPosts) {
+            //temp.add(post);
+            //Boolean t = post.getPost_text().contains(filterQuery);
+            //Toast.makeText(getContext(), t.toString(), Toast.LENGTH_SHORT).show();
 
             if (inFilter(post, filterQuery) == true) {
                 filteredPosts.add(post);
