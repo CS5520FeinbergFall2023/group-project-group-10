@@ -1,5 +1,6 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.Messages;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -25,11 +26,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import northeastern.cs5520fa23.greenthumbs.MainActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat.ChatActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.SocialAdapter;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.SocialPostDetails.Comment;
 
-public class MessageHomeFragment extends Fragment {
+public class MessageHomeFragment extends Fragment implements MessageHistoryAdapter.MessageHistoryCallback {
     private RecyclerView msgHistoryRV;
     private MessageHistoryAdapter msgHistoryAdapter;
     private List<MessageHistoryItem> chats;
@@ -71,7 +74,7 @@ public class MessageHomeFragment extends Fragment {
         msgHistoryRV = view.findViewById(R.id.message_recycler_view);
         msgHistoryRV.setHasFixedSize(true);
         msgHistoryRV.setLayoutManager(new LinearLayoutManager(getContext()));
-        msgHistoryAdapter = new MessageHistoryAdapter(chats, getContext());
+        msgHistoryAdapter = new MessageHistoryAdapter(chats, getContext(), this);
         msgHistoryRV.setAdapter(msgHistoryAdapter);
         fab = view.findViewById(R.id.post_fab);
 
@@ -104,5 +107,12 @@ public class MessageHomeFragment extends Fragment {
 
     private void populateOtherUsers() {
 
+    }
+
+    @Override
+    public void openChatCallback(String username) {
+        Intent i = new Intent(getActivity(), ChatActivity.class);
+        i.putExtra("other_username", username);
+        getActivity().startActivity(i);
     }
 }

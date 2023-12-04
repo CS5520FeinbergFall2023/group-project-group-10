@@ -53,6 +53,8 @@ public class ChatActivity extends AppCompatActivity {
     private String currUsername;
     private String otherUsername;
     private String chatID;
+    private Bundle extras;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +62,14 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         this.db = FirebaseDatabase.getInstance();
         this.currUser = FirebaseAuth.getInstance().getCurrentUser();
-        this.otherUsername = getIntent().getStringExtra("other_username");
+        extras = getIntent().getExtras();
+        this.otherUsername = extras.getString("other_username");
+        Log.d("OTHER_UN", this.otherUsername + "!!!!");
+        //Log.d("OTHER_UN", gettypethis.otherUsername + "!!!!");
+
+        //setChatID(otherUsername);
         getUsersInfo();
 
-
-        /*
-
-         */
         //Toast.makeText(ChatActivity.this, otherUserID, Toast.LENGTH_LONG).show();
 
 
@@ -86,9 +89,13 @@ public class ChatActivity extends AppCompatActivity {
         msgRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         msgAdapter = new MessageAdapter(msgList, this);
         msgRecyclerView.setAdapter(msgAdapter);
+
+
     }
 
     private void getMessages() {
+        setChatID(otherUsername);
+        Log.d("Chat_ID", chatID);
         DatabaseReference msgRef = db.getReference("chats").child(chatID).child("messages");
         msgRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -114,9 +121,9 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
-    private void setChatID () {
-        if (compareUsernames(currUsername, otherUsername) < 0) {
-            this.chatID = currUsername + "_" + otherUsername;
+    private void setChatID (String u2) {
+        if (compareUsernames(currUsername, u2) < 0) {
+            this.chatID = currUsername + "_" + u2;
         } else {
             this.chatID = otherUsername + "_" + currUsername;
         }
@@ -190,6 +197,7 @@ public class ChatActivity extends AppCompatActivity {
                 } else {
                     currUsername = String.valueOf(task.getResult().getValue());
                     //Toast.makeText(ChatActivity.this, currUsername, Toast.LENGTH_SHORT).show();
+
                     DatabaseReference dbRef = db.getReference("users");
                     dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                         @Override
@@ -199,15 +207,20 @@ public class ChatActivity extends AppCompatActivity {
                                 Boolean t = other.getUsername().equals(otherUsername);
                                 //Toast.makeText(ChatActivity.this, other.getUsername().toString() + " " + otherUsername.toString(), Toast.LENGTH_SHORT).show();
 
-                                if (other.getUsername().equals(otherUsername)) {
+                                if (other.getUsername().contains(otherUsername)) {
                                     otherUserID = other.getUser_id();
-                                    setChatID();
                                     getMessages();
+                                    Log.d("other_uid", otherUserID);
+
+
+
                                     //Toast.makeText(ChatActivity.this, otherUserID, Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
                     });
+
+
 
 
                 }
