@@ -335,7 +335,11 @@ public class ProfileFragment extends Fragment {
             public void onSuccess(Uri uri) {
 
                 headerUri = uri;
-                Picasso.get().load(uri).resize(headerImage.getWidth(), headerImage.getHeight()).centerCrop().into(headerImage);
+                try {
+                    Picasso.get().load(uri).resize(headerImage.getWidth(), headerImage.getHeight()).centerCrop().into(headerImage);
+                } catch (IllegalArgumentException e) {
+                    Log.d("ERROR IMG", "header" + " " + headerImage.getWidth() + " " + headerImage.getHeight());
+                }
                 //Glide.with(getContext()).load(uri).skipMemoryCache(true).into(headerImage);
                 //headerImage.setImageURI(uri);
             }
@@ -351,7 +355,12 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onSuccess(Uri uri) {
                 profPicUri = uri;
-                Picasso.get().load(uri).resize(profilePicture.getWidth(), profilePicture.getHeight()).centerCrop().into(profilePicture);
+                try {
+                    Picasso.get().load(uri).resize(profilePicture.getWidth(), profilePicture.getHeight()).centerCrop().into(profilePicture);
+                } catch (IllegalArgumentException e) {
+                    Log.d("ERROR IMG", "prof pic" + " " + profilePicture.getWidth() + " " + profilePicture.getHeight());
+                }
+               // Picasso.get().load(uri).resize(profilePicture.getWidth(), profilePicture.getHeight()).centerCrop().into(profilePicture);
                 //Glide.with(getContext()).load(uri).into(profilePicture);
             }
         });
