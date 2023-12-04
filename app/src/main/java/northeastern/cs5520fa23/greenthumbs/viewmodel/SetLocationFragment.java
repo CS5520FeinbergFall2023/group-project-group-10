@@ -43,12 +43,10 @@ public class SetLocationFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_set_location, container, false);
-
         editTextLatitude = view.findViewById(R.id.editTextLatitude);
         editTextLongitude = view.findViewById(R.id.editTextLongitude);
         Button btnSaveLocation = view.findViewById(R.id.btnSaveLocation);
         Button btnFetchLocation = view.findViewById(R.id.btnFetchLocation);
-
         btnSaveLocation.setOnClickListener(v -> {
             String lat = editTextLatitude.getText().toString();
             String lon = editTextLongitude.getText().toString();
@@ -63,9 +61,7 @@ public class SetLocationFragment extends DialogFragment {
         });
 
         btnFetchLocation.setOnClickListener(v -> requestLocationUpdates());
-
         locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
-
         prepopulateLocationIfSet();
         locationListener = new LocationListener() {
             @Override

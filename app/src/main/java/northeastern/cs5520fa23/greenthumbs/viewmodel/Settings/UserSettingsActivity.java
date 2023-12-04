@@ -29,7 +29,6 @@ public class UserSettingsActivity extends AppCompatActivity {
     private EditText firstNameSettingsET;
     private EditText lastNameSettingsET;
     private EditText emailSettingsET;
-
     private FirebaseAuth mAuth;
     private DatabaseReference dbRef;
     private FirebaseUser currentUser;
@@ -96,8 +95,6 @@ public class UserSettingsActivity extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> Toast.makeText(UserSettingsActivity.this, "Updated successfully", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Toast.makeText(UserSettingsActivity.this, "Failed to update", Toast.LENGTH_SHORT).show());
     }
-
-
 
     private void loadUserData() {
         if (currentUser != null) {
