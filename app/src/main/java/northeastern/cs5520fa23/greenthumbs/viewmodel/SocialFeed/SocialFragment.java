@@ -72,6 +72,7 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
     private SwipeRefreshLayout swipeRefreshLayout;
     private ImageView usersIcon;
     FirebaseUser currUser;
+    private List<String> friendIds;
 
     public SocialFragment() {
         // Required empty public constructor
@@ -102,8 +103,9 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        postList = new ArrayList<>();
-        originalPosts = new ArrayList<>();
+        this.postList = new ArrayList<>();
+        this.originalPosts = new ArrayList<>();
+        this.friendIds = new ArrayList<>();
     }
 
     @Override
@@ -145,8 +147,9 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
         this.friendsSwitch = view.findViewById(R.id.friends_switch);
         this.swipeRefreshLayout = view.findViewById(R.id.social_swipe_refresh);
         this.swipeRefreshLayout.setOnRefreshListener(() -> {
-            addPosts();
-
+            if (friendsSwitch.isChecked()) {
+                addPosts(true);
+            }
         });
         socialRecyclerView = view.findViewById(R.id.social_recycler_view);
         socialRecyclerView.setHasFixedSize(true);
@@ -160,15 +163,22 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
                 openCreatePostDialog();
             }
         });
-        addPosts();
+        addPosts(false);
         friendsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                addPosts();
+                //addPosts();
+                if (isChecked) {
+                    filterFriendsPosts();
+                } else {
+                    filterAllPosts();
+                }
+                // change to filter friends posts
             }
         });
     }
 
+    /*
     private void addPosts() {
         postList.clear();
         originalPosts.clear();
@@ -185,6 +195,7 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
                         Friend user_friend = dataSnapshot.getValue(Friend.class);
                         if (user_friend.getStatus().equals("friends")) {
                             friend_ids.add(user_friend.getFriend_id());
+                            friendIds.add(user_friend.getFriend_id());
                         }
                         //socialAdapter.notifyDataSetChanged();
                     }
@@ -246,6 +257,64 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
         }
     }
 
+     */
+
+    private void addPosts(boolean refreshOnFriends) {
+        postList.clear();
+        originalPosts.clear();
+        friendIds.clear();
+        socialAdapter.notifyDataSetChanged();
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("posts");
+
+        List<String> friend_ids = new ArrayList<>();
+        DatabaseReference friendRef = FirebaseDatabase.getInstance().getReference("users").child(currUser.getUid()).child("friends");
+        Query query = friendRef.orderByChild("friend_id").limitToLast(100);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Friend user_friend = dataSnapshot.getValue(Friend.class);
+                    if (user_friend.getStatus().equals("friends")) {
+                        friend_ids.add(user_friend.getFriend_id());
+                        friendIds.add(user_friend.getFriend_id());
+                    }
+                    //socialAdapter.notifyDataSetChanged();
+                }
+                Query query = dbRef.orderByChild("timestamp").limitToLast(100);
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            ImgPost currPost = dataSnapshot.getValue(ImgPost.class);
+                            //if (friend_ids.contains(currPost.getUid())) {
+                                postList.add(currPost);
+                                originalPosts.add(currPost);
+                                socialAdapter.notifyDataSetChanged();
+                            //}
+                        }
+
+                        Collections.reverse(postList);
+                        Collections.reverse(originalPosts);
+                        socialAdapter.notifyDataSetChanged();
+                        if (refreshOnFriends) {filterFriendsPosts();}
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
     private void openCreatePostDialog() {
         DialogFragment createPostDialog = new CreatePostDialog();
         createPostDialog.show(getActivity().getSupportFragmentManager(), "Post");
@@ -285,6 +354,30 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
         }
         postList.clear();
         postList.addAll(filteredPosts);
+        socialAdapter.notifyDataSetChanged();
+    }
+
+    private void filterFriendsPosts() {
+        List<ImgPost> filteredPosts = new ArrayList<>();
+
+        Log.d("FFP", friendIds.get(0));
+
+        for (ImgPost post : originalPosts) {
+            for (String id : friendIds) {
+                if (id.equals(post.getUid())) {
+                    filteredPosts.add(post);
+                }
+            }
+        }
+
+
+        postList.clear();
+        postList.addAll(filteredPosts);
+        socialAdapter.notifyDataSetChanged();
+    }
+    private void filterAllPosts() {
+        postList.clear();
+        postList.addAll(originalPosts);
         socialAdapter.notifyDataSetChanged();
     }
 }
