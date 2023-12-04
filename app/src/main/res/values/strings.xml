@@ -101,4 +101,16 @@
     <string name="enter">Enter</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
+    <string name="account_settings">Account Settings</string>
+    <string name="notifications">Notifications</string>
+    <string name="log_out">Log Out</string>
+    <string name="set_activity_status">Set Activity Status</string>
+    <string name="privacy">Privacy</string>
+    <string name="edit_username">Edit Username</string>
+    <string name="edit_first_name">Edit First Name</string>
+    <string name="edit_last_name">Edit Last Name</string>
+    <string name="edit_email">Edit Email</string>
+    <string name="edit_password">Edit Password</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="delete_account">Delete Account</string>
 </resources>

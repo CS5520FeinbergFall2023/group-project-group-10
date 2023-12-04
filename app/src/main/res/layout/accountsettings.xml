@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/light_yellow"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/AccountSettingsLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/youngserifregular"
+        android:textColor="@color/dark_green"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toTopOf="@id/editUsernameSetting"
+        android:text="@string/account_settings"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <EditText
+        android:id="@+id/editUsernameSetting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/edit_username"
+        android:fontFamily="@font/youngserifregular"
+        android:textColorHint="@color/dark_green"
+        app:layout_constraintBottom_toTopOf="@id/editFirstNameSetting"
+        app:layout_constraintTop_toBottomOf="@id/AccountSettingsLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <EditText
+        android:id="@+id/editFirstNameSetting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/edit_first_name"
+        android:fontFamily="@font/youngserifregular"
+        android:textColorHint="@color/dark_green"
+        app:layout_constraintBottom_toTopOf="@id/editLastNameSetting"
+        app:layout_constraintTop_toBottomOf="@id/editUsernameSetting"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <EditText
+        android:id="@+id/editLastNameSetting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/edit_last_name"
+        android:fontFamily="@font/youngserifregular"
+        android:textColorHint="@color/dark_green"
+        app:layout_constraintBottom_toTopOf="@id/editEmailSetting"
+        app:layout_constraintTop_toBottomOf="@id/editFirstNameSetting"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <EditText
+        android:id="@+id/editEmailSetting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/edit_email"
+        android:fontFamily="@font/youngserifregular"
+        android:textColorHint="@color/dark_green"
+        app:layout_constraintBottom_toTopOf="@id/editPasswordSetting"
+        app:layout_constraintTop_toBottomOf="@id/editLastNameSetting"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <EditText
+        android:id="@+id/editPasswordSetting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/edit_password"
+        android:fontFamily="@font/youngserifregular"
+        android:textColorHint="@color/dark_green"
+        app:layout_constraintBottom_toTopOf="@id/save_changes_settings"
+        app:layout_constraintTop_toBottomOf="@id/editEmailSetting"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <Button
+        android:id="@+id/save_changes_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save_changes"
+        android:backgroundTint="@color/light_green"
+        android:textColor="@color/dark_green"
+        android:fontFamily="@font/youngserifregular"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/delete_account"
+        app:layout_constraintTop_toBottomOf="@id/editPasswordSetting"
+         />
+
+    <Button
+        android:id="@+id/delete_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/delete_account"
+        android:backgroundTint="@color/light_green"
+        android:fontFamily="@font/youngserifregular"
+        android:textColor="@color/custom_orange"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/save_changes_settings"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editPasswordSetting"
+         />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
