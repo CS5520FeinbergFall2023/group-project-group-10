@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Switch;
 
@@ -65,6 +66,7 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
     private Switch friendsSwitch;
     private SearchView userSearch;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ImageView usersIcon;
     FirebaseUser currUser;
 
     public SocialFragment() {
@@ -111,6 +113,20 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
 
 
         currUser = FirebaseAuth.getInstance().getCurrentUser();
+        this.usersIcon = view.findViewById(R.id.social_search_icon);
+        this.userSearch = view.findViewById(R.id.social_search_view);
+        this.userSearch.setQueryHint("Filter by user/content");
+        this.userSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
         this.friendsSwitch = view.findViewById(R.id.friends_switch);
         this.swipeRefreshLayout = view.findViewById(R.id.social_swipe_refresh);
         this.swipeRefreshLayout.setOnRefreshListener(() -> {
@@ -222,5 +238,9 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
         Fragment profileFragment = ProfileFragment.newInstance(username, posterId);
         //profileFragment.setArguments(args);
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, profileFragment).commit();
+    }
+
+    private void filterPosts() {
+
     }
 }

@@ -84,6 +84,7 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
                 imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
+                        holder.getPostImg().setVisibility(View.VISIBLE);
                         Glide.with(context).load(uri).into(holder.getPostImg());
                     }
                 });
