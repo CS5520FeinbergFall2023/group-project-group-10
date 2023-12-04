@@ -6,14 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
 import androidx.fragment.app.Fragment;
-
 import com.google.firebase.auth.FirebaseAuth;
-
 import northeastern.cs5520fa23.greenthumbs.LogInActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
-import northeastern.cs5520fa23.greenthumbs.viewmodel.Garden.GardenFragment;
 
 public class SettingsFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
@@ -21,15 +17,6 @@ public class SettingsFragment extends Fragment {
 
     public SettingsFragment(){
 
-    }
-
-    public static SettingsFragment newInstance(String param1, String param2) {
-        SettingsFragment fragment = new SettingsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -47,6 +34,12 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View settingFragmentView = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        Button accountSettingsButton = settingFragmentView.findViewById(R.id.AccountSettingsbtn);
+        accountSettingsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), UserSettingsActivity.class);
+            startActivity(intent);
+        });
 
         Button logoutBtn = settingFragmentView.findViewById(R.id.LogOutBtn);
         logoutBtn.setOnClickListener(v -> logOutUser());
