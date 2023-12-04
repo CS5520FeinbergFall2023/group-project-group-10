@@ -201,7 +201,7 @@ public class ProfileFragment extends Fragment {
                     if (!isEditing) {
                         isEditing = true;
                         editProfileButton.setText("Finish");
-                        usernameView.setEnabled(true);
+                        //usernameView.setEnabled(true);
                         userBioView.setEnabled(true);
                         headerImage.setEnabled(true);
                         profilePicture.setEnabled(true);
