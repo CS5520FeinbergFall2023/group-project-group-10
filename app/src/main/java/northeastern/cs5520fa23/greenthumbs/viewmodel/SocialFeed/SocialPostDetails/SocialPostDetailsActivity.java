@@ -9,7 +9,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +25,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -40,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 import northeastern.cs5520fa23.greenthumbs.R;
 
@@ -79,6 +83,32 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
         commentAdapter = new CommentAdapter(commentList, this);
         commentRV.setAdapter(commentAdapter);
         commentText = findViewById(R.id.comment_edit_text);
+        commentText.setSingleLine(true);
+        commentText.setImeOptions(EditorInfo.IME_ACTION_GO | EditorInfo.IME_ACTION_DONE);
+        commentText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_GO) {
+                    //Toast.makeText(SocialPostDetailsActivity.this, "here", Toast.LENGTH_SHORT).show();
+                    try {
+                        Tasks.await(addComment());
+                        return true;
+                    } catch (Exception e) {
+                        return false;
+                    }
+
+                } else if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    try {
+                        Tasks.await(addComment());
+                        return true;
+                    } catch (Exception e) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+        });
         addCommentButton = findViewById(R.id.add_comment_button);
         addCommentButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,7 +145,7 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
 
     }
 
-    private void addComment() {
+    private Task addComment() {
         String commentContent = commentText.getText().toString();
         String commentId = commentRef.push().getKey();
         String currentTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).format(new Date());
@@ -125,13 +155,14 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
         newComment.put("comment_text", commentContent);
         newComment.put("comment_likes", 0);
 
-        FirebaseDatabase.getInstance().getReference().child("users").child(currUser.getUid()).child("username").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        Task t = FirebaseDatabase.getInstance().getReference().child("users").child(currUser.getUid()).child("username").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (!task.isSuccessful()) {
                     Toast.makeText(SocialPostDetailsActivity.this, "Unable to fetch data", Toast.LENGTH_LONG);
                 } else {
                     newComment.put("username", String.valueOf(task.getResult().getValue()));
+
                     DatabaseReference cRef = FirebaseDatabase.getInstance().getReference("posts").child(_id).child("comments");
                     cRef.child(commentId).setValue(newComment).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -140,6 +171,7 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
                             commentText.setText("");
                             hideKeyboard();
                             getComments();
+
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -150,6 +182,8 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
                 }
             }
         });
+
+        return t;
 
     }
 
