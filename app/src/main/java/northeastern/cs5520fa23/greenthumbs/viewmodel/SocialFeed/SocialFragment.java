@@ -22,6 +22,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -117,6 +118,7 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
         this.userSearch = view.findViewById(R.id.social_search_view);
         this.userSearch.setQueryHint("Filter by user/content");
         this.userSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -124,8 +126,10 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                return false;
+                filterPosts(newText);
+                return true;
             }
+
         });
         this.friendsSwitch = view.findViewById(R.id.friends_switch);
         this.swipeRefreshLayout = view.findViewById(R.id.social_swipe_refresh);
@@ -239,8 +243,29 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
         //profileFragment.setArguments(args);
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, profileFragment).commit();
     }
+    private boolean inFilter(ImgPost post, String filterQuery) {
+        if (post.getPost_text().toLowerCase().contains(filterQuery.toLowerCase())) {
+            return true;
+        } else if (post.getUsername().toLowerCase().contains(filterQuery.toLowerCase())) {
+            return true;
+        } else if (post.getTags().toLowerCase().contains(filterQuery.toLowerCase())) { // fix tags
+            return true;
+        } else {
+            return false;
+        }
+    }
+    private void filterPosts(String filterQuery) {
+        List<ImgPost> filteredPosts = new ArrayList<>();
+        for (ImgPost post : postList) {
+            Boolean t = post.getPost_text().contains(filterQuery);
+            Toast.makeText(getContext(), t.toString(), Toast.LENGTH_SHORT).show();
 
-    private void filterPosts() {
-
+            if (inFilter(post, filterQuery) == true) {
+                filteredPosts.add(post);
+            }
+        }
+        postList.clear();
+        postList.addAll(filteredPosts);
+        socialAdapter.notifyDataSetChanged();
     }
 }
