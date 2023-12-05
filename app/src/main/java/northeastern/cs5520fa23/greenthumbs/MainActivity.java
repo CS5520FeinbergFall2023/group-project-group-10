@@ -147,6 +147,13 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
 
+        if (getIntent().getExtras() != null) {
+            boolean go  = getIntent().getBooleanExtra("to_chat", false);
+            if (go) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment).commit();
+            }
+        }
+
     }
 
     private void startWeatherService() {
@@ -177,4 +184,5 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.overlay_frame).setVisibility(View.GONE);
         }
     }
+
 }

@@ -50,8 +50,8 @@ public class MessageHomeFragment extends Fragment implements MessageHistoryAdapt
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
     }
 
     @Override

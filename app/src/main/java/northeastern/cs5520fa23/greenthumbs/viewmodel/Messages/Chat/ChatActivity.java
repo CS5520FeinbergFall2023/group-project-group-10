@@ -1,11 +1,13 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -36,6 +38,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import northeastern.cs5520fa23.greenthumbs.MainActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.SocialPostDetails.SocialPostDetailsActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.User;
@@ -60,6 +63,15 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Intent i = new Intent(ChatActivity.this, MainActivity.class);
+                i.putExtra("to_chat", true);
+                startActivity(i);
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
         this.db = FirebaseDatabase.getInstance();
         this.currUser = FirebaseAuth.getInstance().getCurrentUser();
         extras = getIntent().getExtras();
@@ -267,4 +279,5 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
+
 }
