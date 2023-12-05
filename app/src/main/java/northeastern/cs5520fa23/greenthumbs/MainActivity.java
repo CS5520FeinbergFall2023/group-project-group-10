@@ -115,8 +115,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        this.goUsername = username;
-        this.goUid = uid;
 
 
 
@@ -140,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 if (item.getItemId() == R.id.appbar_profile) {
 
                     //Fragment profileFragment = ProfileFragment.newInstance(username, FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    profileFragment = ProfileFragment.newInstance(goUsername, goUid);
+                    profileFragment = ProfileFragment.newInstance(username, uid);
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, profileFragment).addToBackStack(null).commit();
                     return true;
                 }
@@ -206,8 +204,8 @@ public class MainActivity extends AppCompatActivity {
             if (getIntent().getBundleExtra("profile_info") != null) {
                 ArrayList<String> profileInfo = getIntent().getBundleExtra("profile_info").getStringArrayList("user_info");
                 if (profileInfo != null) {
-                    goUsername = profileInfo.get(0);
-                    goUid = profileInfo.get(1);
+                    String goUsername = profileInfo.get(0);
+                    String goUid = profileInfo.get(1);
                     profileFragment = ProfileFragment.newInstance(goUsername, goUid);
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).addToBackStack(null).commit();
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, profileFragment).addToBackStack(null).commit();
