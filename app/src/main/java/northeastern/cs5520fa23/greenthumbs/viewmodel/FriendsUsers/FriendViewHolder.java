@@ -14,7 +14,7 @@ import northeastern.cs5520fa23.greenthumbs.R;
 public class FriendViewHolder extends RecyclerView.ViewHolder {
     private ImageView profilePicture;
     private TextView usernameText;
-    private ImageButton addFriendButton;
+    private ImageButton goProfileButton;
     private TextView isFriendText;
     private ImageButton msgButton;
     private String friendUserId;
@@ -25,7 +25,7 @@ public class FriendViewHolder extends RecyclerView.ViewHolder {
         this.profilePicture = itemView.findViewById(R.id.user_card_prof_pic);
         this.usernameText = itemView.findViewById(R.id.user_activity_username_text);
 
-        this.addFriendButton = itemView.findViewById(R.id.user_activity_add_friend);
+        this.goProfileButton = itemView.findViewById(R.id.user_activity_add_friend);
         // set on click listener
 
         this.isFriendText = itemView.findViewById(R.id.user_activity_is_friend_text);
@@ -50,12 +50,12 @@ public class FriendViewHolder extends RecyclerView.ViewHolder {
         this.usernameText = usernameText;
     }
 
-    public ImageButton getAddFriendButton() {
-        return addFriendButton;
+    public ImageButton getGoProfileButton() {
+        return goProfileButton;
     }
 
-    public void setAddFriendButton(ImageButton addFriendButton) {
-        this.addFriendButton = addFriendButton;
+    public void setGoProfileButton(ImageButton goProfileButton) {
+        this.goProfileButton = goProfileButton;
     }
 
     public TextView getIsFriendText() {

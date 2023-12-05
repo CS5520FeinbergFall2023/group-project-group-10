@@ -3,6 +3,7 @@ package northeastern.cs5520fa23.greenthumbs.viewmodel.FriendsUsers;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,10 +28,11 @@ import northeastern.cs5520fa23.greenthumbs.MainActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat.ChatActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.Friend;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.ImgPost;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.User;
 
-public class UsersActivity extends AppCompatActivity {
+public class UsersActivity extends AppCompatActivity implements FriendsAdapter.ProfileCallback {
     private SearchView userSearch;
     private RecyclerView userRV;
     private TextView titleText;
@@ -69,7 +71,7 @@ public class UsersActivity extends AppCompatActivity {
         this.friendObjList = new ArrayList<>();
         this.friendUserList = new ArrayList<>();
         this.originalFriendsList = new ArrayList<>();
-        this.friendsAdapter = new FriendsAdapter(friendUserList, this, friendObjList);
+        this.friendsAdapter = new FriendsAdapter(friendUserList, this, friendObjList, this);
         this.friendRV.setAdapter(friendsAdapter);
         this.userSearch = findViewById(R.id.users_activity_search);
         this.userRV = findViewById(R.id.users_activity_rv);
@@ -181,6 +183,18 @@ public class UsersActivity extends AppCompatActivity {
         friendsAdapter.setUserList(filteredUsers);
         friendsAdapter.notifyDataSetChanged();
 
+    }
+
+    @Override
+    public void openProfileCallback(String username, String userId) {
+        Intent i = new Intent(this, MainActivity.class);
+        Bundle extras = new Bundle();
+        ArrayList<String> userInfo = new ArrayList<>();
+        userInfo.add(username);
+        userInfo.add(userId);
+        extras.putStringArrayList("user_info", userInfo);
+        i.putExtra("profile_info", extras);
+        this.startActivity(i);
     }
 
 }

@@ -4,14 +4,20 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.LayerDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageButton;
@@ -33,6 +39,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.DashboardFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Garden.GardenFragment;
@@ -51,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
     private CreatePostFragment createPostFragment = new CreatePostFragment();
     private MessageHomeFragment messageHomeFragment = new MessageHomeFragment();
     private String username;
+    private String goUsername;
+    private String goUid;
     private String uid;
     private Fragment profileFragment = new ProfileFragment();
 
@@ -101,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        this.goUsername = username;
+        this.goUid = uid;
 
 
 
@@ -118,13 +134,13 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
         toolbar.inflateMenu(R.menu.appbar);
-
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.appbar_profile) {
+
                     //Fragment profileFragment = ProfileFragment.newInstance(username, FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    profileFragment = ProfileFragment.newInstance(username, FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    profileFragment = ProfileFragment.newInstance(goUsername, goUid);
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, profileFragment).addToBackStack(null).commit();
                     return true;
                 }
@@ -187,6 +203,18 @@ public class MainActivity extends AppCompatActivity {
             if (goPosts) {
                 navBar.setSelectedItemId(R.id.social_menu_item);
             }
+            if (getIntent().getBundleExtra("profile_info") != null) {
+                ArrayList<String> profileInfo = getIntent().getBundleExtra("profile_info").getStringArrayList("user_info");
+                if (profileInfo != null) {
+                    goUsername = profileInfo.get(0);
+                    goUid = profileInfo.get(1);
+                    profileFragment = ProfileFragment.newInstance(goUsername, goUid);
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).addToBackStack(null).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, profileFragment).addToBackStack(null).commit();
+                    //toolbar.action(R.id.appbar_profile);
+                }
+            }
+
 
 
         } else {
@@ -225,5 +253,6 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.overlay_frame).setVisibility(View.GONE);
         }
     }
+
 
 }

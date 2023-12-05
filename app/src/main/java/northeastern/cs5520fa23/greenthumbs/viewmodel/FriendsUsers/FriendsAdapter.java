@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,6 +22,7 @@ import java.util.Map;
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat.ChatActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.Friend;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.User;
 
 public class FriendsAdapter extends RecyclerView.Adapter<FriendViewHolder> {
@@ -29,8 +31,12 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendViewHolder> {
     private List<Friend> friendList;
     private Map<String, Friend> friendIds;
     private String currUid;
+    public interface ProfileCallback {
+        void openProfileCallback(String username, String userId);
+    }
+    private ProfileCallback profileCallback;
 
-    public FriendsAdapter(List<User> userList, Context context, List<Friend> friendList) {
+    public FriendsAdapter(List<User> userList, Context context, List<Friend> friendList, ProfileCallback profileCallback) {
         this.currUid = FirebaseAuth.getInstance().getUid();
         this.userList = userList;
         this.context = context;
@@ -38,6 +44,9 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendViewHolder> {
         this.friendIds = new HashMap<>();
         for (Friend f : friendList) {
             friendIds.put(f.getFriend_id(), f);
+        }
+        if (profileCallback != null) {
+            this.profileCallback = profileCallback;
         }
 
     }
@@ -68,10 +77,17 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendViewHolder> {
                             context.startActivity(i);
                         }
                     });
+                    holder.getGoProfileButton().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            profileCallback.openProfileCallback(fName, fId);
+                        }
+                    });
                 }
                 if (fId != null) {
                     holder.setFriendUserId(fId);
                 }
+                /*
                 if (fId.equals(currUid)) {
                     holder.getIsFriendText().setText("YOU");
                     holder.getAddFriendButton().setImageResource(R.drawable.baseline_check_24);
@@ -86,6 +102,8 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendViewHolder> {
                         holder.getAddFriendButton().setImageResource(R.drawable.baseline_check_24);
                     }
                 }
+
+                 */
 
             }
         } catch (Exception e) {
