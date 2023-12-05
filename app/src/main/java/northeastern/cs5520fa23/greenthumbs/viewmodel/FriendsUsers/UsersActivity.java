@@ -1,10 +1,12 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.FriendsUsers;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -21,7 +23,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import northeastern.cs5520fa23.greenthumbs.MainActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat.ChatActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.Friend;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.ImgPost;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.User;
@@ -44,6 +48,15 @@ public class UsersActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Intent i = new Intent(UsersActivity.this, MainActivity.class);
+                i.putExtra("to_posts", true);
+                startActivity(i);
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
         setContentView(R.layout.activity_users);
         this.friendRV = findViewById(R.id.users_activity_rv);
         this.friendRV.setHasFixedSize(true);

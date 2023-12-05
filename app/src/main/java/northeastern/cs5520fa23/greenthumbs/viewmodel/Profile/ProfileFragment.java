@@ -2,17 +2,21 @@ package northeastern.cs5520fa23.greenthumbs.viewmodel.Profile;
 
 import static android.content.ContentValues.TAG;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -52,6 +56,7 @@ import java.util.Map;
 
 import northeastern.cs5520fa23.greenthumbs.MainActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.FriendsUsers.UsersActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.CreatePostDialog;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.ImgPost;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.SocialAdapter;
@@ -138,6 +143,22 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        /*
+        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                FragmentManager manager = getActivity().getSupportFragmentManager();
+                manager.popBackStackImmediate();
+
+
+
+
+
+            }
+        };
+        getActivity().getOnBackPressedDispatcher().addCallback(getActivity(), backPressedCallback);
+        */
+
         this.usernameView = view.findViewById(R.id.profile_name);
         this.headerImage = view.findViewById(R.id.profile_header_image);
         this.profilePicture = view.findViewById(R.id.profile_prof_pic);

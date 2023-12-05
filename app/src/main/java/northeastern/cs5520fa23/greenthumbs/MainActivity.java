@@ -1,9 +1,12 @@
 package northeastern.cs5520fa23.greenthumbs;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -48,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private MessageHomeFragment messageHomeFragment = new MessageHomeFragment();
     private String username;
     private String uid;
+    private Fragment profileFragment = new ProfileFragment();
+
 
     @Override
     protected void onStart() {
@@ -115,32 +120,32 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.appbar_profile) {
-                    Fragment profileFragment = ProfileFragment.newInstance(username, FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, profileFragment).commit();
+                    //Fragment profileFragment = ProfileFragment.newInstance(username, FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    profileFragment = ProfileFragment.newInstance(username, FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, profileFragment).addToBackStack(null).commit();
                     return true;
                 }
                 return false;
             }
         });
 
-        // When app is opened go to dashboard
-        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).commit();
 
         navBar.setOnItemSelectedListener(item -> {
+
             if (item.getItemId() == R.id.dash_menu_item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).addToBackStack(null).commit();
                 return true;
             } else if (item.getItemId() == R.id.social_menu_item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, socialFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, socialFragment).addToBackStack(null).commit();
                 return true;
             } else if (item.getItemId() == R.id.garden_menu_item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, gardenFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, gardenFragment).addToBackStack(null).commit();
                 return true;
             } else if (item.getItemId() == R.id.settings_menu_item) {
                 //getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, createPostFragment).commit();
                 //return true;
             } else if (item.getItemId() == R.id.messages_menu_item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment).addToBackStack(null).commit();
                 return true;
             }
 
@@ -148,10 +153,20 @@ public class MainActivity extends AppCompatActivity {
         });
 
         if (getIntent().getExtras() != null) {
-            boolean go  = getIntent().getBooleanExtra("to_chat", false);
-            if (go) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment).commit();
+            boolean goChat  = getIntent().getBooleanExtra("to_chat", false);
+            if (goChat) {
+                navBar.setSelectedItemId(R.id.messages_menu_item);
+                //getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment).commit();
             }
+            boolean goPosts  = getIntent().getBooleanExtra("to_posts", false);
+            if (goPosts) {
+                navBar.setSelectedItemId(R.id.social_menu_item);
+            }
+
+
+        } else {
+            // When app is opened go to dashboard
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).addToBackStack(null).commit();
         }
 
     }
