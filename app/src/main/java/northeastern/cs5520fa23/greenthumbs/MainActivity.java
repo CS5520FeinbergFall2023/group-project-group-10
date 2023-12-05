@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import northeastern.cs5520fa23.greenthumbs.model.services.WeatherService;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat.ChatActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.MessageHomeFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SetLocationFragment;
@@ -101,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
         // ### Home Location ###
         //if (!isHomeLocationSet()) {
             //showSetLocationFragment();
@@ -133,24 +136,46 @@ public class MainActivity extends AppCompatActivity {
         navBar.setOnItemSelectedListener(item -> {
 
             if (item.getItemId() == R.id.dash_menu_item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment, "DASH").addToBackStack("DASH").commit();
                 return true;
             } else if (item.getItemId() == R.id.social_menu_item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, socialFragment).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, socialFragment, "SOCIAL").addToBackStack("SOCIAL").commit();
                 return true;
             } else if (item.getItemId() == R.id.garden_menu_item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, gardenFragment).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, gardenFragment, "GARDEN").addToBackStack("GARDEN").commit();
                 return true;
             } else if (item.getItemId() == R.id.settings_menu_item) {
                 //getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, createPostFragment).commit();
                 //return true;
             } else if (item.getItemId() == R.id.messages_menu_item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment, "MESSAGE").addToBackStack("MESSAGE").commit();
                 return true;
             }
 
             return false;
         });
+
+        /*
+        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                int i = getSupportFragmentManager().getBackStackEntryCount() - 1;
+                if (i >= 0) {
+                    FragmentManager.BackStackEntry entry = getSupportFragmentManager().getBackStackEntryAt(i);
+                    String fTag = entry.getName();
+                    if (fTag == "SOCIAL") {
+                        navBar.getMenu().getItem(1).setChecked(true);
+                    }
+                    getSupportFragmentManager().popBackStack(i, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                }
+
+
+
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
+
+         */
 
         if (getIntent().getExtras() != null) {
             boolean goChat  = getIntent().getBooleanExtra("to_chat", false);
@@ -166,8 +191,9 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
             // When app is opened go to dashboard
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).addToBackStack(null).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment, "DASH").commit();
         }
+
 
     }
 
