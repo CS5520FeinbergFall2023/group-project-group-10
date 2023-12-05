@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:paddingVertical="0dp"
             app:layout_constraintTop_toBottomOf="parent"
-            android:background="#356859">
+            android:background="@drawable/social_post_bg">
 
             <ImageView
                 android:id="@+id/post_prof_pic"
@@ -84,7 +84,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp"
-            android:background="#B9E4C9"
+            android:background="@drawable/social_post_footer_bg"
             android:id="@+id/card_bottom_layout"
             app:layout_constraintTop_toBottomOf="@+id/message_card_CL">
 
