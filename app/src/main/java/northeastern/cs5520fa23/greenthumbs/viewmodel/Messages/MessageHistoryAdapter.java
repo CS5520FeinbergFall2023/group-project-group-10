@@ -66,7 +66,6 @@ public class MessageHistoryAdapter extends RecyclerView.Adapter<MessageHistoryVi
 
         if (chat != null) {
             String username = chat.getOther_username();
-            Toast.makeText(context, username, Toast.LENGTH_SHORT).show();
             String lastMessage = chat.getLast_message();
             if (username != null) {
                 holder.getOther_username().setText(username);
