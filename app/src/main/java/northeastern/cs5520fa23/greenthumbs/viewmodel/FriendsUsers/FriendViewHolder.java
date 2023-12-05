@@ -1,5 +1,6 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.FriendsUsers;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;

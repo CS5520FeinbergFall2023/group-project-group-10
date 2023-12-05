@@ -1,7 +1,11 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.FriendsUsers;
 
+import static android.app.PendingIntent.getActivity;
+
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -15,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import northeastern.cs5520fa23.greenthumbs.R;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat.ChatActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.Friend;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.User;
 
@@ -55,6 +60,14 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendViewHolder> {
                 if (fName != null) {
                     holder.setFriendUsername(fName);
                     holder.getUsernameText().setText(fName);
+                    holder.getMsgButton().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent i = new Intent(context, ChatActivity.class);
+                            i.putExtra("other_username", fName);
+                            context.startActivity(i);
+                        }
+                    });
                 }
                 if (fId != null) {
                     holder.setFriendUserId(fId);
