@@ -71,7 +71,7 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
     private SearchView userSearch;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ImageView usersIcon;
-    FirebaseUser currUser;
+    private FirebaseUser currUser;
     private List<String> friendIds;
 
     public SocialFragment() {

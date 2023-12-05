@@ -31,12 +31,15 @@ public class UsersActivity extends AppCompatActivity {
     private RecyclerView userRV;
     private TextView titleText;
     private List<Friend> friendObjList;
-    private List<User> friendList;
+    private List<User> friendUserList;
+    private List<String> friendIDList;
     private List<User> usersList;
+    private List<User> originalUsers;
     private FirebaseUser currUser;
     private FirebaseDatabase db;
     private RecyclerView friendRV;
     private FriendsAdapter friendsAdapter;
+    private List<User> originalFriendsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +50,13 @@ public class UsersActivity extends AppCompatActivity {
         this.friendRV.setLayoutManager(new LinearLayoutManager(this));
         this.currUser = FirebaseAuth.getInstance().getCurrentUser();
         this.db = FirebaseDatabase.getInstance();
-        this.friendList = new ArrayList<>();
+        this.friendIDList = new ArrayList<>();
         this.usersList = new ArrayList<>();
+        this.originalUsers = new ArrayList<>();
         this.friendObjList = new ArrayList<>();
-        this.friendsAdapter = new FriendsAdapter(friendObjList, this);
+        this.friendUserList = new ArrayList<>();
+        this.originalFriendsList = new ArrayList<>();
+        this.friendsAdapter = new FriendsAdapter(friendUserList, this, friendObjList);
         this.friendRV.setAdapter(friendsAdapter);
         this.userSearch = findViewById(R.id.users_activity_search);
         this.userRV = findViewById(R.id.users_activity_rv);
@@ -59,13 +65,27 @@ public class UsersActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return false;
+                if (query.length() >= 5) {
+                    filterUsers(query);
+                } else {
+
+                    friendUserList.clear();
+                    friendsAdapter.notifyDataSetChanged();
+                    friendUserList.addAll(originalFriendsList);
+                    friendsAdapter.notifyDataSetChanged();
+                }
+                return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (newText.length() >= 5) {
                     filterUsers(newText);
+                } else {
+                    friendUserList.clear();
+                    friendsAdapter.notifyDataSetChanged();
+                    friendUserList.addAll(originalFriendsList);
+                    friendsAdapter.notifyDataSetChanged();
                 }
                 return true;
             }
@@ -76,14 +96,15 @@ public class UsersActivity extends AppCompatActivity {
     }
 
     private void loadUsers() {
-        DatabaseReference usersRef = db.getReference("users");
-        usersRef.addValueEventListener(new ValueEventListener() {
+        DatabaseReference usersRef = db.getReference().child("users");
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     User currUser = dataSnapshot.getValue(User.class);
                     //if (friend_ids.contains(currPost.getUid())) {
                     usersList.add(currUser);
+                    originalUsers.add(currUser);
                 }
                 loadFriends();
             }
@@ -97,11 +118,21 @@ public class UsersActivity extends AppCompatActivity {
     }
     private void loadFriends() {
         DatabaseReference friendRef = FirebaseDatabase.getInstance().getReference("users").child(currUser.getUid()).child("friends");
-        friendRef.addValueEventListener(new ValueEventListener() {
+        friendRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    friendObjList.add(dataSnapshot.getValue(Friend.class));
+                    Friend f = dataSnapshot.getValue(Friend.class);
+                    friendObjList.add(f);
+                    friendIDList.add(f.getFriend_id());
+
+                }
+                for (User u : usersList) {
+                    if (friendIDList.contains(u.getUser_id())) {
+                        friendUserList.add(u);
+                        originalFriendsList.add(u);
+                        friendsAdapter.notifyDataSetChanged();
+                    }
                 }
                 friendsAdapter.notifyDataSetChanged();
             }
@@ -111,9 +142,32 @@ public class UsersActivity extends AppCompatActivity {
 
             }
         });
+
+
     }
 
     private void filterUsers(String userQuery) {
+        List<User> filteredUsers = new ArrayList<>();
+        for (User u : originalUsers) {
+            if (u.getUsername().contains(userQuery)) {
+                filteredUsers.add(u);
+            }
+        }
+        /*
+        friendUserList.clear();
+        friendsAdapter.getUserList().clear();
+        friendsAdapter.notifyDataSetChanged();
+        friendsAdapter.setUserList(friendUserList);
+        friendsAdapter.notifyDataSetChanged();
+        friendUserList.addAll(filteredUsers);
+        friendsAdapter.notifyDataSetChanged();
+
+         */
+        friendsAdapter.getUserList().clear();
+        friendsAdapter.notifyDataSetChanged();
+        friendsAdapter.setUserList(filteredUsers);
+        friendsAdapter.notifyDataSetChanged();
 
     }
+
 }

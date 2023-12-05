@@ -1,6 +1,8 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.Profile;
 
-public class Friend {
+import northeastern.cs5520fa23.greenthumbs.viewmodel.User;
+
+public class Friend extends User {
     private String friend_id;
     private String status;
     private String friend_username;
