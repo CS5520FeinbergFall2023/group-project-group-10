@@ -28,7 +28,8 @@
         app:tint="@color/white"
         app:backgroundTint="#6F5329"
         app:layout_constraintBottom_toBottomOf="@+id/message_fragment_layout"
-        app:layout_constraintEnd_toEndOf="@id/message_fragment_layout" />
+        app:layout_constraintEnd_toEndOf="@id/message_fragment_layout"
+        android:contentDescription="@string/add_post_button" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

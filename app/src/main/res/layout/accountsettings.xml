@@ -30,7 +30,8 @@
         app:layout_constraintTop_toBottomOf="@id/AccountSettingsLabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        />
+        android:autofillHints="Edit Username"
+        android:inputType="text"/>
 
     <EditText
         android:id="@+id/editFirstNameSetting"
@@ -44,6 +45,8 @@
         app:layout_constraintTop_toBottomOf="@id/editUsernameSetting"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:autofillHints="Edit First Name"
+        android:inputType="text"
         />
 
     <EditText
@@ -58,6 +61,8 @@
         app:layout_constraintTop_toBottomOf="@id/editFirstNameSetting"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:autofillHints="Edit Last Name"
+        android:inputType="text"
         />
 
     <EditText
@@ -72,6 +77,8 @@
         app:layout_constraintTop_toBottomOf="@id/editLastNameSetting"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:autofillHints="Edit Email"
+        android:inputType="textEmailAddress"
         />
 
     <EditText
@@ -86,6 +93,8 @@
         app:layout_constraintTop_toBottomOf="@id/editEmailSetting"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:autofillHints="Edit Password"
+        android:inputType="textPassword"
         />
 
     <Button

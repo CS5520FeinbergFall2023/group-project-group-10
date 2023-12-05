@@ -26,12 +26,9 @@ public class MessageHistoryAdapter extends RecyclerView.Adapter<MessageHistoryVi
     @Override
     public MessageHistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.message_history_card, null);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(context, ChatActivity.class);
-                context.startActivity(i);
-            }
+        view.setOnClickListener(v -> {
+            Intent i = new Intent(context, ChatActivity.class);
+            context.startActivity(i);
         });
         return new MessageHistoryViewHolder(view);
     }
@@ -49,13 +46,10 @@ public class MessageHistoryAdapter extends RecyclerView.Adapter<MessageHistoryVi
             if (lastMessage != null) {
                 holder.getLast_message().setText(lastMessage);
             }
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent i = new Intent(context, ChatActivity.class);
-                    i.putExtra("other_username", username);
-                    context.startActivity(i);
-                }
+            holder.itemView.setOnClickListener(v -> {
+                Intent i = new Intent(context, ChatActivity.class);
+                i.putExtra("other_username", username);
+                context.startActivity(i);
             });
         }
     }

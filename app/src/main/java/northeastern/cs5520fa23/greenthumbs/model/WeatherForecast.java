@@ -2,8 +2,6 @@ package northeastern.cs5520fa23.greenthumbs.model;
 
 import java.util.List;
 
-import java.util.List;
-
 public class WeatherForecast {
     private Properties properties;
 

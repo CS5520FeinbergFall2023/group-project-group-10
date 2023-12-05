@@ -3,7 +3,6 @@ package northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed;
 import static android.content.ContentValues.TAG;
 
 import android.content.Context;
-import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -54,12 +52,7 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
             String posterId = post.getUid();
             if (username != null) {
                 holder.getUsername().setText(username);
-                holder.getUsername().setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        usernameCallback.openProfileCallback(username, posterId);
-                    }
-                });
+                holder.getUsername().setOnClickListener(v -> usernameCallback.openProfileCallback(username, posterId));
             }
             if (num_likes != null) {
                 holder.getLikes().setText(num_likes.toString());
@@ -81,12 +74,7 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
                 Log.d(TAG, "onBindViewHolder: " + postUri);
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference imgRef = storage.getReferenceFromUrl(postUri);
-                imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Glide.with(context).load(uri).into(holder.getPostImg());
-                    }
-                });
+                imgRef.getDownloadUrl().addOnSuccessListener(uri -> Glide.with(context).load(uri).into(holder.getPostImg()));
             } else {
                 postUri = null;
                 holder.getPostImg().setVisibility(View.GONE);

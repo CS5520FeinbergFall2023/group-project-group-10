@@ -1,6 +1,5 @@
 package northeastern.cs5520fa23.greenthumbs;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -14,13 +13,10 @@ import northeastern.cs5520fa23.greenthumbs.model.services.WeatherService;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.MessageHomeFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SetLocationFragment;
-import android.view.MenuItem;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
@@ -33,24 +29,18 @@ import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.CreatePostFragme
 import northeastern.cs5520fa23.greenthumbs.viewmodel.User;
 
 public class MainActivity extends AppCompatActivity {
-    private FirebaseAuth mAuth;
-    private BottomNavigationView navBar;
-    private Toolbar toolbar;
-    private DashboardFragment dashboardFragment = new DashboardFragment();
-    private SocialFragment socialFragment = new SocialFragment();
-    private GardenFragment gardenFragment = new GardenFragment();
+    private final DashboardFragment dashboardFragment = new DashboardFragment();
+    private final SocialFragment socialFragment = new SocialFragment();
+    private final GardenFragment gardenFragment = new GardenFragment();
     private final SettingsFragment settingsFragment = new SettingsFragment();
-    private CreatePostFragment createPostFragment = new CreatePostFragment();
-    private MessageHomeFragment messageHomeFragment = new MessageHomeFragment();
+    private final CreatePostFragment createPostFragment = new CreatePostFragment();
+    private final MessageHomeFragment messageHomeFragment = new MessageHomeFragment();
     private String username;
-    private String uid;
 
-    /*@Override
+    /*
+    @Override
     protected void onStart() {
-        super.onStart();
-
-    }
-
+        super.onStart();}
      */
 
     /*
@@ -59,17 +49,14 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         MenuItem notifications = menu.findItem(R.id.appbar_notifications);
         // use a layerdrawable with the number of notifications
-
-        return true;
-    }
-
+        return true;}
      */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) {
             Intent i = new Intent(MainActivity.this, LogInActivity.class);
@@ -77,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
             finish();
             return;
         }
-        uid = mAuth.getCurrentUser().getUid();
+        String uid = mAuth.getCurrentUser().getUid();
 
         FirebaseDatabase.getInstance().getReference("users").child(uid).get().addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
@@ -99,8 +86,8 @@ public class MainActivity extends AppCompatActivity {
         //btnShowSetLocation.setOnClickListener(view -> showSetLocationFragment());
         // #####
         // ### Nav bar and toolbar ###
-        navBar = findViewById(R.id.bottom_nav_menu);
-        toolbar = findViewById(R.id.toolbar);
+        BottomNavigationView navBar = findViewById(R.id.bottom_nav_menu);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
         toolbar.inflateMenu(R.menu.appbar);
 

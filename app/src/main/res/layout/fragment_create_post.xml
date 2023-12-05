@@ -32,7 +32,7 @@
             android:id="@+id/create_post_tags"
             android:layout_width="match_parent"
             android:layout_height="63dp"
-            android:hint="Add Tags"
+            android:hint="@string/add_tags"
             android:minHeight="30dp" />
 
 
@@ -42,7 +42,8 @@
             android:layout_height="100dp"
             android:src="@drawable/baseline_image_24"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            android:contentDescription="@string/blank_space" />
 
         <ProgressBar
             android:id="@+id/progress_bar"

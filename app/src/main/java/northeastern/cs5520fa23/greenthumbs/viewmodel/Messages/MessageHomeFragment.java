@@ -26,20 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import northeastern.cs5520fa23.greenthumbs.R;
-import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.SocialAdapter;
-import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.SocialPostDetails.Comment;
 
 public class MessageHomeFragment extends Fragment {
-    private RecyclerView msgHistoryRV;
     private MessageHistoryAdapter msgHistoryAdapter;
     private List<MessageHistoryItem> chats;
-    private FloatingActionButton fab;
 
-    private FirebaseDatabase db;
-    private DatabaseReference allChatRef;
     private DatabaseReference userChatRef;
-    private FirebaseUser currUser;
-    private String currUsername;
     private List<String> otherUsers;
 
     public MessageHomeFragment() {
@@ -50,10 +42,10 @@ public class MessageHomeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         chats = new ArrayList<>();
-        currUser = FirebaseAuth.getInstance().getCurrentUser();
-        currUsername = currUser.getUid();
-        db = FirebaseDatabase.getInstance();
-        allChatRef = db.getReference().child("chats");
+        FirebaseUser currUser = FirebaseAuth.getInstance().getCurrentUser();
+        String currUsername = currUser.getUid();
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference allChatRef = db.getReference().child("chats");
         userChatRef = db.getReference().child("users").child(currUsername).child("chats");
         populateOtherUsers();
     }
@@ -68,12 +60,12 @@ public class MessageHomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        msgHistoryRV = view.findViewById(R.id.message_recycler_view);
+        RecyclerView msgHistoryRV = view.findViewById(R.id.message_recycler_view);
         msgHistoryRV.setHasFixedSize(true);
         msgHistoryRV.setLayoutManager(new LinearLayoutManager(getContext()));
         msgHistoryAdapter = new MessageHistoryAdapter(chats, getContext());
         msgHistoryRV.setAdapter(msgHistoryAdapter);
-        fab = view.findViewById(R.id.post_fab);
+        FloatingActionButton fab = view.findViewById(R.id.post_fab);
 
         addChats();
         //msgHistoryAdapter.notifyItemInserted(0);

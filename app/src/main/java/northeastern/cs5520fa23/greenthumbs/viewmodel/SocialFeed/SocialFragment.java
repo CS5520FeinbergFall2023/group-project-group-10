@@ -1,9 +1,9 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed;
-
-import static android.content.ContentValues.TAG;
-
 import android.os.Bundle;
-
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Switch;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -11,16 +11,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.Switch;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,11 +20,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.Friend;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileFragment;
@@ -51,14 +39,8 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private RecyclerView socialRecyclerView;
     private SocialAdapter socialAdapter;
     private List<ImgPost> postList;
-    private FloatingActionButton fab;
     private Switch friendsSwitch;
     private SwipeRefreshLayout swipeRefreshLayout;
     FirebaseUser currUser;
@@ -89,8 +71,9 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            // TODO: Rename and change types of parameters
+            String mParam1 = getArguments().getString(ARG_PARAM1);
+            String mParam2 = getArguments().getString(ARG_PARAM2);
         }
         postList = new ArrayList<>();
     }
@@ -107,29 +90,16 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
         currUser = FirebaseAuth.getInstance().getCurrentUser();
         this.friendsSwitch = view.findViewById(R.id.friends_switch);
         this.swipeRefreshLayout = view.findViewById(R.id.social_swipe_refresh);
-        this.swipeRefreshLayout.setOnRefreshListener(() -> {
-            addPosts();
-
-        });
-        socialRecyclerView = view.findViewById(R.id.social_recycler_view);
+        this.swipeRefreshLayout.setOnRefreshListener(this::addPosts);
+        RecyclerView socialRecyclerView = view.findViewById(R.id.social_recycler_view);
         socialRecyclerView.setHasFixedSize(true);
         socialRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         socialAdapter = new SocialAdapter(postList, getContext(), this);
         socialRecyclerView.setAdapter(socialAdapter);
-        fab = view.findViewById(R.id.post_fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openCreatePostDialog();
-            }
-        });
+        FloatingActionButton fab = view.findViewById(R.id.post_fab);
+        fab.setOnClickListener(v -> openCreatePostDialog());
         addPosts();
-        friendsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                addPosts();
-            }
-        });
+        friendsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> addPosts());
     }
 
     private void addPosts() {

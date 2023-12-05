@@ -27,7 +27,6 @@ import java.util.List;
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.FriendRequests.FriendRequest;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.FriendRequests.FriendRequestAdapter;
-import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.MessageHistoryAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,10 +40,6 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    private RecyclerView frRecyclerView;
     private FriendRequestAdapter friendRequestAdapter;
     private List<FriendRequest> friendRequestList;
     private FirebaseUser currUser;
@@ -76,8 +71,9 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            // TODO: Rename and change types of parameters
+            String mParam1 = getArguments().getString(ARG_PARAM1);
+            String mParam2 = getArguments().getString(ARG_PARAM2);
         }
         currUser = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseDatabase.getInstance();
@@ -94,7 +90,7 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        frRecyclerView = view.findViewById(R.id.dash_notification_rv);
+        RecyclerView frRecyclerView = view.findViewById(R.id.dash_notification_rv);
         frRecyclerView.setHasFixedSize(true);
         frRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         friendRequestAdapter = new FriendRequestAdapter(friendRequestList, getContext(), this);

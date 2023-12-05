@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -36,7 +35,8 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/post_profile_picture" />
 
             <TextView
                 android:id="@+id/post_username"
@@ -47,7 +47,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="sans-serif"
-                android:text="Username"
+                android:text="@string/username"
                 android:textAlignment="viewStart"
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
@@ -60,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="TextView"
+                android:text="@string/textview"
                 android:textColor="@android:color/white"
                 app:layout_constraintBottom_toTopOf="@+id/social_post_image"
                 app:layout_constraintStart_toEndOf="@id/post_prof_pic"
@@ -76,7 +76,8 @@
                 android:layout_marginBottom="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/post_prof_pic"
-                app:layout_constraintTop_toBottomOf="@+id/post_text" />
+                app:layout_constraintTop_toBottomOf="@+id/post_text"
+                android:contentDescription="@string/social_post_image" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -96,7 +97,8 @@
                 android:layout_marginBottom="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/num_comments"
-                app:srcCompat="@drawable/like_outline" />
+                app:srcCompat="@drawable/like_outline"
+                android:contentDescription="@string/like_icon" />
 
             <ImageView
                 android:id="@+id/comment_icon"
@@ -106,7 +108,8 @@
                 android:layout_marginBottom="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/num_likes"
-                app:srcCompat="@drawable/comment_filled_alt" />
+                app:srcCompat="@drawable/comment_filled_alt"
+                android:contentDescription="@string/comment_icon" />
 
             <TextView
                 android:id="@+id/num_comments"
@@ -115,7 +118,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
-                android:text="0"
+                android:text="@string/_0"
                 android:textColor="@android:color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/comment_icon" />
@@ -126,7 +129,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
-                android:text="0"
+                android:text="@string/_0"
                 android:textColor="@android:color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
