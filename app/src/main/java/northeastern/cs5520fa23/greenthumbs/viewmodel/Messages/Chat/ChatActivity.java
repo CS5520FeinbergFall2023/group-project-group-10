@@ -112,6 +112,8 @@ public class ChatActivity extends AppCompatActivity {
                         msgList.add(msg);
                     }
                     msgAdapter.notifyDataSetChanged();
+                    msgRecyclerView.smoothScrollToPosition(msgList.size());
+
 
                 }
             }
@@ -169,7 +171,7 @@ public class ChatActivity extends AppCompatActivity {
                                 msgInput.setText("");
                                 hideKeyboard();
                                 updateUserChats(msgMap);
-                                msgRecyclerView.smoothScrollToPosition(msgList.size());
+                                //msgRecyclerView.smoothScrollToPosition(msgList.size());
                             }
                         }
                     });
