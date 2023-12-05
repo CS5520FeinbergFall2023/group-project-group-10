@@ -45,16 +45,13 @@ public class MainActivity extends AppCompatActivity {
     private String username;
     private String uid;
 
-    @Override
+    /*@Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user == null) {
-            Intent i = new Intent(MainActivity.this, LogInActivity.class);
-            startActivity(i);
-            finish();
-        }
+
     }
+
+     */
 
     /*
     @Override
@@ -73,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
-
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) {
             Intent i = new Intent(MainActivity.this, LogInActivity.class);
