@@ -47,9 +47,17 @@ public class SettingsFragment extends Fragment {
         Button btnShowSetLocation = settingFragmentView.findViewById(R.id.SetLocationbtn);
         btnShowSetLocation.setOnClickListener(view -> showSetLocationFragment());
 
+        Button btnShowInformation = settingFragmentView.findViewById(R.id.Informationbtn);
+        btnShowInformation.setOnClickListener(view -> showInformation());
+
         Button logoutBtn = settingFragmentView.findViewById(R.id.LogOutBtn);
         logoutBtn.setOnClickListener(v -> logOutUser());
         return settingFragmentView;
+    }
+
+    private void showInformation() {
+        Intent intent = new Intent(getActivity(), InformationActivity.class);
+        startActivity(intent);
     }
 
     private void logOutUser() {

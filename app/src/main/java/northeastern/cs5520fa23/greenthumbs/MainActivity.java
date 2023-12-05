@@ -46,16 +46,13 @@ public class MainActivity extends AppCompatActivity {
     private String username;
     private String uid;
 
-    @Override
+    /*@Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user == null) {
-            Intent i = new Intent(MainActivity.this, LogInActivity.class);
-            startActivity(i);
-            finish();
-        }
+
     }
+
+     */
 
     /*
     @Override
@@ -74,19 +71,31 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
-        uid = mAuth.getCurrentUser().getUid();
 
-        FirebaseDatabase.getInstance().getReference("users").child(uid).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!task.isSuccessful()) {
-                    Toast.makeText(MainActivity.this, "Unable to fetch username", Toast.LENGTH_LONG).show();
-                } else {
-                    User currUser = task.getResult().getValue(User.class);
-                    username = currUser.getUsername();
+        FirebaseUser user = mAuth.getCurrentUser();
+
+
+        if (user == null) {
+            Intent i = new Intent(MainActivity.this, LogInActivity.class);
+            startActivity(i);
+            finish();
+        } else {
+            String uid = user.getUid();
+            FirebaseDatabase.getInstance().getReference("users").child(uid).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if (!task.isSuccessful()) {
+                        Toast.makeText(MainActivity.this, "Unable to fetch username", Toast.LENGTH_LONG).show();
+                    } else {
+                        User currUser = task.getResult().getValue(User.class);
+                        assert currUser != null;
+                        username = currUser.getUsername();
+                    }
                 }
-            }
-        });
+            });
+        }
+
+
 
         // ### Home Location ###
         //if (!isHomeLocationSet()) {
