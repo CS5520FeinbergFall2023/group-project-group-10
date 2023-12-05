@@ -50,6 +50,11 @@ public class MessageHomeFragment extends Fragment implements MessageHistoryAdapt
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         chats = new ArrayList<>();

@@ -112,6 +112,7 @@ public class ChatActivity extends AppCompatActivity {
                         msgList.add(msg);
                     }
                     msgAdapter.notifyDataSetChanged();
+
                 }
             }
 
@@ -167,7 +168,8 @@ public class ChatActivity extends AppCompatActivity {
                             } else {
                                 msgInput.setText("");
                                 hideKeyboard();
-                                getMessages();
+                                updateUserChats(msgMap);
+                                msgRecyclerView.smoothScrollToPosition(msgList.size());
                             }
                         }
                     });
@@ -224,6 +226,42 @@ public class ChatActivity extends AppCompatActivity {
 
 
                 }
+            }
+        });
+    }
+
+    private void updateUserChats(Map<String, Object> msgMap) {
+        Map<String, Object> updatesOne = new HashMap<>();
+        updatesOne.put("timestamp", msgMap.get("timestamp"));
+        updatesOne.put("last_message", msgMap.get("messageContent"));
+        updatesOne.put("other_username", otherUsername);
+
+        db.getReference("users").child(currUser.getUid()).child("chats").child(otherUserID).updateChildren(updatesOne).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Map<String, Object> updatesTwo = new HashMap<>();
+                updatesTwo.put("timestamp", msgMap.get("timestamp"));
+                updatesTwo.put("last_message", msgMap.get("messageContent"));
+                updatesTwo.put("other_username", currUsername);
+                db.getReference("users").child(otherUserID).child("chats").child(currUser.getUid()).updateChildren(updatesTwo).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        //getMessages();
+                        updateChatsHistory(msgMap);
+                    }
+                });
+            }
+        });
+
+    }
+    private void updateChatsHistory(Map<String, Object> msgMap) {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("last_message", msgMap.get("messageContent"));
+        updates.put("timestamp", msgMap.get("timestamp"));
+        db.getReference("chats").child(chatID).updateChildren(updates).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                getMessages();
             }
         });
     }

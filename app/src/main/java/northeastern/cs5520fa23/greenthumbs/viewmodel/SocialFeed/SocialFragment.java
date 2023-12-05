@@ -149,6 +149,8 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
         this.swipeRefreshLayout.setOnRefreshListener(() -> {
             if (friendsSwitch.isChecked()) {
                 addPosts(true);
+            } else {
+                addPosts(false);
             }
         });
         socialRecyclerView = view.findViewById(R.id.social_recycler_view);
