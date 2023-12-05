@@ -1,5 +1,6 @@
 package northeastern.cs5520fa23.greenthumbs;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -48,12 +49,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user == null) {
-            Intent i = new Intent(MainActivity.this, LogInActivity.class);
-            startActivity(i);
-            finish();
-        }
+//        FirebaseUser user = mAuth.getCurrentUser();
+//        if (user == null) {
+//            Intent i = new Intent(MainActivity.this, LogInActivity.class);
+//            startActivity(i);
+//            finish();
+//        }
     }
 
     /*
@@ -73,6 +74,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
+
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null) {
+            Intent i = new Intent(MainActivity.this, LogInActivity.class);
+            startActivity(i);
+            finish();
+        }
+
         uid = mAuth.getCurrentUser().getUid();
 
         FirebaseDatabase.getInstance().getReference("users").child(uid).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
