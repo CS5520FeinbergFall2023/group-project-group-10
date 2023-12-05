@@ -12,6 +12,7 @@
             android:background="@drawable/rounded_corners_background_dg"
             android:layout_width="0dp"
             android:padding="8dp"
+            android:fontFamily="@font/youngserifregular"
             android:layout_marginStart="10dp"
             app:layout_constraintWidth_max="200dp"
             android:layout_height="wrap_content"
@@ -22,6 +23,7 @@
 
         <TextView
             android:id="@+id/msg_timestamp"
+            android:fontFamily="@font/youngserifregular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TimeStamp"
