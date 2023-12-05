@@ -300,10 +300,6 @@ public class ProfileFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     User user = dataSnapshot.getValue(User.class);
-                    Toast.makeText(getActivity(), user.toString(), Toast.LENGTH_LONG).show();
-
-                    //Boolean t = user.getHeader_image() == null; true
-                    //Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_LONG).show();
                     if (user.getHeader_image() != null) {
                         Toast.makeText(getActivity(), "HERE", Toast.LENGTH_LONG).show();
 
