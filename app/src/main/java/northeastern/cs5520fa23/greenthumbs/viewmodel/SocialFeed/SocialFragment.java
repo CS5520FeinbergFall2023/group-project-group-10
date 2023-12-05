@@ -328,7 +328,7 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
         //args.putString("ARG_USERNAME", username);
         Fragment profileFragment = ProfileFragment.newInstance(username, posterId);
         //profileFragment.setArguments(args);
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, profileFragment).commit();
+        getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), profileFragment).addToBackStack(null).commit();
     }
     private boolean inFilter(ImgPost post, String filterQuery) {
         if (post.getPost_text().toLowerCase().contains(filterQuery.toLowerCase())) {
