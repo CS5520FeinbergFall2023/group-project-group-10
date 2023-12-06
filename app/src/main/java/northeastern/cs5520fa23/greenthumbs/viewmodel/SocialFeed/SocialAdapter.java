@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.nfc.Tag;
 import android.util.Log;
@@ -94,7 +95,8 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
                     public void onComplete(@NonNull Task<Uri> task) {
                         if (!task.isSuccessful()) {
                             Log.d("HAS_NO_PIC", profPicRef.toString());
-                            //Picasso.get().load(R.drawable.baseline_tag_faces_24).resize(40, 40).centerCrop().into(holder.getPostProfPic());
+                            Drawable d = context.getDrawable(R.drawable.baseline_person_24);
+                            holder.getPostProfPic().setImageDrawable(d);
                         } else {
                             Uri uri = task.getResult();
                             //Picasso.get().load(uri).resize(40, 40).centerCrop().into(holder.getPostProfPic());

@@ -286,7 +286,6 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
                         friend_ids.add(user_friend.getFriend_id());
                         friendIds.add(user_friend.getFriend_id());
                     }
-                    //socialAdapter.notifyDataSetChanged();
                 }
                 Query query = dbRef.orderByChild("timestamp").limitToLast(100);
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -294,11 +293,8 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                             ImgPost currPost = dataSnapshot.getValue(ImgPost.class);
-                            //if (friend_ids.contains(currPost.getUid())) {
                                 postList.add(currPost);
                                 originalPosts.add(currPost);
-                                //socialAdapter.notifyDataSetChanged();
-                            //}
                         }
                         getUserTopPlants();
                     }
@@ -325,10 +321,7 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
 
     @Override
     public void openProfileCallback(String username, String posterId) {
-        //Bundle args = new Bundle();
-        //args.putString("ARG_USERNAME", username);
         Fragment profileFragment = ProfileFragment.newInstance(username, posterId);
-        //profileFragment.setArguments(args);
         getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), profileFragment).addToBackStack(null).commit();
     }
     private boolean inFilter(ImgPost post, String filterQuery) {
@@ -344,75 +337,23 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
     }
     private void filterPosts(String filterQuery) {
         List<ImgPost> filteredPosts = new ArrayList<>();
-        //List<ImgPost> temp = new ArrayList<>();
-
         for (ImgPost post : originalPosts) {
-            //temp.add(post);
-            //Boolean t = post.getPost_text().contains(filterQuery);
-            //Toast.makeText(getContext(), t.toString(), Toast.LENGTH_SHORT).show();
-
             if (inFilter(post, filterQuery) == true) {
                 filteredPosts.add(post);
             }
         }
-        /*
-        int size = postList.size();
-        postList.clear();
-        socialAdapter.notifyItemRangeChanged(0,size);
-        for (ImgPost post : filteredPosts) {
-            int s = postList.size();
-            postList.add(post);
-            socialAdapter.notifyItemInserted(s);
-        }
-        //postList.addAll(filteredPosts);
-        socialAdapter.notifyDataSetChanged();
-
-         */
         socialAdapter.setPosts(filteredPosts);
     }
 
     private void filterFriendsPosts() {
         List<ImgPost> filteredPosts = new ArrayList<>();
-        int logsize = postList.size();
-        Log.d("posts size", logsize + "");
-        /*
-        for (ImgPost post : postList) {
-            for (String id : friendIds) {
-                if (id.equals(post.getUid())) {
-                    filteredPosts.add(post);
-                    Log.d("FILTER_FRIENDS", id);
-                }
-            }
-        }
-
-         */
         for (int i = postList.size() - 1; i >= 0; i--) {
-            if (friendIds.contains(postList.get(i).getUid()))
-            //for (String id : friendIds) {
-                //if (id.equals(postList.get(i).getUid())) {
-            {
+            if (friendIds.contains(postList.get(i).getUid())) {
                 filteredPosts.add(postList.get(i));
                 Log.d("FILTER_FRIENDS", postList.get(i).getUid());
             }
-                //}
-            //}
-            //postList.remove(i);
-            //socialAdapter.notifyItemRemoved(i);
         }
-
-        for (int i = 0; i < filteredPosts.size(); i++) {
-            //postList.add(filteredPosts.get(i));
-            //socialAdapter.notifyItemInserted(i);
-        }
-
-        //socialAdapter.notifyDataSetChanged();
         socialAdapter.setPosts(filteredPosts);
-
-
-        //postList.clear();
-        //postList.addAll(filteredPosts);
-
-        return;
     }
     private void filterAllPosts() {
         socialAdapter.setPosts(originalPosts);
