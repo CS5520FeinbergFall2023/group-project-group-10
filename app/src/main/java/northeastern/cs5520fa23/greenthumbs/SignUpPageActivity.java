@@ -2,20 +2,18 @@ package northeastern.cs5520fa23.greenthumbs;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,9 +25,6 @@ public class SignUpPageActivity extends AppCompatActivity {
     private EditText lastNameEditText;
     private EditText emailEditText;
     private EditText passwordEditText;
-    private Button signUpButton;
-
-    private FirebaseFirestore db;
 
     private FirebaseAuth mAuth;
 
@@ -39,39 +34,36 @@ public class SignUpPageActivity extends AppCompatActivity {
         setContentView(R.layout.sign_up_page);
 
         mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         usernameEditText = findViewById(R.id.editTextUserName);
         firstNameEditText = findViewById(R.id.editTextFirstName);
         lastNameEditText = findViewById(R.id.editTextLastName);
         emailEditText = findViewById(R.id.editTextemail);
         passwordEditText = findViewById(R.id.editTextTextPassword);
-        signUpButton = findViewById(R.id.SignUpbutton);
+        Button signUpButton = findViewById(R.id.SignUpbutton);
 
-        signUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String username = usernameEditText.getText().toString().trim();
-                String firstName = firstNameEditText.getText().toString().trim();
-                String lastName = lastNameEditText.getText().toString().trim();
-                String email = emailEditText.getText().toString().trim();
-                String password = passwordEditText.getText().toString().trim();
+        signUpButton.setOnClickListener(v -> {
+            String username = usernameEditText.getText().toString().trim();
+            String firstName = firstNameEditText.getText().toString().trim();
+            String lastName = lastNameEditText.getText().toString().trim();
+            String email = emailEditText.getText().toString().trim();
+            String password = passwordEditText.getText().toString().trim();
 
-                if(validateInput(username, firstName, lastName, email, password)) {
-                    createUser(email, password, username, firstName, lastName, new UserCreationCallback() {
-                        @Override
-                        public void onSuccess(FirebaseUser fbUser) {
-                            Toast.makeText(SignUpPageActivity.this, "Successfully created the user!", Toast.LENGTH_SHORT).show();
-                            moveToLogin();
-                        }
+            if(validateInput(username, firstName, lastName, email, password)) {
+                createUser(email, password, username, firstName, lastName, new UserCreationCallback() {
+                    @Override
+                    public void onSuccess(FirebaseUser fbUser) {
+                        Toast.makeText(SignUpPageActivity.this, "Successfully created the user!", Toast.LENGTH_SHORT).show();
+                        moveToLogin();
+                    }
 
-                        @Override
-                        public void onFailure(Exception e) {
-                            // Handle failure in user creation
-                            Toast.makeText(SignUpPageActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
+                    @Override
+                    public void onFailure(Exception e) {
+                        // Handle failure in user creation
+                        Toast.makeText(SignUpPageActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }

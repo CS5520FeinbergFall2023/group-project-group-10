@@ -2,7 +2,6 @@ package northeastern.cs5520fa23.greenthumbs;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -14,7 +13,6 @@ import com.google.firebase.auth.FirebaseAuth;
 public class LogInPageActivity extends AppCompatActivity {
     private EditText emailEditText;
     private EditText passwordEditText;
-    private Button logInButton;
 
     private FirebaseAuth mAuth;
 
@@ -27,19 +25,16 @@ public class LogInPageActivity extends AppCompatActivity {
 
         emailEditText = findViewById(R.id.edit_text_email_login);
         passwordEditText = findViewById(R.id.edit_text_pass_login);
-        logInButton = findViewById(R.id.enter_log_in);
+        Button logInButton = findViewById(R.id.enter_log_in);
 
 
 
-        logInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                String email = emailEditText.getText().toString().trim();
-                String password = passwordEditText.getText().toString().trim();
+        logInButton.setOnClickListener(v -> {
+            String email = emailEditText.getText().toString().trim();
+            String password = passwordEditText.getText().toString().trim();
 
-                if(validateInput(email, password)) {
-                    signInUser(email, password);
-                }
+            if(validateInput(email, password)) {
+                signInUser(email, password);
             }
         }
         );

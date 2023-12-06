@@ -2,35 +2,52 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_green"
     android:orientation="vertical"
     android:padding="18dp">
 
     <EditText
         android:id="@+id/editTextLatitude"
         android:layout_width="match_parent"
+        android:textColorHint="@color/dark_green"
+        android:fontFamily="@font/youngserifregular"
         android:layout_height="40dp"
-        android:hint="Enter Latitude"
-        android:padding="8dp"/>
+        android:background="@color/light_yellow"
+        android:hint="@string/enter_latitude"
+        android:padding="8dp"
+        android:autofillHints="Enter Latitude"
+        android:inputType="number"/>
 
     <EditText
         android:id="@+id/editTextLongitude"
         android:layout_width="match_parent"
+        android:fontFamily="@font/youngserifregular"
+        android:background="@color/light_yellow"
+        android:textColorHint="@color/dark_green"
         android:layout_height="40dp"
-        android:hint="Enter Longitude"
-        android:padding="8dp"/>
+        android:hint="@string/enter_longitude"
+        android:padding="8dp"
+        android:autofillHints="Enter Longitude"
+        android:inputType="number" />
 
     <Button
         android:id="@+id/btnSaveLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save Location"
+        android:textColor="@color/light_green"
+        android:fontFamily="@font/youngserifregular"
+        android:backgroundTint="@color/dark_green"
+        android:text="@string/save_location"
         android:layout_marginTop="10dp"/>
 
     <Button
         android:id="@+id/btnFetchLocation"
         android:layout_width="match_parent"
+        android:backgroundTint="@color/dark_green"
+        android:textColor="@color/light_green"
+        android:fontFamily="@font/youngserifregular"
         android:layout_height="wrap_content"
-        android:text="Fetch Current Location"/>
+        android:text="@string/fetch_current_location"/>
 
 </LinearLayout>
 

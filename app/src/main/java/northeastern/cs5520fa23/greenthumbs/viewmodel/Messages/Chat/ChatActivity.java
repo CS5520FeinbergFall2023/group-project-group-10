@@ -5,7 +5,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,20 +15,17 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,19 +33,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 import northeastern.cs5520fa23.greenthumbs.MainActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
-import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.SocialPostDetails.SocialPostDetailsActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.User;
 
 public class ChatActivity extends AppCompatActivity {
-    private RecyclerView msgRecyclerView;
     private MessageAdapter msgAdapter;
     private List<ChatMessage> msgList;
     private EditText msgInput;
-    private ImageButton sendMsgButton;
-    private TextView otherUsernameHeader;
     private FirebaseDatabase db;
     private FirebaseUser currUser;
     private String otherUserID;
@@ -87,16 +78,11 @@ public class ChatActivity extends AppCompatActivity {
 
         msgList = new ArrayList<>();
         msgInput = findViewById(R.id.send_msg_input);
-        sendMsgButton = findViewById(R.id.send_msg_button);
-        otherUsernameHeader = findViewById(R.id.chat_activity_header_username);
+        ImageButton sendMsgButton = findViewById(R.id.send_msg_button);
+        TextView otherUsernameHeader = findViewById(R.id.chat_activity_header_username);
         otherUsernameHeader.setText(this.otherUsername);
-        sendMsgButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendMsg();
-            }
-        });
-        msgRecyclerView = findViewById(R.id.chat_recycler_view);
+        sendMsgButton.setOnClickListener(v -> sendMsg());
+        RecyclerView msgRecyclerView = findViewById(R.id.chat_recycler_view);
         msgRecyclerView.setHasFixedSize(true);
         msgRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         msgAdapter = new MessageAdapter(msgList, this);
@@ -188,9 +174,6 @@ public class ChatActivity extends AppCompatActivity {
                         }
                     });
                 }
-            }
-        });
-    }
 
     private void hideKeyboard() {
         View view = this.getCurrentFocus();
@@ -234,11 +217,8 @@ public class ChatActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                    });
-
-
-
-
+                    }
+                });
                 }
             }
         });

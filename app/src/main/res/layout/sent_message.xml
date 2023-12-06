@@ -14,10 +14,11 @@
         <TextView
             android:id="@+id/msg_timestamp"
             android:layout_width="0dp"
+            android:fontFamily="@font/youngserifregular"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TimeStamp"
-            android:textColor="#6F5329"/>
+            android:text="@string/timestamp"
+            android:textColor="@color/dark_green"/>
         <!--
         <TextView
             android:id="@+id/msg_content"
@@ -43,13 +44,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/sentMessageInFrame"
-                android:textColor="@color/light_yellow"
+                android:textColor="@color/dark_green"
+                android:fontFamily="@font/youngserifregular"
                 android:background="@drawable/speech_bubble"
                 android:textSize="16sp"
                 android:maxWidth="200dp"
                 android:minWidth="50dp"
                 android:padding="24dp"
-                android:text="Message Content Message Content Message Content Message Content Message Content Message Content "/>
+                android:text="@string/message_content_message_content_message_content_message_content_message_content_message_content"/>
+
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/speech_bubble"
+                android:rotation="-360"
+                android:contentDescription="@string/speech_bubble" />
+
+        </FrameLayout>
 
 
     </LinearLayout>
