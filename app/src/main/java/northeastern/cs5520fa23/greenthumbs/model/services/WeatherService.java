@@ -2,6 +2,7 @@ package northeastern.cs5520fa23.greenthumbs.model.services;
 
 import android.annotation.SuppressLint;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 
@@ -18,6 +19,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+
 import com.google.gson.Gson;
 
 public class WeatherService extends Service {
@@ -25,6 +29,9 @@ public class WeatherService extends Service {
     public static final String longitude = "-71.0947";
     private static final OkHttpClient client = new OkHttpClient();
     private static final Gson gson = new Gson();
+    public static final String ACTION_WEATHER_UPDATE = "com.example.weatherapp.ACTION_WEATHER_UPDATE";
+    public static final String EXTRA_WEATHER_DATA = "com.example.weatherapp.EXTRA_WEATHER_DATA";
+
 
     @Nullable
     @Override
@@ -39,7 +46,7 @@ public class WeatherService extends Service {
 
         new Thread(() -> {
             String urlString = getForecastUrl(boxX, boxY);
-            fetchPeriodData(urlString);
+            fetchPeriodData(urlString, WeatherService.this);
         }).start();
 
         return START_NOT_STICKY;
@@ -64,29 +71,29 @@ public class WeatherService extends Service {
     /** Returns a list of periods with each of them an hour different from the previous.
      * The period 0 marks the current weather conditions.
      * @param url URL to fetch temperature from
-     * @return list of periods
      */
-    public static List<String> fetchPeriodData(String url) {
+    public static void fetchPeriodData(String url, Context context) {
         Request request = new Request.Builder().url(url).build();
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
             assert response.body() != null;
             WeatherForecast forecast = gson.fromJson(response.body().string(), WeatherForecast.class);
-            List requiredPeriods = new ArrayList<String>();
+            List<String> requiredPeriods = new ArrayList<>();
             List<WeatherForecast.Period> periods = forecast.getPeriods();
             requiredPeriods.add(checkWeatherCondition(periods.get(0).getShortForecast()));
             requiredPeriods.add(checkWeatherCondition(periods.get(24).getShortForecast()));
             requiredPeriods.add(checkWeatherCondition(periods.get(48).getShortForecast()));
-            return requiredPeriods;
+            Intent intent = new Intent(ACTION_WEATHER_UPDATE);
+            intent.putStringArrayListExtra(EXTRA_WEATHER_DATA, new ArrayList<>(requiredPeriods));
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
         }
     }
 
     public static String checkWeatherCondition(String inputString) {
-        List<String> conditions = Arrays.asList("sunny", "cloudy", "rainy");
+        List<String> conditions = Arrays.asList("sunny", "cloudy", "rainy", "snow", "clear");
 
         for (String condition : conditions) {
             if (inputString.toLowerCase().contains(condition)) {

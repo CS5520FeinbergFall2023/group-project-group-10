@@ -7,32 +7,36 @@ import android.content.Intent;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import northeastern.cs5520fa23.greenthumbs.R;
 
 public class WeatherUpdateReceiver extends BroadcastReceiver {
 
-    private final Activity activity;
+    private final Fragment fragment;
+    public static final String ACTION_WEATHER_UPDATE = "com.example.weatherapp.ACTION_WEATHER_UPDATE";
+    public static final String EXTRA_WEATHER_DATA = "com.example.weatherapp.EXTRA_WEATHER_DATA";
 
-    // Constructor to pass the Activity
-    public WeatherUpdateReceiver(Activity activity) {
-        this.activity = activity;
+    public WeatherUpdateReceiver(Fragment fragment) {
+        this.fragment = fragment;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        ArrayList<String> forecasts = intent.getStringArrayListExtra("WEATHER_FORECASTS");
+        ArrayList<String> forecasts = intent.getStringArrayListExtra(EXTRA_WEATHER_DATA);
         if (forecasts != null && forecasts.size() >= 3) {
             // Get references to the UI components
-            ImageView imgToday = activity.findViewById(R.id.img_weather_today);
-            TextView txtToday = activity.findViewById(R.id.txt_weather_today);
-            ImageView imgTomorrow = activity.findViewById(R.id.img_weather_tomorrow);
-            TextView txtTomorrow = activity.findViewById(R.id.txt_weather_tomorrow);
-            ImageView imgDayAfter = activity.findViewById(R.id.img_weather_day_after);
-            TextView txtDayAfter = activity.findViewById(R.id.txt_weather_day_after);
+            ImageView imgToday = fragment.requireView().findViewById(R.id.img_weather_today);
+            TextView txtToday = fragment.requireView().findViewById(R.id.txt_weather_today);
+            ImageView imgTomorrow = fragment.requireView().findViewById(R.id.img_weather_tomorrow);
+            TextView txtTomorrow = fragment.requireView().findViewById(R.id.txt_weather_tomorrow);
+            ImageView imgDayAfter = fragment.requireView().findViewById(R.id.img_weather_day_after);
+            TextView txtDayAfter = fragment.requireView().findViewById(R.id.txt_weather_day_after);
 
             // Update the UI components with the new data
             updateWeatherView(imgToday, txtToday, forecasts.get(0));
@@ -50,11 +54,14 @@ public class WeatherUpdateReceiver extends BroadcastReceiver {
     private int getWeatherIconResource(String forecast) {
         switch (forecast.toLowerCase()) {
             case "sunny":
+                case "clear":
                 return R.drawable.sunny_24;
             case "cloudy":
                 return R.drawable.cloud_24;
             case "rainy":
                 return R.drawable.water_drop_24;
+            case "snow":
+                return R.drawable.snow_24;
             default:
                 return R.drawable.baseline_question_mark_24;
         }

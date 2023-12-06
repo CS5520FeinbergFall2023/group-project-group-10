@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "128775639651",
+    "firebase_url": "https://greenthumbs-19702-default-rtdb.firebaseio.com",
+    "project_id": "greenthumbs-19702",
+    "storage_bucket": "greenthumbs-19702.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:128775639651:android:87824e1390dc28d05e9e56",
+        "android_client_info": {
+          "package_name": "northeastern.cs5520fa23.greenthumbs"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjVSS-U7KuaKw9oqz6drWtljmtdwwo9BA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
