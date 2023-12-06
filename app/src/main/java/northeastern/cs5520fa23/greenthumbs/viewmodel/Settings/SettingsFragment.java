@@ -6,10 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
 import androidx.fragment.app.Fragment;
 import com.google.firebase.auth.FirebaseAuth;
 import northeastern.cs5520fa23.greenthumbs.LogInActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.SetLocationFragment;
 
 public class SettingsFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
@@ -41,9 +43,20 @@ public class SettingsFragment extends Fragment {
             startActivity(intent);
         });
 
+        Button btnShowSetLocation = settingFragmentView.findViewById(R.id.SetLocationbtn);
+        btnShowSetLocation.setOnClickListener(view -> showSetLocationFragment());
+
+        Button btnShowInformation = settingFragmentView.findViewById(R.id.Informationbtn);
+        btnShowInformation.setOnClickListener(view -> showInformation());
+
         Button logoutBtn = settingFragmentView.findViewById(R.id.LogOutBtn);
         logoutBtn.setOnClickListener(v -> logOutUser());
         return settingFragmentView;
+    }
+
+    private void showInformation() {
+        Intent intent = new Intent(getActivity(), InformationActivity.class);
+        startActivity(intent);
     }
 
     private void logOutUser() {
@@ -55,6 +68,19 @@ public class SettingsFragment extends Fragment {
         if(getActivity() != null){
             getActivity().finish();
 
+        }
+    }
+
+    private void showSetLocationFragment() {
+        View view = getView();
+        if (view != null) {
+            View overlayFrame = view.findViewById(R.id.overlay_frame);
+            if (overlayFrame != null && overlayFrame.getVisibility() == View.GONE) {
+                overlayFrame.setVisibility(View.VISIBLE);
+                SetLocationFragment setLocationFragment = new SetLocationFragment();
+                setLocationFragment.show(getParentFragmentManager(), "setLocationFragment");
+                overlayFrame.setVisibility(View.GONE);
+            }
         }
     }
 }

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_green"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".viewmodel.Profile.ProfileFragment">
 
@@ -10,11 +11,12 @@
         android:id="@+id/profile_header_image"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/black"
+        android:background="@color/light_green"
         app:layout_constraintHeight_percent=".2"
         app:layout_constraintTop_toTopOf="parent"
         android:scaleType="fitCenter"
-        android:adjustViewBounds="true"/>
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/profile_header_image" />
     <ImageView
         android:id="@+id/profile_prof_pic"
         android:background="@color/white"
@@ -24,13 +26,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:scaleType="fitCenter"
-        android:adjustViewBounds="true"/>
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/profile_picture" />
 
     <Button
         android:id="@+id/profile_edit_button"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:text="edit pofile"
+        android:textColor="@color/light_yellow"
+        android:backgroundTint="@color/dark_green"
+        android:fontFamily="@font/youngserifregular"
+        android:text="@string/edit_profile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -38,30 +44,43 @@
         android:id="@+id/profile_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/light_yellow"
+        android:fontFamily="@font/youngserifregular"
         app:layout_constraintHeight_percent="0.025"
         app:layout_constraintTop_toBottomOf="@id/profile_prof_pic"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="NAME HERE"
+        android:text="@string/name_here"
+        android:hint="@string/name_here"
         android:background="@null"
-        android:inputType="none"/>
+        android:inputType="none"
+        android:autofillHints="Name Here" />
     <EditText
         android:id="@+id/profile_user_bio"
         android:layout_width="wrap_content"
+        android:fontFamily="@font/youngserifregular"
+        android:textColor="@color/light_yellow"
         android:layout_height="wrap_content"
         app:layout_constraintHeight_percent="0.025"
         app:layout_constraintTop_toBottomOf="@id/profile_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="USER CAN PUT THEIR BIO HERE"
-        android:background="@null"/>
+        android:text="@string/user_can_put_their_bio_here"
+        android:background="@null"
+        android:inputType="text"
+        android:autofillHints="Input Bio Here" />
+
 
     <Button
         android:id="@+id/profile_friend_button"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:text="Add Friend"
-        app:layout_constraintHeight_percent="0.05"
+        android:backgroundTint="@color/dark_green"
+        android:text="@string/add_friend"
+        android:textColor="@color/light_yellow"
+        android:fontFamily="@font/youngserifregular"
+        app:layout_constraintHeight_percent="0.06"
+
         app:layout_constraintTop_toBottomOf="@id/profile_user_bio"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/profile_msg_button"/>
@@ -69,8 +88,11 @@
         android:id="@+id/profile_msg_button"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:text="Message"
-        app:layout_constraintHeight_percent="0.05"
+        android:text="@string/message"
+        android:backgroundTint="@color/dark_green"
+        android:fontFamily="@font/youngserifregular"
+        android:textColor="@color/light_yellow"
+        app:layout_constraintHeight_percent="0.06"
         app:layout_constraintTop_toBottomOf="@id/profile_user_bio"
         app:layout_constraintStart_toEndOf="@+id/profile_friend_button"
         app:layout_constraintEnd_toEndOf="parent"
@@ -79,8 +101,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/profile_posts_rv"
         android:layout_width="match_parent"
+        android:background="@color/light_yellow"
         android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.7"
+        app:layout_constraintHeight_percent="0.6"
         app:layout_constraintVertical_weight="1"
         app:layout_constraintTop_toBottomOf="@+id/profile_friend_button"
         app:layout_constraintBottom_toBottomOf="parent"/>

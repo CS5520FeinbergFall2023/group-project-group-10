@@ -8,14 +8,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +40,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestView
     @NonNull
     @Override
     public FriendRequestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.friend_request_layout, null);
+        View view = LayoutInflater.from(context).inflate(R.layout.friend_request_layout, parent, false);
         return new FriendRequestViewHolder(view);
     }
 
@@ -64,18 +60,8 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestView
             if (fromUsername != null) {
                 holder.getRequestUsername().setText(fromUsername);
             }
-            holder.getAcceptButton().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    approveRequest(fromUsername, fromUid, holder.getAdapterPosition());
-                }
-            });
-            holder.getDenyButton().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    denyRequest(fromUid, holder.getAdapterPosition());
-                }
-            });
+            holder.getAcceptButton().setOnClickListener(v -> approveRequest(fromUsername, fromUid, holder.getAdapterPosition()));
+            holder.getDenyButton().setOnClickListener(v -> denyRequest(fromUid, holder.getAdapterPosition()));
          }
     }
     private void denyRequest(String fromUid, int position) {
@@ -91,28 +77,22 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestView
         DatabaseReference othersFriendRef = db.getReference("users").child(fromUid).child("friends").child(currUser.getUid());
         Map<String, Object> friendUpdate = new HashMap<>();
         friendUpdate.put("status", "friends");
-        othersFriendRef.updateChildren(friendUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (!task.isSuccessful()) {
-                    Toast.makeText(context, "Unable to approve request", Toast.LENGTH_LONG).show();
-                } else {
-                    DatabaseReference fRef = db.getReference("users").child(currUser.getUid()).child("friends").child(fromUid);
-                    Map<String, Object> update = new HashMap<>();
-                    update.put("friend_id", fromUid);
-                    update.put("friend_username", fromUsername);
-                    update.put("status", "friends");
-                    fRef.setValue(update).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (!task.isSuccessful()) {
-                                Toast.makeText(context, "Unable to add friend", Toast.LENGTH_LONG).show();
-                            } else {
-                                friendRequestCallback.removeRequestCallback(position);
-                            }
-                        }
-                    });
-                }
+        othersFriendRef.updateChildren(friendUpdate).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                Toast.makeText(context, "Unable to approve request", Toast.LENGTH_LONG).show();
+            } else {
+                DatabaseReference fRef = db.getReference("users").child(currUser.getUid()).child("friends").child(fromUid);
+                Map<String, Object> update = new HashMap<>();
+                update.put("friend_id", fromUid);
+                update.put("friend_username", fromUsername);
+                update.put("status", "friends");
+                fRef.setValue(update).addOnCompleteListener(task1 -> {
+                    if (!task1.isSuccessful()) {
+                        Toast.makeText(context, "Unable to add friend", Toast.LENGTH_LONG).show();
+                    } else {
+                        friendRequestCallback.removeRequestCallback(position);
+                    }
+                });
             }
         });
     }
