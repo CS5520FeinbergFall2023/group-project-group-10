@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,6 +36,7 @@ import northeastern.cs5520fa23.greenthumbs.model.services.WeatherService;
 import northeastern.cs5520fa23.greenthumbs.model.weather.WeatherUpdateReceiver;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.FriendRequests.FriendRequest;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.FriendRequests.FriendRequestAdapter;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.Weather.WeatherViewModel;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.MessageHistoryAdapter;
 
 /**
@@ -56,6 +60,7 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
     private FirebaseUser currUser;
     private FirebaseDatabase db;
     private WeatherUpdateReceiver weatherUpdateReceiver;
+    private WeatherViewModel weatherViewModel;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -85,7 +90,8 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
         currUser = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseDatabase.getInstance();
         friendRequestList = new ArrayList<>();
-        weatherUpdateReceiver = new WeatherUpdateReceiver(this);
+        weatherViewModel = new ViewModelProvider(requireActivity()).get(WeatherViewModel.class);
+        weatherUpdateReceiver = new WeatherUpdateReceiver(weatherViewModel);
     }
 
     @Override
@@ -104,6 +110,7 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
         friendRequestAdapter = new FriendRequestAdapter(friendRequestList, getContext(), this);
         frRecyclerView.setAdapter(friendRequestAdapter);
         getFriendRequests();
+        weatherViewModel.getForecasts().observe(getViewLifecycleOwner(), this::updateUIWithWeatherData);
     }
 
     private void getFriendRequests() {
@@ -149,5 +156,41 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(weatherUpdateReceiver);
+    }
+
+    private void updateUIWithWeatherData(ArrayList<String> forecasts) {
+        ImageView imgToday = this.requireView().findViewById(R.id.img_weather_today);
+        TextView txtToday = this.requireView().findViewById(R.id.txt_weather_today);
+        ImageView imgTomorrow = this.requireView().findViewById(R.id.img_weather_tomorrow);
+        TextView txtTomorrow = this.requireView().findViewById(R.id.txt_weather_tomorrow);
+        ImageView imgDayAfter = this.requireView().findViewById(R.id.img_weather_day_after);
+        TextView txtDayAfter = this.requireView().findViewById(R.id.txt_weather_day_after);
+
+        // Update the UI components with the new data
+        updateWeatherView(imgToday, txtToday, forecasts.get(0));
+        updateWeatherView(imgTomorrow, txtTomorrow, forecasts.get(1));
+        updateWeatherView(imgDayAfter, txtDayAfter, forecasts.get(2));
+    }
+
+    private void updateWeatherView(ImageView weatherIcon, TextView weatherText, String forecast) {
+        int resourceIcon = getWeatherIconResource(forecast);
+        weatherIcon.setImageResource(resourceIcon);
+        weatherText.setText(forecast);
+    }
+
+    private int getWeatherIconResource(String forecast) {
+        switch (forecast.toLowerCase()) {
+            case "sunny":
+            case "clear":
+                return R.drawable.sunny_24;
+            case "cloudy":
+                return R.drawable.cloud_24;
+            case "rainy":
+                return R.drawable.water_drop_24;
+            case "snow":
+                return R.drawable.snow_24;
+            default:
+                return R.drawable.baseline_question_mark_24;
+        }
     }
 }
