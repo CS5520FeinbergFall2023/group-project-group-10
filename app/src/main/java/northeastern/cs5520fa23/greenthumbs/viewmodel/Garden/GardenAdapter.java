@@ -2,7 +2,9 @@ package northeastern.cs5520fa23.greenthumbs.viewmodel.Garden;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,22 +16,15 @@ import northeastern.cs5520fa23.greenthumbs.R;
 
 public class GardenAdapter extends RecyclerView.Adapter<GardenViewHolder> {
     private List<GardenMenuItem> plantsItemList;
-    private List<String> plantNames;
     private Context context;
-    public GardenAdapter(List<GardenMenuItem> plantsItemList, Context context) {
+    public interface PlantDragCallback {
+        boolean dragPlant(String plantName, int resId, ImageView plantImage);
+    }
+    private PlantDragCallback plantDragCallback;
+    public GardenAdapter(List<GardenMenuItem> plantsItemList, Context context, PlantDragCallback plantDragCallback) {
         this.context = context;
         this.plantsItemList = plantsItemList;
-        this.plantNames = new ArrayList<>();
-        this.plantNames.add("Tomato");
-        this.plantNames.add("Eggplant");
-        this.plantNames.add("Cucumber");
-        this.plantNames.add("Carrot");
-        this.plantNames.add("Lettuce");
-        this.plantNames.add("Broccoli");
-        this.plantNames.add("Onion");
-        this.plantNames.add("Peas");
-        this.plantNames.add("Pepper");
-        this.plantNames.add("Potato");
+        this.plantDragCallback = plantDragCallback;
     }
 
 
@@ -51,6 +46,12 @@ public class GardenAdapter extends RecyclerView.Adapter<GardenViewHolder> {
             }
             try {
                 holder.getPlantPicture().setImageResource(plantResId);
+                holder.getPlantPicture().setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        return plantDragCallback.dragPlant(plantName, plantResId, holder.getPlantPicture());
+                    }
+                });
             } catch (Exception e) {
                 holder.getPlantPicture().setImageResource(R.drawable.baseline_nature_24);
             }

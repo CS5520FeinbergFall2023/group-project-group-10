@@ -31,7 +31,7 @@ import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.FriendRequests.Fr
  * Use the {@link GardenFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class GardenFragment extends Fragment {
+public class GardenFragment extends Fragment implements GardenAdapter.PlantDragCallback {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -119,7 +119,7 @@ public class GardenFragment extends Fragment {
         gardenPlot = view.findViewById(R.id.garden_plot);
         testLettuce = view.findViewById(R.id.testLettuce);
         this.gardenMenuRV = view.findViewById(R.id.garden_menu_rv);
-        this.gardenAdapter = new GardenAdapter(plantsItemList, getContext());
+        this.gardenAdapter = new GardenAdapter(plantsItemList, getContext(), this);
         this.gardenMenuRV.setHasFixedSize(true);
         this.gardenMenuRV.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         this.gardenMenuRV.setAdapter(gardenAdapter);
@@ -137,8 +137,24 @@ public class GardenFragment extends Fragment {
         // TODO: connect whats in garden plot to a data structure for DB, and reload on launch
     }
 
+    @Override
+    public boolean dragPlant(String plantName, int resId, ImageView plantImage) {
+        ClipData.Item item = new ClipData.Item(String.valueOf(resId));
+        String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
+        // Create a new ClipData using "Lettuce" as a label.
+        ClipData dragData = new ClipData(plantName, mimeTypes, item);
+        View.DragShadowBuilder myShadow = new View.DragShadowBuilder(plantImage);
+        // Start the drag.
+        plantImage.startDragAndDrop(dragData, myShadow, null, 0);
+
+//                img.setVisibility(View.INVISIBLE);
+        return true;
+    }
+
+
     private void setMenuDragListeners() {
         // TODo: replace testLettuce with function parameter
+
         testLettuce.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -244,4 +260,6 @@ public class GardenFragment extends Fragment {
             return false;
         });
     }
+
+
 }
