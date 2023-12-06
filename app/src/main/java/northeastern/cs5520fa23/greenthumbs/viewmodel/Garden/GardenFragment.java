@@ -24,6 +24,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -140,9 +142,9 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
                 GridLayout.Spec row = GridLayout.spec(i);
                 GridLayout.Spec col = GridLayout.spec(j);
                 ImageView newSquare = new ImageView(getContext());
-                GridLayout.LayoutParams params = new GridLayout.LayoutParams(row,col);
-                params.height = 50;
-                params.width = 50;
+                //GridLayout.LayoutParams params = new GridLayout.LayoutParams(row,col);
+                //params.height = 50;
+                //params.width = 50;
                 //params.set
                 newSquare.setImageResource(R.drawable.baseline_crop_square_24);
                 gardenPlot.addView(newSquare);
@@ -267,8 +269,10 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
                             CharSequence dragData = item.getText();
 
                             // Set imageView in garden plot to display new image based on clipboard data
-
-                            ((ImageView) v).setImageResource(Integer.parseInt((String) dragData));
+                            int w = ((ImageView) v).getWidth();
+                            int h = ((ImageView) v).getHeight();
+                            Picasso.get().load(Integer.parseInt((String) dragData)).resize(w,h).into((ImageView) v);
+                            //((ImageView) v).setImageResource(Integer.parseInt((String) dragData));
                             ((ImageView)v).clearColorFilter();
 
                             v.invalidate();
