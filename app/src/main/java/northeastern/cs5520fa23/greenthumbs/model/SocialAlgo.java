@@ -25,7 +25,7 @@ public class SocialAlgo {
             Double timeWeight = i/100.0; // time weight is just the order of the post since they are already sorted by time
             totalWeight += timeWeight;
             int likes = posts.get(i).getNum_likes();
-            Double likesWeight = likes * 0.02; // add weight for how much it was liked
+            Double likesWeight = likes * 0.002; // add weight for how much it was liked
             totalWeight += likesWeight;
             String tags = posts.get(i).getTags();
             String[] splitTags = tags.split(",");
@@ -38,7 +38,7 @@ public class SocialAlgo {
             for (String tag: splitTags) {
                 tag.replace(" ", "");
                 if (topPlants.contains(tag)) {
-                    plantWeight += .025; // if the tag is in the users top plants add weight
+                    plantWeight += .015; // if the tag is in the users top plants add weight
                 }
             }
             totalWeight += plantWeight;
