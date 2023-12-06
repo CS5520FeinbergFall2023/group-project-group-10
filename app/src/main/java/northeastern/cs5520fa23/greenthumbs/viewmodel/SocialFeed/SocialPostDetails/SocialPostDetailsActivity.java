@@ -10,6 +10,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -141,7 +142,8 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
                 imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Picasso.get().load(uri).resize(postImage.getWidth(), postImage.getHeight()).centerCrop().into(postImage);
+                        Picasso.get().load(uri).resize(postImage.getWidth(), postImage.getHeight()).centerInside().into(postImage);
+
                         //Glide.with(SocialPostDetailsActivity.this).load(uri).into(postImage);
                         getComments();
                     }
@@ -237,6 +239,7 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
                         commentList.add(currComment);
                     }
                     commentAdapter.notifyDataSetChanged();
+                    commentRV.smoothScrollToPosition(commentList.size());
                 }
             }
 

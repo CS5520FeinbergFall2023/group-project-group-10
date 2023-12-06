@@ -18,8 +18,8 @@ public class CommentViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         this.commentContent = itemView.findViewById(R.id.comment_content_tv);
         this.commentUsername = itemView.findViewById(R.id.comment_username_tv);
-        this.numLikes = itemView.findViewById(R.id.comment_like_count);
-        this.likeButton = itemView.findViewById(R.id.comment_like_button);
+        //this.numLikes = itemView.findViewById(R.id.comment_like_count);
+        //this.likeButton = itemView.findViewById(R.id.comment_like_button);
     }
 
     public TextView getCommentUsername() {
@@ -38,6 +38,7 @@ public class CommentViewHolder extends RecyclerView.ViewHolder {
         this.commentContent = commentContent;
     }
 
+    /*
     public TextView getNumLikes() {
         return numLikes;
     }
@@ -53,4 +54,6 @@ public class CommentViewHolder extends RecyclerView.ViewHolder {
     public void setLikeButton(ImageButton likeButton) {
         this.likeButton = likeButton;
     }
+
+     */
 }

@@ -76,7 +76,7 @@
         app:layout_constraintHeight_percent=".07"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintWidth_percent=".8"
-        android:background="@drawable/rounded_corners_ly"
+        android:background="@drawable/rounded_corners_background_lg"
         android:layout_marginBottom="8dp"
         />
     <ImageButton

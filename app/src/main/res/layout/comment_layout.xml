@@ -3,28 +3,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/rounded_corners_ly"
+    android:padding="4dp"
+    android:layout_marginTop="2dp"
+    android:layout_marginBottom="2dp">
 
     <TextView
         android:id="@+id/comment_username_tv"
+        android:fontFamily="@font/youngserifregular"
+        android:textColor="@color/dark_green"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="2dp"
         android:text="TextView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/comment_content_tv"/>
 
     <TextView
         android:id="@+id/comment_content_tv"
+        android:fontFamily="@font/youngserifregular"
+        android:textColor="@color/dark_green"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:maxHeight="60dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="TextView"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/comment_username_tv" />
 
+    <!--
     <ImageButton
         android:id="@+id/comment_like_button"
         android:layout_width="20dp"
@@ -41,4 +53,5 @@
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/comment_content_tv" />
+        -->
 </androidx.constraintlayout.widget.ConstraintLayout>
