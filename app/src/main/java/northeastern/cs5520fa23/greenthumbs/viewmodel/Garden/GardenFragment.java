@@ -3,6 +3,7 @@ package northeastern.cs5520fa23.greenthumbs.viewmodel.Garden;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -147,6 +148,7 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
         // Start the drag.
         plantImage.startDragAndDrop(dragData, myShadow, null, 0);
 
+
 //                img.setVisibility(View.INVISIBLE);
         return true;
     }
@@ -248,6 +250,8 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
 
                     // Invalidate the view to force a redraw.
                     v.invalidate();
+                    //Drawable d = getResources().getDrawable(R.drawable.l);
+                    //v.setBackground(d);
 
                     // Return true. The value is ignored.
                     return true;
