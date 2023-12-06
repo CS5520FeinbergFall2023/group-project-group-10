@@ -250,8 +250,8 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
 
                     // Invalidate the view to force a redraw.
                     v.invalidate();
-                    //Drawable d = getResources().getDrawable(R.drawable.l);
-                    //v.setBackground(d);
+                    Drawable d = getResources().getDrawable(R.drawable.rounded_corners_orange);
+                    v.setBackground(d);
 
                     // Return true. The value is ignored.
                     return true;
