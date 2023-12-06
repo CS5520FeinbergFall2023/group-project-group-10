@@ -189,6 +189,8 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
                 return R.drawable.water_drop_24;
             case "snow":
                 return R.drawable.snow_24;
+            case "fog":
+                return R.drawable.fog_24;
             default:
                 return R.drawable.baseline_question_mark_24;
         }
