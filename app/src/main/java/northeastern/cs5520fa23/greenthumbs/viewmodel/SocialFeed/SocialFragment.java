@@ -177,6 +177,7 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
                 //addPosts();
                 if (isChecked) {
                     filterFriendsPosts();
+                    Log.d("PoST FILTER SIZE", "" + socialAdapter.getItemCount());
                 } else {
                     filterAllPosts();
                 }
@@ -354,33 +355,67 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
                 filteredPosts.add(post);
             }
         }
+        /*
+        int size = postList.size();
         postList.clear();
-        postList.addAll(filteredPosts);
+        socialAdapter.notifyItemRangeChanged(0,size);
+        for (ImgPost post : filteredPosts) {
+            int s = postList.size();
+            postList.add(post);
+            socialAdapter.notifyItemInserted(s);
+        }
+        //postList.addAll(filteredPosts);
         socialAdapter.notifyDataSetChanged();
+
+         */
+        socialAdapter.setPosts(filteredPosts);
     }
 
     private void filterFriendsPosts() {
         List<ImgPost> filteredPosts = new ArrayList<>();
-
-        Log.d("FFP", friendIds.get(0));
-
-        for (ImgPost post : originalPosts) {
+        int logsize = postList.size();
+        Log.d("posts size", logsize + "");
+        /*
+        for (ImgPost post : postList) {
             for (String id : friendIds) {
                 if (id.equals(post.getUid())) {
                     filteredPosts.add(post);
+                    Log.d("FILTER_FRIENDS", id);
                 }
             }
         }
 
+         */
+        for (int i = postList.size() - 1; i >= 0; i--) {
+            if (friendIds.contains(postList.get(i).getUid()))
+            //for (String id : friendIds) {
+                //if (id.equals(postList.get(i).getUid())) {
+            {
+                filteredPosts.add(postList.get(i));
+                Log.d("FILTER_FRIENDS", postList.get(i).getUid());
+            }
+                //}
+            //}
+            //postList.remove(i);
+            //socialAdapter.notifyItemRemoved(i);
+        }
 
-        postList.clear();
-        postList.addAll(filteredPosts);
-        socialAdapter.notifyDataSetChanged();
+        for (int i = 0; i < filteredPosts.size(); i++) {
+            //postList.add(filteredPosts.get(i));
+            //socialAdapter.notifyItemInserted(i);
+        }
+
+        //socialAdapter.notifyDataSetChanged();
+        socialAdapter.setPosts(filteredPosts);
+
+
+        //postList.clear();
+        //postList.addAll(filteredPosts);
+
+        return;
     }
     private void filterAllPosts() {
-        postList.clear();
-        postList.addAll(originalPosts);
-        socialAdapter.notifyDataSetChanged();
+        socialAdapter.setPosts(originalPosts);
     }
 
     private void getUserTopPlants() {

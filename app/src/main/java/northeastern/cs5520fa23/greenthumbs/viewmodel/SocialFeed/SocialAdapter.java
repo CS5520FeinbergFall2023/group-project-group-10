@@ -159,6 +159,7 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
     @Override
     public int getItemCount() {return posts.size();}
 
+
     @Override
     public int getItemViewType(int position) {
         return position;
@@ -167,6 +168,16 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    public List<ImgPost> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<ImgPost> posts) {
+        this.posts.clear();
+        this.posts.addAll(posts);
+        notifyDataSetChanged();
     }
 }
 

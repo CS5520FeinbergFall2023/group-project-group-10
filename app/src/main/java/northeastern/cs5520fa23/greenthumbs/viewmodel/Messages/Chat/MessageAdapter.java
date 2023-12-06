@@ -60,4 +60,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageViewHolder> {
     public int getItemCount() {
         return messages.size();
     }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 }

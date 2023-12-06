@@ -124,4 +124,14 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendViewHolder> {
     public void setUserList(List<User> userList) {
         this.userList = userList;
     }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 }
