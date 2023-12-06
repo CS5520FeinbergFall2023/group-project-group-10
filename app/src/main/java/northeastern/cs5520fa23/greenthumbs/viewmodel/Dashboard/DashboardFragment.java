@@ -22,11 +22,14 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.FriendRequests.FriendRequest;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.FriendRequests.FriendRequestAdapter;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.GrowingChart.GrowingChartAdapter;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.GrowingChart.Plant;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.MessageHistoryAdapter;
 
 /**
@@ -47,8 +50,12 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
     private RecyclerView frRecyclerView;
     private FriendRequestAdapter friendRequestAdapter;
     private List<FriendRequest> friendRequestList;
+    private RecyclerView growingChartRecyclerView;
+    private GrowingChartAdapter growingChartAdapter;
     private FirebaseUser currUser;
     private FirebaseDatabase db;
+    private HashMap<String, Integer> growTimes;
+    private List<Plant> plantList;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -82,6 +89,7 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
         currUser = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseDatabase.getInstance();
         friendRequestList = new ArrayList<>();
+        plantList = new ArrayList<>();
     }
 
     @Override
@@ -100,6 +108,35 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
         friendRequestAdapter = new FriendRequestAdapter(friendRequestList, getContext(), this);
         frRecyclerView.setAdapter(friendRequestAdapter);
         getFriendRequests();
+        this.growTimes = new HashMap<>();
+        this.growTimes.put("tomato", 50);
+
+    }
+
+    private void getPlants() {
+        DatabaseReference plantRef = db.getReference("users").child(currUser.getUid()).child("plants").child("growing");
+        plantRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot plantsSnapshot: snapshot.getChildren()) {
+                    for (DataSnapshot plantSnapshot : plantsSnapshot.getChildren()) {
+                        Plant plant = plantSnapshot.getValue(Plant.class);
+                        if (plant != null) {
+                            if (plant.isIs_growing() != null && plant.isIs_growing() == true) {
+                                plantList.add(plant);
+                                growingChartAdapter.setPlantList(plantList);
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     private void getFriendRequests() {
