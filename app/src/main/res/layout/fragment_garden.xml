@@ -41,11 +41,12 @@
         android:id="@+id/garden_plot"
 
         >
+        <!--
         <ImageView
-            android:src="@drawable/ic_emptysqaure"
+            android:src="@drawable/baseline_crop_square_24"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:id="@+id/testEmptySpot" />
+            android:id="@+id/testEmptySpot" />-->
     </GridLayout>
 
 

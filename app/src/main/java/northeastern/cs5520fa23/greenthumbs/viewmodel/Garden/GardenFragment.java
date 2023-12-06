@@ -2,7 +2,9 @@ package northeastern.cs5520fa23.greenthumbs.viewmodel.Garden;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
@@ -18,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.GridLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -127,19 +130,37 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
 
 
         // TODO: dialog asking user for ?x? plot
-        gardenPlot.setColumnCount(9);
-        gardenPlot.setRowCount(9);
+        gardenPlot.setColumnCount(3);
+        gardenPlot.setRowCount(3);
+
+
+
+        for(int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                GridLayout.Spec row = GridLayout.spec(i);
+                GridLayout.Spec col = GridLayout.spec(j);
+                ImageView newSquare = new ImageView(getContext());
+                GridLayout.LayoutParams params = new GridLayout.LayoutParams(row,col);
+                params.height = 50;
+                params.width = 50;
+                //params.set
+                newSquare.setImageResource(R.drawable.baseline_crop_square_24);
+                gardenPlot.addView(newSquare);
+            }
+        }
 
         // TODO: popuplate grid with imageviews of ic_emtpySqaure2.
 
         setMenuDragListeners(); // for menu
-        setReceivingListeners(view); // for garden plot
+        //setReceivingListeners(view); // for garden plot
+        setGridListeners();
 
         // TODO: connect whats in garden plot to a data structure for DB, and reload on launch
     }
 
     @Override
     public boolean dragPlant(String plantName, int resId, ImageView plantImage) {
+        //ImageView
         ClipData.Item item = new ClipData.Item(String.valueOf(resId));
         String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
         // Create a new ClipData using "Lettuce" as a label.
@@ -175,6 +196,110 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
         });
     }
 
+    private void setGridListeners() {
+        int rows = gardenPlot.getRowCount();
+        int cols = gardenPlot.getColumnCount();
+        for (int i = 0; i < rows; i ++) {
+            for (int j = 0; j < cols; j++) {
+                // all one list want
+                // 0,0 -> 0 but
+                // 1,0 -> 3
+                // i * cols + j
+                // 1,1 would be 1 * 3 + 1 = 4
+                // 1, 2 would be 1 * 3 + 2 = 5
+                // 0, 1 would be 1 * 0 + 1 = 1
+                int idx = (i * cols) + j;
+                View plot = gardenPlot.getChildAt(idx);
+                plot.setOnDragListener( (v, e) -> {
+
+                    // Handle each of the expected events.
+                    switch(e.getAction()) {
+
+                        case DragEvent.ACTION_DRAG_STARTED:
+
+                            // Determine whether this View can accept the dragged data.
+                            if (e.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
+
+                                // As an example, apply a blue color tint to the View to
+                                // indicate that it can accept data.
+                                ((ImageView)v).setColorFilter(Color.BLUE);
+
+                                // Invalidate the view to force a redraw in the new tint.
+                                v.invalidate();
+
+                                // Return true to indicate that the View can accept the dragged
+                                // data.
+                                return true;
+                            }
+                            return false;
+
+                        case DragEvent.ACTION_DRAG_ENTERED:
+
+                            // Apply a green tint to the View.
+                            ((ImageView)v).setColorFilter(Color.GREEN);
+
+                            // Invalidate the view to force a redraw in the new tint.
+                            v.invalidate();
+
+                            // Return true. The value is ignored.
+                            return true;
+
+                        case DragEvent.ACTION_DRAG_LOCATION:
+
+                            // Ignore the event.
+                            return true;
+
+                        case DragEvent.ACTION_DRAG_EXITED:
+
+                            // Reset the color tint to blue.
+                            ((ImageView)v).setColorFilter(Color.BLUE);
+
+                            // Invalidate the view to force a redraw in the new tint.
+                            v.invalidate();
+
+                            // Return true. The value is ignored.
+                            return true;
+
+                        case DragEvent.ACTION_DROP:
+
+                            // Get the item containing the dragged data.
+                            ClipData.Item item = e.getClipData().getItemAt(0);
+                            CharSequence dragData = item.getText();
+
+                            // Set imageView in garden plot to display new image based on clipboard data
+
+                            ((ImageView) v).setImageResource(Integer.parseInt((String) dragData));
+                            ((ImageView)v).clearColorFilter();
+
+                            v.invalidate();
+                            // Return true. DragEvent.getResult() returns true.
+                            return true;
+
+                        case DragEvent.ACTION_DRAG_ENDED:
+
+                            // Turn off color tinting.
+                            ((ImageView)v).clearColorFilter();
+
+                            Drawable d = getResources().getDrawable(R.drawable.rounded_corners_orange);
+                            v.setBackground(d);
+
+                            // Invalidate the view to force a redraw.
+                            v.invalidate();
+
+
+                            // Return true. The value is ignored.
+                            return true;
+                        // An unknown action type is received.
+                        default:
+                            break;
+                    }
+                    return false;
+                });
+            }
+        }
+
+    }
+    /*
     private void setReceivingListeners(View view) {
 
         // TODO: Replace blankview with function parameter
@@ -262,4 +387,6 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
             return false;
         });
     }
+
+     */
 }
