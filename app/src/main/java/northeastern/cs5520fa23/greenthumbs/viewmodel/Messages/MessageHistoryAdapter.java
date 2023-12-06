@@ -10,22 +10,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-
 import java.util.List;
 import java.util.Map;
-
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat.ChatActivity;
 
@@ -47,16 +43,10 @@ public class MessageHistoryAdapter extends RecyclerView.Adapter<MessageHistoryVi
     @NonNull
     @Override
     public MessageHistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.message_history_card, parent, false);
-        /*view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(context, ChatActivity.class);
-                context.startActivity(i);
-            }
-        });
-
-         */
+        View view = LayoutInflater.from(context).inflate(R.layout.message_history_card, null);
+        view.setOnClickListener(v -> {
+            Intent i = new Intent(context, ChatActivity.class);
+            context.startActivity(i);
         return new MessageHistoryViewHolder(view);
     }
 

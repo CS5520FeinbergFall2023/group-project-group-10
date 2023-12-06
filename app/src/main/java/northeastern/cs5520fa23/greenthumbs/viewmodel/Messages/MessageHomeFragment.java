@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
@@ -13,7 +12,6 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.SearchView;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -37,11 +34,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import northeastern.cs5520fa23.greenthumbs.MainActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat.ChatActivity;
@@ -54,12 +49,7 @@ public class MessageHomeFragment extends Fragment implements MessageHistoryAdapt
     private MessageHistoryAdapter msgHistoryAdapter;
     private List<MessageHistoryItem> chats;
     //private FloatingActionButton fab;
-
-    private FirebaseDatabase db;
-    private DatabaseReference allChatRef;
     private DatabaseReference userChatRef;
-    private FirebaseUser currUser;
-    private String currUsername;
     private List<String> otherUsers;
     private SearchView msgUserSearch;
     private ImageButton msgUserButton;
@@ -78,10 +68,10 @@ public class MessageHomeFragment extends Fragment implements MessageHistoryAdapt
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         chats = new ArrayList<>();
-        currUser = FirebaseAuth.getInstance().getCurrentUser();
-        currUsername = currUser.getUid();
-        db = FirebaseDatabase.getInstance();
-        allChatRef = db.getReference().child("chats");
+        FirebaseUser currUser = FirebaseAuth.getInstance().getCurrentUser();
+        String currUsername = currUser.getUid();
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference allChatRef = db.getReference().child("chats");
         userChatRef = db.getReference().child("users").child(currUsername).child("chats");
         otherUsers = new ArrayList<>();
         nameIdMap = new HashMap<>();
@@ -98,7 +88,7 @@ public class MessageHomeFragment extends Fragment implements MessageHistoryAdapt
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        msgHistoryRV = view.findViewById(R.id.message_recycler_view);
+        RecyclerView msgHistoryRV = view.findViewById(R.id.message_recycler_view);
         msgHistoryRV.setHasFixedSize(true);
         msgHistoryRV.setLayoutManager(new LinearLayoutManager(getContext()));
         msgHistoryAdapter = new MessageHistoryAdapter(chats, getContext(), this, nameIdMap);
@@ -131,7 +121,6 @@ public class MessageHomeFragment extends Fragment implements MessageHistoryAdapt
                 msgUserSearch.setQuery(msgUserSearch.getQuery(), true);
             }
         });
-
         addChats();
         //msgHistoryAdapter.notifyItemInserted(0);
     }

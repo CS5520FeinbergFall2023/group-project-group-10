@@ -20,26 +20,35 @@
             android:id="@+id/post_detail_username"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:background="@color/light_yellow"
+            android:fontFamily="@font/youngserifregular"
+            android:textColor="@color/dark_green"
             android:layout_width="match_parent"
-            android:text="USERNAME" />
+            android:text="@string/username_cap" />
 
         <TextView
             android:id="@+id/post_detail_post_text"
             android:layout_width="match_parent"
+            android:textColor="@color/dark_green"
+            android:fontFamily="@font/youngserifregular"
+            android:background="@color/light_yellow"
             android:layout_height="wrap_content"
 
-            android:text="POST DETAILS" />
+            android:text="@string/post_details_cap" />
 
         <ImageView
             android:id="@+id/post_detail_post_image"
             android:layout_width="match_parent"
+            android:background="@color/light_yellow"
             android:layout_height="0dp"
             android:layout_weight="15"
-            />
+            android:contentDescription="@string/post_detail_image" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/comment_rv"
             android:layout_width="match_parent"
+            android:background="@color/light_yellow"
+
             android:layout_height="0dp"
             android:layout_weight="15"/>
     </LinearLayout>
@@ -52,24 +61,30 @@
 
         <ImageButton
             android:id="@+id/add_comment_button"
-            android:layout_width="50dp"
-            android:layout_height="42dp"
+            android:layout_width="58dp"
+            android:layout_height="58dp"
             android:background="#356859"
             android:src="@drawable/baseline_send_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="4"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/add_comment" />
 
         <EditText
             android:id="@+id/comment_edit_text"
             android:layout_width="356dp"
-            android:layout_height="46dp"
-            android:hint="Add a comment"
+            android:layout_height="58dp"
+            android:textColorHint="@color/dark_green"
+            android:fontFamily="@font/youngserifregular"
+            android:hint="@string/add_a_comment"
+            android:background="@color/light_yellow"
             android:imeOptions="actionGo|actionDone"
             app:layout_constraintHorizontal_weight="10"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:autofillHints="Add a comment"
+            android:inputType="text" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

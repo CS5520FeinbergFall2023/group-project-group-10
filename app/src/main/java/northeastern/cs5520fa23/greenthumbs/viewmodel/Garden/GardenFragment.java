@@ -9,12 +9,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
 import androidx.recyclerview.widget.RecyclerView;
+
 
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import android.widget.Adapter;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -22,6 +25,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.FriendRequests.FriendRequestAdapter;
@@ -46,6 +50,10 @@ public class GardenFragment extends Fragment {
     private GardenAdapter gardenAdapter;
     GridLayout gardenPlot;
     ImageView testLettuce; // placeholder for menu options
+
+    GridLayout gardenPlot;
+    ImageView testLettuce; // placeholder for menu options
+
 
     public GardenFragment() {
         // Required empty public constructor
@@ -73,8 +81,9 @@ public class GardenFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            // TODO: Rename and change types of parameters
+            String mParam1 = getArguments().getString(ARG_PARAM1);
+            String mParam2 = getArguments().getString(ARG_PARAM2);
         }
         plantsItemList = new ArrayList<>();
         populateMenu();
@@ -118,11 +127,13 @@ public class GardenFragment extends Fragment {
 
         gardenPlot = view.findViewById(R.id.garden_plot);
         testLettuce = view.findViewById(R.id.testLettuce);
+
         this.gardenMenuRV = view.findViewById(R.id.garden_menu_rv);
         this.gardenAdapter = new GardenAdapter(plantsItemList, getContext());
         this.gardenMenuRV.setHasFixedSize(true);
         this.gardenMenuRV.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         this.gardenMenuRV.setAdapter(gardenAdapter);
+
 
 
         // TODO: dialog asking user for ?x? plot

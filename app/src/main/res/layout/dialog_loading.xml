@@ -12,11 +12,13 @@
 
     <TextView
         android:id="@+id/tvLoading"
+        android:textColor="@color/dark_green"
+        android:fontFamily="@font/youngserifregular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/progressBar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:text="Loading..."
+        android:text="@string/loading"
         android:textAppearance="?android:attr/textAppearanceMedium"/>
 </RelativeLayout>

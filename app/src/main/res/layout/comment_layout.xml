@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/light_yellow"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -10,35 +10,46 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:background="@color/light_yellow"
         android:layout_marginTop="8dp"
-        android:text="TextView"
+        android:text="@string/textview"
+        android:fontFamily="@font/youngserifregular"
+        android:textColor="@color/dark_green"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/comment_content_tv"
         android:layout_width="match_parent"
+        android:background="@color/light_yellow"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/youngserifregular"
+        android:textColor="@color/dark_green"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="TextView"
+        android:text="@string/textview"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/comment_username_tv" />
 
     <ImageButton
         android:id="@+id/comment_like_button"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@color/dark_green"
         app:layout_constraintEnd_toStartOf="@+id/comment_like_count"
         app:layout_constraintTop_toBottomOf="@+id/comment_content_tv"
-        app:srcCompat="@drawable/like_outline" />
+        app:srcCompat="@drawable/like_outline"
+        android:contentDescription="@string/comment_like_button" />
 
     <TextView
         android:id="@+id/comment_like_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/dark_green"
+        android:fontFamily="@font/youngserifregular"
+        android:textColor="@color/light_yellow"
         android:layout_marginEnd="16dp"
-        android:text="TextView"
+        android:text="@string/textview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/comment_content_tv" />
 </androidx.constraintlayout.widget.ConstraintLayout>

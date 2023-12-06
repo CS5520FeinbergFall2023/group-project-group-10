@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
@@ -19,7 +18,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,13 +25,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -46,15 +47,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import northeastern.cs5520fa23.greenthumbs.MainActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.FriendsUsers.UsersActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.CreatePostDialog;
@@ -85,9 +83,7 @@ public class ProfileFragment extends Fragment {
     private boolean isUsersProfile;
     private Button editProfileButton;
     private Button addFriendButton;
-    private Button sendMsgButton;
     private FirebaseUser currUser;
-    private RecyclerView socialRecyclerView;
     private SocialAdapter socialAdapter;
     private List<ImgPost> postList;
     private ImageView headerImage;
@@ -96,7 +92,6 @@ public class ProfileFragment extends Fragment {
     private ActivityResultLauncher<PickVisualMediaRequest> profPicSelect;
     private Uri profPicUri;
     private Uri headerUri;
-    private Map<String, String> friends;
     private boolean isFriend;
     private boolean isRequested;
     Friend userFriend;
@@ -124,11 +119,7 @@ public class ProfileFragment extends Fragment {
         currUser = FirebaseAuth.getInstance().getCurrentUser();
 
         // determine if this is the users own profile
-        if (profUid.equals(currUser.getUid())) {
-            isUsersProfile = true;
-        } else {
-            isUsersProfile = false;
-        }
+        isUsersProfile = profUid.equals(currUser.getUid());
         this.db = FirebaseDatabase.getInstance();
 
     }
@@ -163,7 +154,7 @@ public class ProfileFragment extends Fragment {
         this.headerImage = view.findViewById(R.id.profile_header_image);
         this.profilePicture = view.findViewById(R.id.profile_prof_pic);
         this.isEditing = false;
-        this.friends = new HashMap<>();
+        Map<String, String> friends = new HashMap<>();
         getFriends();
         this.usernameView.setText(this.username);
         this.usernameView.setEnabled(false);
@@ -171,16 +162,11 @@ public class ProfileFragment extends Fragment {
         this.userBioView.setEnabled(false);
         this.usernameView.setTextColor(getResources().getColor(R.color.black));
         this.userBioView.setTextColor(getResources().getColor(R.color.black));
-        this.sendMsgButton = view.findViewById(R.id.profile_msg_button);
+        Button sendMsgButton = view.findViewById(R.id.profile_msg_button);
         this.addFriendButton = view.findViewById(R.id.profile_friend_button);
-        this.addFriendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleFriendClick();
-            }
-        });
+        this.addFriendButton.setOnClickListener(v -> handleFriendClick());
         this.editProfileButton = view.findViewById(R.id.profile_edit_button);
-        socialRecyclerView = view.findViewById(R.id.profile_posts_rv);
+        RecyclerView socialRecyclerView = view.findViewById(R.id.profile_posts_rv);
         socialRecyclerView.setHasFixedSize(true);
         socialRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         this.postList = new ArrayList<>();
@@ -208,9 +194,9 @@ public class ProfileFragment extends Fragment {
 
         // hide message and add friend button if this is their own profile and enable edit profile
         if (isUsersProfile) {
-            this.sendMsgButton.setEnabled(false);
-            this.sendMsgButton.setVisibility(View.GONE);
-            this.sendMsgButton.setEnabled(false);
+            sendMsgButton.setEnabled(false);
+            sendMsgButton.setVisibility(View.GONE);
+            sendMsgButton.setEnabled(false);
             this.addFriendButton.setVisibility(View.GONE);
             this.profilePicture.setEnabled(false);
             this.headerImage.setEnabled(false);
@@ -250,9 +236,9 @@ public class ProfileFragment extends Fragment {
                 }
             });
         } else {
-            this.sendMsgButton.setEnabled(true);
-            this.sendMsgButton.setVisibility(View.VISIBLE);
-            this.sendMsgButton.setEnabled(true);
+            sendMsgButton.setEnabled(true);
+            sendMsgButton.setVisibility(View.VISIBLE);
+            sendMsgButton.setEnabled(true);
             this.addFriendButton.setVisibility(View.VISIBLE);
             this.editProfileButton.setEnabled(false);
             this.editProfileButton.setVisibility(View.GONE);
@@ -280,14 +266,11 @@ public class ProfileFragment extends Fragment {
         }
         updates.put("username", usernameView.getText().toString());
         updates.put("user_bio", userBioView.getText().toString());
-        db.getReference("users").child(currUser.getUid()).updateChildren(updates).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (!task.isSuccessful()) {
-                    Toast.makeText(getContext(), "Unable to update profile", Toast.LENGTH_LONG).show();
-                } else {
+        db.getReference("users").child(currUser.getUid()).updateChildren(updates).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                Toast.makeText(getContext(), "Unable to update profile", Toast.LENGTH_LONG).show();
+            } else {
 
-                }
             }
         });
     }
@@ -405,25 +388,13 @@ public class ProfileFragment extends Fragment {
 
 
         UploadTask uploadTask = profPicStorageRef.putBytes(data); // upload then on the upload get the download link for the post
-        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        String link = uri.toString();
-                        db.getReference("users").child(currUser.getUid()).child("profile_pic").setValue(link).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                saveProfileUpdates();
-                                //CreatePostDialog.this.getDialog().cancel();
-                            }
-                        });
-                    }
-                });
-
-            }
-        });
+        uploadTask.addOnSuccessListener(taskSnapshot -> taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
+            String link = uri.toString();
+            db.getReference("users").child(currUser.getUid()).child("profile_pic").setValue(link).addOnSuccessListener(unused -> {
+                saveProfileUpdates();
+                //CreatePostDialog.this.getDialog().cancel();
+            });
+        }));
 
     }
 
@@ -444,25 +415,13 @@ public class ProfileFragment extends Fragment {
 
 
         UploadTask uploadTask = headerStorageRef.putBytes(data); // upload then on the upload get the download link for the post
-        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        String link = uri.toString();
-                        db.getReference("users").child(currUser.getUid()).child("header_image").setValue(link).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                saveProfileUpdates();
-                                //CreatePostDialog.this.getDialog().cancel();
-                            }
-                        });
-                    }
-                });
-
-            }
-        });
+        uploadTask.addOnSuccessListener(taskSnapshot -> taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
+            String link = uri.toString();
+            db.getReference("users").child(currUser.getUid()).child("header_image").setValue(link).addOnSuccessListener(unused -> {
+                saveProfileUpdates();
+                //CreatePostDialog.this.getDialog().cancel();
+            });
+        }));
 
     }
 
@@ -502,41 +461,32 @@ public class ProfileFragment extends Fragment {
             request.put("approved", "false");
             request.put("from_uid", currUser.getUid());
 
-            db.getReference("users").child(currUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DataSnapshot> task) {
-                    if (!task.isSuccessful()) {
+            db.getReference("users").child(currUser.getUid()).get().addOnCompleteListener(task -> {
+                if (!task.isSuccessful()) {
 
-                    } else {
-                        User fromUser = task.getResult().getValue(User.class);
-                        String fromUsername = fromUser.getUsername();
-                        request.put("from_username", fromUsername);
-                        db.getReference("users").child(profUid).child("friend_requests").child(currUser.getUid()).updateChildren(request).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (!task.isSuccessful()) {
+                } else {
+                    User fromUser = task.getResult().getValue(User.class);
+                    String fromUsername = fromUser.getUsername();
+                    request.put("from_username", fromUsername);
+                    db.getReference("users").child(profUid).child("friend_requests").child(currUser.getUid()).updateChildren(request).addOnCompleteListener(task12 -> {
+                        if (!task12.isSuccessful()) {
+                            Toast.makeText(getContext(), "Unable to send friend request", Toast.LENGTH_LONG).show();
+                        } else {
+                            Map<String, Object> userFriendUpdate = new HashMap<>();
+                            userFriendUpdate.put("status", "requested");
+                            userFriendUpdate.put("friend_id", profUid);
+                            userFriendUpdate.put("friend_username", username);
+                            db.getReference("users").child(currUser.getUid()).child("friends").child(profUid).updateChildren(userFriendUpdate).addOnCompleteListener(task1 -> {
+                                if (!task1.isSuccessful()) {
                                     Toast.makeText(getContext(), "Unable to send friend request", Toast.LENGTH_LONG).show();
                                 } else {
-                                    Map<String, Object> userFriendUpdate = new HashMap<>();
-                                    userFriendUpdate.put("status", "requested");
-                                    userFriendUpdate.put("friend_id", profUid);
-                                    userFriendUpdate.put("friend_username", username);
-                                    db.getReference("users").child(currUser.getUid()).child("friends").child(profUid).updateChildren(userFriendUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (!task.isSuccessful()) {
-                                                Toast.makeText(getContext(), "Unable to send friend request", Toast.LENGTH_LONG).show();
-                                            } else {
-                                                Toast.makeText(getContext(), "Friend Request Sent", Toast.LENGTH_LONG).show();
-                                                addFriendButton.setText("Requested");
-                                                addFriendButton.setEnabled(false);
-                                            }
-                                        }
-                                    });
+                                    Toast.makeText(getContext(), "Friend Request Sent", Toast.LENGTH_LONG).show();
+                                    addFriendButton.setText("Requested");
+                                    addFriendButton.setEnabled(false);
                                 }
-                            }
-                        });
-                    }
+                            });
+                        }
+                    });
                 }
             });
 
