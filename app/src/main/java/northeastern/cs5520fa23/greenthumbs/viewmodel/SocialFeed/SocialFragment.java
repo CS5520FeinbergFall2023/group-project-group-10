@@ -38,10 +38,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import northeastern.cs5520fa23.greenthumbs.MainActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
+import northeastern.cs5520fa23.greenthumbs.model.SocialAlgo;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.FriendsUsers.UsersActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.Friend;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileFragment;
@@ -73,6 +75,7 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
     private ImageView usersIcon;
     private FirebaseUser currUser;
     private List<String> friendIds;
+    private HashMap<String, Integer> numPlants;
 
     public SocialFragment() {
         // Required empty public constructor
@@ -103,9 +106,11 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
         this.postList = new ArrayList<>();
         this.originalPosts = new ArrayList<>();
         this.friendIds = new ArrayList<>();
+        this.numPlants = new HashMap<>();
     }
 
     @Override
@@ -291,15 +296,10 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
                             //if (friend_ids.contains(currPost.getUid())) {
                                 postList.add(currPost);
                                 originalPosts.add(currPost);
-                                socialAdapter.notifyDataSetChanged();
+                                //socialAdapter.notifyDataSetChanged();
                             //}
                         }
-
-                        Collections.reverse(postList);
-                        Collections.reverse(originalPosts);
-                        socialAdapter.notifyDataSetChanged();
-                        if (refreshOnFriends) {filterFriendsPosts();}
-                        swipeRefreshLayout.setRefreshing(false);
+                        getUserTopPlants();
                     }
 
                     @Override
@@ -381,5 +381,31 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
         postList.clear();
         postList.addAll(originalPosts);
         socialAdapter.notifyDataSetChanged();
+    }
+
+    private void getUserTopPlants() {
+        DatabaseReference plantsRef = FirebaseDatabase.getInstance().getReference("users").child(currUser.getUid()).child("plants");
+        plantsRef.child("growing").orderByKey().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot plant: snapshot.getChildren()) {
+                    numPlants.put(plant.getKey(), Math.toIntExact(plant.getChildrenCount()));
+                }
+                Collections.reverse(postList);
+                Collections.reverse(originalPosts);
+                postList = SocialAlgo.sortPostAlgo(postList, numPlants);
+                originalPosts = SocialAlgo.sortPostAlgo(postList, numPlants);
+                //socialAdapter.notifyDataSetChanged();
+                //if (refreshOnFriends) {filterFriendsPosts();}
+                socialAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 }
