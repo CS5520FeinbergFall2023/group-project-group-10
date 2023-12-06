@@ -1,16 +1,26 @@
 package northeastern.cs5520fa23.greenthumbs;
-
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.LayerDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
-
 import northeastern.cs5520fa23.greenthumbs.model.services.WeatherService;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat.ChatActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.MessageHomeFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SetLocationFragment;
@@ -22,9 +32,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
-
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import java.util.ArrayList;
 import java.util.Objects;
-
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.DashboardFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Garden.GardenFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Settings.SettingsFragment;
@@ -43,7 +56,10 @@ public class MainActivity extends AppCompatActivity {
     private CreatePostFragment createPostFragment = new CreatePostFragment();
     private MessageHomeFragment messageHomeFragment = new MessageHomeFragment();
     private String username;
+    private String goUsername;
+    private String goUid;
     private String uid;
+    private Fragment profileFragment = new ProfileFragment();
 
     /*@Override
     protected void onStart() {
@@ -69,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) {
@@ -89,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
         // ### Home Location ###
         //if (!isHomeLocationSet()) {
             //showSetLocationFragment();
@@ -103,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
         toolbar.inflateMenu(R.menu.appbar);
-
         toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.appbar_profile) {
                 Fragment profileFragment = ProfileFragment.newInstance(username, Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
@@ -114,26 +132,77 @@ public class MainActivity extends AppCompatActivity {
         });
         // When app is opened go to dashboard
         getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).commit();
-
         navBar.setOnItemSelectedListener(item -> {
+
             if (item.getItemId() == R.id.dash_menu_item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment, "DASH").addToBackStack("DASH").commit();
                 return true;
             } else if (item.getItemId() == R.id.social_menu_item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, socialFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, socialFragment, "SOCIAL").addToBackStack("SOCIAL").commit();
                 return true;
             } else if (item.getItemId() == R.id.garden_menu_item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, gardenFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, gardenFragment, "GARDEN").addToBackStack("GARDEN").commit();
                 return true;
             } else if (item.getItemId() == R.id.settings_menu_item) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, settingsFragment).commit();
                 return true;
             } else if (item.getItemId() == R.id.messages_menu_item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment, "MESSAGE").addToBackStack("MESSAGE").commit();
                 return true;
             }
             return false;
         });
+
+        /*
+        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                int i = getSupportFragmentManager().getBackStackEntryCount() - 1;
+                if (i >= 0) {
+                    FragmentManager.BackStackEntry entry = getSupportFragmentManager().getBackStackEntryAt(i);
+                    String fTag = entry.getName();
+                    if (fTag == "SOCIAL") {
+                        navBar.getMenu().getItem(1).setChecked(true);
+                    }
+                    getSupportFragmentManager().popBackStack(i, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                }
+
+
+
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
+
+         */
+
+        if (getIntent().getExtras() != null) {
+            boolean goChat  = getIntent().getBooleanExtra("to_chat", false);
+            if (goChat) {
+                navBar.setSelectedItemId(R.id.messages_menu_item);
+                //getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment).commit();
+            }
+            boolean goPosts  = getIntent().getBooleanExtra("to_posts", false);
+            if (goPosts) {
+                navBar.setSelectedItemId(R.id.social_menu_item);
+            }
+            if (getIntent().getBundleExtra("profile_info") != null) {
+                ArrayList<String> profileInfo = getIntent().getBundleExtra("profile_info").getStringArrayList("user_info");
+                if (profileInfo != null) {
+                    String goUsername = profileInfo.get(0);
+                    String goUid = profileInfo.get(1);
+                    profileFragment = ProfileFragment.newInstance(goUsername, goUid);
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).addToBackStack(null).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, profileFragment).addToBackStack(null).commit();
+                    //toolbar.action(R.id.appbar_profile);
+                }
+            }
+
+
+
+        } else {
+            // When app is opened go to dashboard
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment, "DASH").commit();
+        }
     }
 
     private void startWeatherService() {
@@ -164,4 +233,6 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.overlay_frame).setVisibility(View.GONE);
         }
     }
+
+
 }

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_yellow"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".viewmodel.Profile.ProfileFragment">
 
@@ -53,7 +54,7 @@
         app:layout_constraintTop_toBottomOf="@id/profile_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="USER CAN PUT THEIR BIO HERE"
+        android:text="No Bio Yet"
         android:background="@null"/>
 
     <Button
@@ -61,6 +62,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:text="Add Friend"
+        android:backgroundTint="@color/dark_green"
         app:layout_constraintHeight_percent="0.05"
         app:layout_constraintTop_toBottomOf="@id/profile_user_bio"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,6 +72,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:text="Message"
+        android:backgroundTint="@color/dark_green"
         app:layout_constraintHeight_percent="0.05"
         app:layout_constraintTop_toBottomOf="@id/profile_user_bio"
         app:layout_constraintStart_toEndOf="@+id/profile_friend_button"
@@ -80,8 +83,7 @@
         android:id="@+id/profile_posts_rv"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.7"
-        app:layout_constraintVertical_weight="1"
+        app:layout_constraintHeight_percent="0.68"
         app:layout_constraintTop_toBottomOf="@+id/profile_friend_button"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
