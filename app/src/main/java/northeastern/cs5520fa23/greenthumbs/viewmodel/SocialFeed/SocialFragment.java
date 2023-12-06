@@ -40,6 +40,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import northeastern.cs5520fa23.greenthumbs.MainActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
@@ -366,14 +368,18 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot plant: snapshot.getChildren()) {
                     numPlants.put(plant.getKey(), Math.toIntExact(plant.getChildrenCount()));
+                    Log.d("plant", plant.getKey() + ":" + Math.toIntExact(plant.getChildrenCount()));
                 }
-                Collections.reverse(postList);
-                Collections.reverse(originalPosts);
-                postList = SocialAlgo.sortPostAlgo(postList, numPlants);
+
+                //Collections.reverse(postList); dont need to reverse when using algo
+                //Collections.reverse(originalPosts);
+                Log.d("plants", numPlants.keySet().contains("tomato") + " ");
+                List<ImgPost> sortedPosts = SocialAlgo.sortPostAlgo(postList, numPlants);
                 originalPosts = SocialAlgo.sortPostAlgo(postList, numPlants);
                 //socialAdapter.notifyDataSetChanged();
                 //if (refreshOnFriends) {filterFriendsPosts();}
-                socialAdapter.notifyDataSetChanged();
+                postList = sortedPosts;
+                socialAdapter.setPosts(postList);
                 swipeRefreshLayout.setRefreshing(false);
             }
 
