@@ -24,14 +24,13 @@
         <activity
             android:name=".RegisterActivity"
             android:exported="false" />
-        <activity android:name=".LogInPageActivity" />
-        <activity android:name=".SignUpPageActivity" />
-        <activity
-            android:name=".viewmodel.Messages.Chat.ChatActivity"
+        <activity android:name=".viewmodel.Settings.InformationActivity"/>
+        <activity android:name=".LogInPageActivity"/>
+        <activity android:name=".SignUpPageActivity"/>
+        <activity android:name=".viewmodel.Messages.Chat.ChatActivity"
             android:exported="false" />
-        <activity
-            android:name=".RegisterActivity"
-            android:exported="false" />
+        <activity android:name=".viewmodel.Settings.UserSettingsActivity">
+        </activity>
         <activity
             android:name=".LogInActivity"
             android:exported="false" />

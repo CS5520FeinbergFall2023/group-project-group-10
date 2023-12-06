@@ -4,12 +4,15 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +50,10 @@ public class CreatePostDialog extends DialogFragment {
     Button cancelButton;
     private Button addImgButton;
     private ImageView postImage;
+
+    private ImageView loadingImageView;
+
+
     boolean hasImage;
     private TextView postText;
     private TextView postTags;
@@ -55,6 +62,8 @@ public class CreatePostDialog extends DialogFragment {
     private Map<String, Object> post;
     FirebaseUser currUser;
     DatabaseReference dbRef;
+
+    ProgressBar progress_bar;
 
 
     @NonNull
@@ -68,6 +77,7 @@ public class CreatePostDialog extends DialogFragment {
         db = FirebaseDatabase.getInstance();
         dbRef = db.getReference();
         //fsDB = FirebaseFirestore.getInstance();
+        progress_bar = view.findViewById(R.id.progress_bar);
         postButton = view.findViewById(R.id.create_post_button);
         postText = view.findViewById(R.id.create_post_text);
         postTags = view.findViewById(R.id.create_post_tags);
@@ -93,7 +103,7 @@ public class CreatePostDialog extends DialogFragment {
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                progress_bar.setVisibility(View.VISIBLE);
 
                 String postId = dbRef.child("posts").push().getKey();
                 String currentTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).format(new Date());
@@ -109,9 +119,11 @@ public class CreatePostDialog extends DialogFragment {
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
                         if (!task.isSuccessful()) {
                             Toast.makeText(getContext(), "Unable to fetch data", Toast.LENGTH_LONG);
+                            progress_bar.setVisibility(View.GONE);
                         } else {
                             post.put("username", String.valueOf(task.getResult().getValue()));
                             uploadPost(postId);
+                            progress_bar.setVisibility(View.GONE);
                         }
                     }
                 });
