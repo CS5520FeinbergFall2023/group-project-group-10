@@ -91,7 +91,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/num_comments"
+                    app:layout_constraintEnd_toStartOf="@+id/num_likes"
                     app:srcCompat="@drawable/like_outline" />
 
                 <ImageView
@@ -101,11 +101,11 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/num_likes"
+                    app:layout_constraintEnd_toStartOf="@+id/num_comments"
                     app:srcCompat="@drawable/comment_filled_alt" />
 
                 <TextView
-                    android:id="@+id/num_comments"
+                    android:id="@+id/num_likes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -117,7 +117,7 @@
                     app:layout_constraintEnd_toStartOf="@+id/comment_icon" />
 
                 <TextView
-                    android:id="@+id/num_likes"
+                    android:id="@+id/num_comments"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"

@@ -33,7 +33,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -47,6 +49,7 @@ import northeastern.cs5520fa23.greenthumbs.MainActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.model.SocialAlgo;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.FriendsUsers.UsersActivity;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat.ChatActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.Friend;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileFragment;
 
@@ -207,7 +210,7 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
                             friend_ids.add(user_friend.getFriend_id());
                             friendIds.add(user_friend.getFriend_id());
                         }
-                        //socialAdapter.notifyDataSetChanged();
+                         //socialAdapter.notifyDataSetChanged();
                     }
                     Query query = dbRef.orderByChild("timestamp").limitToLast(100);
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -326,6 +329,47 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
         Fragment profileFragment = ProfileFragment.newInstance(username, posterId);
         getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), profileFragment).addToBackStack(null).commit();
     }
+
+    @Override
+    public void addLikeCallback(ImgPost post) {
+        String postId = post.get_id();
+        if (!post.isLiked()) {
+            Like newLike = new Like(currUser.getUid(), currUser.getUid());
+            FirebaseDatabase.getInstance().getReference("posts").child(postId).child("likes").child(currUser.getUid()).setValue(newLike).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (!task.isSuccessful()) {
+                        Toast.makeText(getContext(), "Unable to add like", Toast.LENGTH_LONG).show();
+                    } else {
+                        post.setLiked(true);
+                        post.setNum_likes(post.getNum_likes() + 1);
+                    }
+                }
+            });
+        }
+        /*
+        FirebaseDatabase.getInstance().getReference("posts").child(postId).runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+                ImgPost updatePost = currentData.getValue(ImgPost.class);
+                if (updatePost == null) {
+                    return Transaction.success(currentData);
+                }
+                updatePost.setNum_likes(updatePost.getNum_likes() + 1);
+                currentData.setValue(updatePost);
+                return Transaction.success(currentData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+
+            }
+        });
+
+         */
+    }
+
     private boolean inFilter(ImgPost post, String filterQuery) {
         if (post.getPost_text().toLowerCase().contains(filterQuery.toLowerCase())) {
             return true;
@@ -390,4 +434,6 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
         });
 
     }
+
+
 }

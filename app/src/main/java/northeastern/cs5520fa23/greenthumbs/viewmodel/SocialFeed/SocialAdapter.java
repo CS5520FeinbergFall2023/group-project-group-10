@@ -23,6 +23,14 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Callback;
@@ -40,8 +48,10 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
     private Context context;
     public interface UsernameCallback {
         void openProfileCallback(String username, String posterId);
+        void addLikeCallback(ImgPost post);
     }
     private UsernameCallback usernameCallback;
+    private FirebaseUser currUser;
 
     public SocialAdapter(List<ImgPost> posts, Context context, UsernameCallback usernameCallback) {
         this.posts = posts;
@@ -49,6 +59,7 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
         if (usernameCallback != null) {
             this.usernameCallback = usernameCallback;
         }
+        currUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
     @Override
@@ -76,6 +87,58 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
             }
             if (num_likes != null) {
                 holder.getLikes().setText(num_likes.toString());
+                FirebaseDatabase.getInstance().getReference("posts").child(post.get_id()).child("likes").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        //int num = (int) snapshot.getChildrenCount();
+                        int num = 0;
+                        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        for (DataSnapshot likeSnapshot : snapshot.getChildren()) {
+                            if (likeSnapshot.getKey().equals(uid)) {
+                                post.setLiked(true);
+                                holder.getLikesIcon().setImageResource(R.drawable.like_filled);
+                            }
+                            num += 1;
+                        }
+                        post.setNum_likes(num);
+                        String n = Integer.toString(num);
+                        holder.getLikes().setText(n);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+                holder.getLikesIcon().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //usernameCallback.addLikeCallback(post);
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("posts").child(post.get_id()).child("likes").child(currUser.getUid());
+                        if (!post.isLiked()) {
+                            Like newLike = new Like(currUser.getUid(), currUser.getUid());
+                            ref.setValue(newLike).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (!task.isSuccessful()) {
+                                        Toast.makeText(context, "Unable to add like", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        post.setLiked(true);
+                                        //post.setNum_likes(post.getNum_likes() + 1);
+                                        holder.getLikes().setText(Integer.toString(post.getNum_likes()));
+                                        holder.getLikesIcon().setImageResource(R.drawable.like_filled);
+                                    }
+                                }
+                            });
+                        } else {
+                            ref.removeValue();
+                            post.setLiked(false);
+                            post.setNum_likes(post.getNum_likes() - 1);
+                            holder.getLikes().setText(Integer.toString(post.getNum_likes()));
+                            holder.getLikesIcon().setImageResource(R.drawable.like_outline);
+                        }
+                    }
+                });
                 //if (num_likes > 0) {
                 //    holder.getLikesIcon().setImageResource(R.drawable.like_filled);
                 //}
