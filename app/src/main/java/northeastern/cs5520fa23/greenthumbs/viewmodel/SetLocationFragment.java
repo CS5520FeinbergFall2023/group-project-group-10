@@ -126,8 +126,8 @@ public class SetLocationFragment extends DialogFragment {
     private void saveHomeLocation(float latitude, float longitude) {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppPreferences", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putFloat("HomeLatitude", (float) latitude);
-        editor.putFloat("HomeLongitude", (float) longitude);
+        editor.putFloat("HomeLatitude", latitude);
+        editor.putFloat("HomeLongitude", longitude);
         editor.apply();
 
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();

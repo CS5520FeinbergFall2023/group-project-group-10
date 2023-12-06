@@ -10,7 +10,7 @@
         <TextView
             android:id="@+id/msg_content"
             android:background="@drawable/rounded_corners_background_dg"
-            android:layout_width="0dp"
+            android:layout_weight="1"
             android:padding="8dp"
             android:fontFamily="@font/youngserifregular"
             android:layout_marginStart="10dp"
@@ -18,8 +18,9 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:text="Message Content Message Content Message Content Message Content Message Content Message Content "
-            android:textColor="#FFFBE6"/>
+            android:text="@string/message_content_message_content_message_content_message_content_message_content_message_content"
+            android:textColor="@color/light_green"/>
+
 
         <TextView
             android:id="@+id/msg_timestamp"
@@ -33,4 +34,3 @@
             app:layout_constraintStart_toEndOf="@id/msg_content"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-

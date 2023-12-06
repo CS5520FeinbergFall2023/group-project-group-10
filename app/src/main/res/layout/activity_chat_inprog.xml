@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_yellow"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -11,16 +12,17 @@
 
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="parent"
-        android:background="#356859">
+        android:background="@color/dark_green">
         <ImageButton
             android:id="@+id/chat_back_button_ip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:src="@drawable/baseline_arrow_back_24"
-            android:background="#356859"
+            android:padding="12dp"
+            android:background="@color/dark_green"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/back_button"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -28,6 +30,7 @@
 
         android:id="@+id/chat_activity_recycler_view_ip"
         android:layout_width="match_parent"
+        android:background="@color/light_yellow"
         android:layout_height="0dp"
         app:layout_constraintVertical_weight="10"
 
