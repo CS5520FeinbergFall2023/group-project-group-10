@@ -6,15 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".viewmodel.FriendsUsers.UsersActivity"
     android:background="@color/light_yellow">
+
     <SearchView
         android:id="@+id/users_activity_search"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/less_light_yellow"
+        android:background="@drawable/rounded_corners_ly"
         android:queryHint="Search Users and Friends"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent=".1"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintWidth_percent=".9"
+        app:layout_constraintBottom_toTopOf="@id/friends_title"/>
     <TextView
         android:id="@+id/friends_title"
         android:layout_width="match_parent"
@@ -24,13 +28,16 @@
         android:text="Friends"
         android:textSize="20dp"
         android:textColor="@color/dark_green"
+        app:layout_constraintBottom_toTopOf="@id/users_activity_rv"
         app:layout_constraintTop_toBottomOf="@id/users_activity_search"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/users_activity_rv"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintHeight_percent=".825"
-        app:layout_constraintTop_toBottomOf="@id/friends_title"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent=".8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/friends_title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
