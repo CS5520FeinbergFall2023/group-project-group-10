@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,14 +103,20 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        frRecyclerView = view.findViewById(R.id.dash_notification_rv);
-        frRecyclerView.setHasFixedSize(true);
-        frRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        friendRequestAdapter = new FriendRequestAdapter(friendRequestList, getContext(), this);
-        frRecyclerView.setAdapter(friendRequestAdapter);
+        this.frRecyclerView = view.findViewById(R.id.dash_notification_rv);
+        this.frRecyclerView.setHasFixedSize(true);
+        this.frRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        this.friendRequestAdapter = new FriendRequestAdapter(friendRequestList, getContext(), this);
+        this.frRecyclerView.setAdapter(friendRequestAdapter);
         getFriendRequests();
         this.growTimes = new HashMap<>();
         this.growTimes.put("tomato", 50);
+        this.growingChartRecyclerView = view.findViewById(R.id.dashboard_progress_bars_rv);
+        this.growingChartRecyclerView.setHasFixedSize(true);
+        this.growingChartRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        this.growingChartAdapter = new GrowingChartAdapter(plantList, getContext());
+        this.growingChartRecyclerView.setAdapter(this.growingChartAdapter);
+        getPlants();
 
     }
 
@@ -119,15 +126,30 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot plantsSnapshot: snapshot.getChildren()) {
+                    //HashMap<String, Object> children = plantsSnapshot.getChildren();
+                    Log.d("plant charts", plantsSnapshot.toString());
+
                     for (DataSnapshot plantSnapshot : plantsSnapshot.getChildren()) {
-                        Plant plant = plantSnapshot.getValue(Plant.class);
-                        if (plant != null) {
-                            if (plant.isIs_growing() != null && plant.isIs_growing() == true) {
-                                plantList.add(plant);
-                                growingChartAdapter.setPlantList(plantList);
+                        Log.d("plant charts", plantSnapshot.toString());
+                        try {
+                            Plant plant = plantSnapshot.getValue(Plant.class);
+                            if (plant != null) {
+                                if (plant.isIs_growing() != null && plant.isIs_growing() == true) {
+                                    plantList.add(plant);
+                                    growingChartAdapter.notifyDataSetChanged();
+                                }
                             }
+                        } catch (Error e) {
+                            Log.d("plant charts error", plantSnapshot.toString());
                         }
+                        //for (DataSnapshot plantSnapshot : plantTypeSnapshot.getChildren()) {
+
+                        //}
+
+
                     }
+
+
                 }
             }
 

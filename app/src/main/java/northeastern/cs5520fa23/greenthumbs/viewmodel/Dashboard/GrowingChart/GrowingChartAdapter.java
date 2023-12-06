@@ -1,6 +1,8 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.GrowingChart;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -26,7 +28,7 @@ public class GrowingChartAdapter extends RecyclerView.Adapter<GrowingChartViewHo
         this.plantList = plantList;
         this.context = context;
         this.growTimes = new HashMap<>();
-        this.growTimes.put("tomato", 50);
+        this.growTimes.put("tomato", 100);
         this.plantResIds = new HashMap<>();
         this.plantResIds.put("tomato", R.drawable.tomato);
     }
@@ -34,7 +36,8 @@ public class GrowingChartAdapter extends RecyclerView.Adapter<GrowingChartViewHo
     @NonNull
     @Override
     public GrowingChartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+        //GardenViewHolder(LayoutInflater.from(context).inflate(R.layout.garden_plant_item, parent, false))
+        return new GrowingChartViewHolder(LayoutInflater.from(context).inflate(R.layout.plant_progress_item, parent, false));
     }
 
     @Override
@@ -65,11 +68,13 @@ public class GrowingChartAdapter extends RecyclerView.Adapter<GrowingChartViewHo
                             try {
                                 Date start = formatter.parse(datePlanted);
                                 Date end = formatter.parse(expectedFinish);
-                                long timeDif = end.getTime() - start.getTime();
+                                Date today = new Date();
+                                long timeDif = today.getTime() - start.getTime();
                                 Integer dayDif = (int) (timeDif / (1000 * 60 * 60 * 24) ) % 365;
                                 Integer growTime = growTimes.get(plantType.toLowerCase());
-                                Integer daysGrown = growTime - dayDif;
-                                Integer percentGrown = daysGrown / growTime;
+                                //Integer daysGrown = growTime - dayDif;
+                                double percentGrownPercent = dayDif / (growTime + 0.0);
+                                Integer percentGrown = (int)(percentGrownPercent * 100);
                                 holder.getProgressBar().setProgress(percentGrown);
                             } catch (ParseException e) {
 
@@ -101,8 +106,6 @@ public class GrowingChartAdapter extends RecyclerView.Adapter<GrowingChartViewHo
     }
 
     public void setPlantList(List<Plant> plantList) {
-        this.plantList.clear();
-        this.plantList.addAll(plantList);
-        notifyDataSetChanged();
+        this.plantList = plantList;
     }
 }

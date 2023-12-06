@@ -79,7 +79,7 @@
         android:fontFamily="@font/youngserifregular"
         app:layout_constraintWidth_percent=".9"/>
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/dashboard_progress_bars"
+        android:id="@+id/dashboard_progress_bars_rv"
         android:layout_width="0dp"
         android:layout_height="200dp"
         app:layout_constraintStart_toStartOf="parent"
