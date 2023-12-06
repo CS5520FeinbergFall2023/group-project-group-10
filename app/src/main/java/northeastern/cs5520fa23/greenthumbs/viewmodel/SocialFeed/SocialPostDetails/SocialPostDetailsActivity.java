@@ -3,20 +3,25 @@ package northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.SocialPostDetai
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -26,7 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
+import com.squareup.picasso.Picasso;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,7 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
+import java.util.concurrent.CountDownLatch;
 import northeastern.cs5520fa23.greenthumbs.R;
 
 public class SocialPostDetailsActivity extends AppCompatActivity {
@@ -66,9 +71,41 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
         commentAdapter = new CommentAdapter(commentList, this);
         commentRV.setAdapter(commentAdapter);
         commentText = findViewById(R.id.comment_edit_text);
-        ImageButton addCommentButton = findViewById(R.id.add_comment_button);
-        addCommentButton.setOnClickListener(v -> addComment());
-        TextView postText = findViewById(R.id.post_detail_post_text);
+        commentText.setSingleLine(true);
+        commentText.setImeOptions(EditorInfo.IME_ACTION_GO | EditorInfo.IME_ACTION_DONE);
+        commentText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_GO) {
+                    //Toast.makeText(SocialPostDetailsActivity.this, "here", Toast.LENGTH_SHORT).show();
+                    try {
+                        Tasks.await(addComment());
+                        return true;
+                    } catch (Exception e) {
+                        return false;
+                    }
+
+                } else if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    try {
+                        Tasks.await(addComment());
+                        return true;
+                    } catch (Exception e) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+        });
+        addCommentButton = findViewById(R.id.add_comment_button);
+        addCommentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addComment();
+            }
+        });
+        postText = findViewById(R.id.post_detail_post_text);
+
         postText.setText(getIntent().getStringExtra("post_text"));
         TextView usernameText = findViewById(R.id.post_detail_username);
         usernameText.setText(getIntent().getStringExtra("post_username"));
@@ -81,9 +118,14 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
                 //Uri imgUri = Uri.parse(storageUri);
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference imgRef = storage.getReferenceFromUrl(storageUri);
-                imgRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                    Glide.with(SocialPostDetailsActivity.this).load(uri).into(postImage);
-                    getComments();
+
+                imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Picasso.get().load(uri).resize(postImage.getWidth(), postImage.getHeight()).centerCrop().into(postImage);
+                        //Glide.with(SocialPostDetailsActivity.this).load(uri).into(postImage);
+                        getComments();
+                    }
                 });
             } else {
                 Toast.makeText(this, "NO IMAGE", Toast.LENGTH_SHORT).show();
@@ -94,7 +136,7 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
 
     }
 
-    private void addComment() {
+    private Task addComment() {
         String commentContent = commentText.getText().toString();
         String commentId = commentRef.push().getKey();
         String currentTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).format(new Date());
@@ -103,21 +145,35 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
         newComment.put("user_id", currUser.getUid());
         newComment.put("comment_text", commentContent);
         newComment.put("comment_likes", 0);
+        Task t = FirebaseDatabase.getInstance().getReference().child("users").child(currUser.getUid()).child("username").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Toast.makeText(SocialPostDetailsActivity.this, "Unable to fetch data", Toast.LENGTH_LONG);
+                } else {
+                    newComment.put("username", String.valueOf(task.getResult().getValue()));
 
-        FirebaseDatabase.getInstance().getReference().child("users").child(currUser.getUid()).child("username").get().addOnCompleteListener(task -> {
-            if (!task.isSuccessful()) {
-                Toast.makeText(SocialPostDetailsActivity.this, "Unable to fetch data", Toast.LENGTH_LONG).show();
-            } else {
-                newComment.put("username", String.valueOf(task.getResult().getValue()));
-                DatabaseReference cRef = FirebaseDatabase.getInstance().getReference("posts").child(_id).child("comments");
-                cRef.child(commentId).setValue(newComment).addOnSuccessListener(unused -> {
-                    Toast.makeText(SocialPostDetailsActivity.this, "Comment Added", Toast.LENGTH_SHORT).show();
-                    commentText.setText("");
-                    hideKeyboard();
-                    getComments();
-                }).addOnFailureListener(e -> Toast.makeText(SocialPostDetailsActivity.this, "Comment Not Added", Toast.LENGTH_SHORT));
+                    DatabaseReference cRef = FirebaseDatabase.getInstance().getReference("posts").child(_id).child("comments");
+                    cRef.child(commentId).setValue(newComment).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Toast.makeText(SocialPostDetailsActivity.this, "Comment Added", Toast.LENGTH_SHORT);
+                            commentText.setText("");
+                            hideKeyboard();
+                            getComments();
+
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(SocialPostDetailsActivity.this, "Comment Not Added", Toast.LENGTH_SHORT);
+                        }
+                    });
+                }
             }
         });
+
+        return t;
 
     }
 

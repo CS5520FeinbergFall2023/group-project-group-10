@@ -79,6 +79,7 @@
             android:fontFamily="@font/youngserifregular"
             android:hint="@string/add_a_comment"
             android:background="@color/light_yellow"
+            android:imeOptions="actionGo|actionDone"
             app:layout_constraintHorizontal_weight="10"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

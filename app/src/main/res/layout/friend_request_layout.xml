@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/friend_request_layout_card">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/light_green"
-        android:id="@+id/friend_request_cl">
+        android:id="@+id/friend_request_cl"
+        android:background="@color/light_green">
+      
         <TextView
             android:id="@+id/friend_request_username"
             android:layout_width="wrap_content"
@@ -17,9 +18,11 @@
             android:text="@string/username"
             android:textColor="@color/dark_green"
             android:fontFamily="@font/youngserifregular"
+            android:layout_marginLeft="8dp"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintTop_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"/>
         <Button
             android:id="@+id/friend_request_accept_button"
             android:layout_width="wrap_content"
@@ -30,7 +33,8 @@
             android:text="@string/accept"
             app:layout_constraintEnd_toStartOf="@id/friend_request_deny_button"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintTop_toBottomOf="parent"/>
+            app:layout_constraintTop_toBottomOf="parent"
+            android:layout_marginRight="8dp"/>
         <Button
             android:id="@+id/friend_request_deny_button"
             android:layout_width="wrap_content"

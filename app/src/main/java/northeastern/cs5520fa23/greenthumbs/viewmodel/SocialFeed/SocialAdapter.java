@@ -3,24 +3,34 @@ package northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed;
 import static android.content.ContentValues.TAG;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.nfc.Tag;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 import java.util.List;
-
 import northeastern.cs5520fa23.greenthumbs.R;
 
 
 public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
+
     private List<ImgPost> posts;
     private Context context;
     public interface UsernameCallback {
@@ -66,6 +76,39 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
             if (post_text != null) {
                 holder.getPostText().setText(post_text);
             }
+            // image getting
+            if (posterId != null) {
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference profPicRef = storage.getReference("profile_pics/"+posterId);
+                profPicRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (!task.isSuccessful()) {
+                            Log.d("HAS_NO_PIC", profPicRef.toString());
+                            //Picasso.get().load(R.drawable.baseline_tag_faces_24).resize(40, 40).centerCrop().into(holder.getPostProfPic());
+                        } else {
+                            Uri uri = task.getResult();
+                            //Picasso.get().load(uri).resize(40, 40).centerCrop().into(holder.getPostProfPic());
+                            Picasso.get().load(uri).resize(40, 40).into(holder.getPostProfPic(), new Callback() {
+                                @Override
+                                public void onSuccess() {
+                                    Bitmap bitmap = ((BitmapDrawable) holder.getPostProfPic().getDrawable()).getBitmap();
+                                    RoundedBitmapDrawable round = RoundedBitmapDrawableFactory.create(context.getResources(), bitmap);
+                                    round.setCircular(true);
+                                    round.setCornerRadius(40/2.0f);
+                                    holder.getPostProfPic().setImageDrawable(round);
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    //holder.getPostProfPic().setImageResource(R.drawable.baseline_tag_faces_24);
+                                }
+                            });
+
+                        }
+                    }
+                });
+            }
             if (post.isHas_img()) {
                 // https://firebase.google.com/docs/storage/android/download-files
                 postUri = post.getImg_uri();
@@ -74,7 +117,18 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
                 Log.d(TAG, "onBindViewHolder: " + postUri);
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference imgRef = storage.getReferenceFromUrl(postUri);
-                imgRef.getDownloadUrl().addOnSuccessListener(uri -> Glide.with(context).load(uri).into(holder.getPostImg()));
+                imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        holder.getPostImg().setVisibility(View.VISIBLE);
+                        try {
+                            Picasso.get().load(uri).resize(holder.getPostImg().getWidth(), holder.getPostImg().getHeight()).centerCrop().into(holder.getPostImg());
+                        } catch (IllegalArgumentException e) {
+                            Log.d("ERROR IMG", holder.postText.getText() + " " + holder.getPostImg().getWidth() + " " + holder.getPostImg().getHeight());
+                        }
+                        //Glide.with(context).load(uri).into(holder.getPostImg());
+                    }
+                });
             } else {
                 postUri = null;
                 holder.getPostImg().setVisibility(View.GONE);
@@ -95,5 +149,15 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
 
     @Override
     public int getItemCount() {return posts.size();}
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 }
 

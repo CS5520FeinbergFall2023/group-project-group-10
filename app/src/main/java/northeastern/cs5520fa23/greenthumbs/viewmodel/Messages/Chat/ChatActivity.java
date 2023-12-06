@@ -1,6 +1,12 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,12 +15,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -22,7 +26,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,7 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
+import northeastern.cs5520fa23.greenthumbs.MainActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.User;
 
@@ -44,20 +47,32 @@ public class ChatActivity extends AppCompatActivity {
     private String currUsername;
     private String otherUsername;
     private String chatID;
+    private Bundle extras;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Intent i = new Intent(ChatActivity.this, MainActivity.class);
+                i.putExtra("to_chat", true);
+                startActivity(i);
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
         this.db = FirebaseDatabase.getInstance();
         this.currUser = FirebaseAuth.getInstance().getCurrentUser();
-        this.otherUsername = getIntent().getStringExtra("other_username");
+        extras = getIntent().getExtras();
+        this.otherUsername = extras.getString("other_username");
+        Log.d("OTHER_UN", this.otherUsername + "!!!!");
+        //Log.d("OTHER_UN", gettypethis.otherUsername + "!!!!");
+
+        //setChatID(otherUsername);
         getUsersInfo();
 
-
-        /*
-
-         */
         //Toast.makeText(ChatActivity.this, otherUserID, Toast.LENGTH_LONG).show();
 
 
@@ -72,9 +87,13 @@ public class ChatActivity extends AppCompatActivity {
         msgRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         msgAdapter = new MessageAdapter(msgList, this);
         msgRecyclerView.setAdapter(msgAdapter);
+
+
     }
 
     private void getMessages() {
+        setChatID(otherUsername);
+        Log.d("Chat_ID", chatID);
         DatabaseReference msgRef = db.getReference("chats").child(chatID).child("messages");
         msgRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -91,6 +110,9 @@ public class ChatActivity extends AppCompatActivity {
                         msgList.add(msg);
                     }
                     msgAdapter.notifyDataSetChanged();
+                    msgRecyclerView.smoothScrollToPosition(msgList.size());
+
+
                 }
             }
 
@@ -100,9 +122,9 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
-    private void setChatID () {
-        if (compareUsernames(currUsername, otherUsername) < 0) {
-            this.chatID = currUsername + "_" + otherUsername;
+    private void setChatID (String u2) {
+        if (compareUsernames(currUsername, u2) < 0) {
+            this.chatID = currUsername + "_" + u2;
         } else {
             this.chatID = otherUsername + "_" + currUsername;
         }
@@ -131,23 +153,27 @@ public class ChatActivity extends AppCompatActivity {
 
     private void uploadMessage(Map<String, Object> msgMap) {
         DatabaseReference msgRef = db.getReference("chats").child(chatID).child("messages");
-        msgRef.get().addOnCompleteListener(task -> {
-            if (!task.isSuccessful()) {
-                Toast.makeText(ChatActivity.this, "Unable to fetch messages", Toast.LENGTH_LONG).show();
-            } else {
-                String msgId = msgRef.push().getKey();
-                msgRef.child(msgId).setValue(msgMap).addOnCompleteListener(task1 -> {
-                    if (!task1.isSuccessful()) {
-                        Toast.makeText(ChatActivity.this, "Unable to upload chat", Toast.LENGTH_LONG).show();
-                    } else {
-                        msgInput.setText("");
-                        hideKeyboard();
-                        getMessages();
-                    }
-                });
-            }
-        });
-    }
+        msgRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Toast.makeText(ChatActivity.this, "Unable to fetch messages", Toast.LENGTH_LONG);
+                } else {
+                    String msgId = msgRef.push().getKey();
+                    msgRef.child(msgId).setValue(msgMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(ChatActivity.this, "Unable to upload chat", Toast.LENGTH_LONG);
+                            } else {
+                                msgInput.setText("");
+                                hideKeyboard();
+                                updateUserChats(msgMap);
+                                //msgRecyclerView.smoothScrollToPosition(msgList.size());
+                            }
+                        }
+                    });
+                }
 
     private void hideKeyboard() {
         View view = this.getCurrentFocus();
@@ -162,30 +188,76 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void getUsersInfo() {
-        db.getReference().child("users").child(currUser.getUid()).child("username").get().addOnCompleteListener(task -> {
-            if (!task.isSuccessful()) {
-                Toast.makeText(ChatActivity.this, "Unable to get username", Toast.LENGTH_SHORT).show();
-            } else {
-                currUsername = String.valueOf(task.getResult().getValue());
-                //Toast.makeText(ChatActivity.this, currUsername, Toast.LENGTH_SHORT).show();
-                DatabaseReference dbRef = db.getReference("users");
-                dbRef.get().addOnCompleteListener(task1 -> {
-                    for (DataSnapshot userSnapshot: task1.getResult().getChildren()) {
-                        User other = userSnapshot.getValue(User.class);
-                        Boolean t = other.getUsername().equals(otherUsername);
-                        //Toast.makeText(ChatActivity.this, other.getUsername().toString() + " " + otherUsername.toString(), Toast.LENGTH_SHORT).show();
+        db.getReference().child("users").child(currUser.getUid()).child("username").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Toast.makeText(ChatActivity.this, "Unable to get username", Toast.LENGTH_SHORT).show();
+                } else {
+                    currUsername = String.valueOf(task.getResult().getValue());
+                    //Toast.makeText(ChatActivity.this, currUsername, Toast.LENGTH_SHORT).show();
 
-                        if (other.getUsername().equals(otherUsername)) {
-                            otherUserID = other.getUser_id();
-                            setChatID();
-                            getMessages();
-                            //Toast.makeText(ChatActivity.this, otherUserID, Toast.LENGTH_SHORT).show();
+                    DatabaseReference dbRef = db.getReference("users");
+                    dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DataSnapshot> task) {
+                            for (DataSnapshot userSnapshot: task.getResult().getChildren()) {
+                                User other = userSnapshot.getValue(User.class);
+                                Boolean t = other.getUsername().equals(otherUsername);
+                                //Toast.makeText(ChatActivity.this, other.getUsername().toString() + " " + otherUsername.toString(), Toast.LENGTH_SHORT).show();
+
+                                if (other.getUsername().contains(otherUsername)) {
+                                    otherUserID = other.getUser_id();
+                                    getMessages();
+                                    Log.d("other_uid", otherUserID);
+
+
+
+                                    //Toast.makeText(ChatActivity.this, otherUserID, Toast.LENGTH_SHORT).show();
+                                }
+                            }
                         }
                     }
                 });
-
-
+                }
             }
         });
     }
+
+    private void updateUserChats(Map<String, Object> msgMap) {
+        Map<String, Object> updatesOne = new HashMap<>();
+        updatesOne.put("timestamp", msgMap.get("timestamp"));
+        updatesOne.put("last_message", msgMap.get("messageContent"));
+        updatesOne.put("other_username", otherUsername);
+
+        db.getReference("users").child(currUser.getUid()).child("chats").child(otherUserID).updateChildren(updatesOne).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Map<String, Object> updatesTwo = new HashMap<>();
+                updatesTwo.put("timestamp", msgMap.get("timestamp"));
+                updatesTwo.put("last_message", msgMap.get("messageContent"));
+                updatesTwo.put("other_username", currUsername);
+                db.getReference("users").child(otherUserID).child("chats").child(currUser.getUid()).updateChildren(updatesTwo).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        //getMessages();
+                        updateChatsHistory(msgMap);
+                    }
+                });
+            }
+        });
+
+    }
+    private void updateChatsHistory(Map<String, Object> msgMap) {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("last_message", msgMap.get("messageContent"));
+        updates.put("timestamp", msgMap.get("timestamp"));
+        db.getReference("chats").child(chatID).updateChildren(updates).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                getMessages();
+            }
+        });
+    }
+
 }

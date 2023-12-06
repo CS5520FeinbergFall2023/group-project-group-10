@@ -70,6 +70,7 @@
         android:inputType="text"
         android:autofillHints="Input Bio Here" />
 
+
     <Button
         android:id="@+id/profile_friend_button"
         android:layout_width="wrap_content"
@@ -79,6 +80,7 @@
         android:textColor="@color/light_yellow"
         android:fontFamily="@font/youngserifregular"
         app:layout_constraintHeight_percent="0.06"
+
         app:layout_constraintTop_toBottomOf="@id/profile_user_bio"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/profile_msg_button"/>
