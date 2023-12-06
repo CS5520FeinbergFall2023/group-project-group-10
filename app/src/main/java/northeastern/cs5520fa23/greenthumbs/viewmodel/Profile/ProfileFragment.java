@@ -2,10 +2,13 @@ package northeastern.cs5520fa23.greenthumbs.viewmodel.Profile;
 
 import static android.content.ContentValues.TAG;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -14,6 +17,9 @@ import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -53,6 +59,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import northeastern.cs5520fa23.greenthumbs.MainActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
@@ -100,6 +107,7 @@ public class ProfileFragment extends Fragment {
     private boolean isFriend;
     private boolean isRequested;
     Friend userFriend;
+    private final int PERMISSION_REQUEST_READ_MEDIA_IMAGES = 1;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -234,18 +242,40 @@ public class ProfileFragment extends Fragment {
                 }
             });
             this.headerImage.setOnClickListener(new View.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
                 @Override
                 public void onClick(View v) {
                     if (isEditing) {
-                        getImg(headerImgSelect);
+                        if (ContextCompat.checkSelfPermission(requireActivity(),
+                                Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+
+                            // Permission is not granted, request for permission
+                            ActivityCompat.requestPermissions(requireActivity(),
+                                    new String[]{Manifest.permission.READ_MEDIA_IMAGES},
+                                    PERMISSION_REQUEST_READ_MEDIA_IMAGES);
+                        } else {
+                            // Permission has already been granted, proceed with getting image
+                            getImg(headerImgSelect);
+                        }
                     }
                 }
             });
             this.profilePicture.setOnClickListener(new View.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
                 @Override
                 public void onClick(View v) {
                     if (isEditing) {
-                        getImg(profPicSelect);
+                        if (ContextCompat.checkSelfPermission(requireActivity(),
+                                Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+
+                            // Permission is not granted, request for permission
+                            ActivityCompat.requestPermissions(requireActivity(),
+                                    new String[]{Manifest.permission.READ_MEDIA_IMAGES},
+                                    PERMISSION_REQUEST_READ_MEDIA_IMAGES);
+                        } else {
+                            // Permission has already been granted, proceed with getting image
+                            getImg(profPicSelect);
+                        }
                     }
                 }
             });
