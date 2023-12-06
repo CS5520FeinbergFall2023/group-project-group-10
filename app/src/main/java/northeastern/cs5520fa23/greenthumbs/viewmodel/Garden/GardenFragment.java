@@ -78,7 +78,6 @@ public class GardenFragment extends Fragment {
         }
         plantsItemList = new ArrayList<>();
         populateMenu();
-        //this.gardenAdapter = new GardenAdapter(plantsItemList, this);
 
     }
 
@@ -119,6 +118,12 @@ public class GardenFragment extends Fragment {
 
         gardenPlot = view.findViewById(R.id.garden_plot);
         testLettuce = view.findViewById(R.id.testLettuce);
+        this.gardenMenuRV = view.findViewById(R.id.garden_menu_rv);
+        this.gardenAdapter = new GardenAdapter(plantsItemList, getContext());
+        this.gardenMenuRV.setHasFixedSize(true);
+        this.gardenMenuRV.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        this.gardenMenuRV.setAdapter(gardenAdapter);
+
 
         // TODO: dialog asking user for ?x? plot
         gardenPlot.setColumnCount(9);
