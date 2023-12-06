@@ -13,7 +13,9 @@
             android:id="@+id/other_dashboard_notification_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="NOTIFICATION TEXT"
+            android:text="@string/notification_text"
+            android:fontFamily="@font/youngserifregular"
+            android:textColor="@color/dark_green"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintTop_toBottomOf="parent"/>
@@ -21,7 +23,10 @@
             android:id="@+id/other_dashboard_notification_dismiss_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dismiss"
+            android:backgroundTint="@color/dark_green"
+            android:fontFamily="@font/youngserifregular"
+            android:textColor="@color/light_green"
+            android:text="@string/dismiss"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintTop_toBottomOf="parent"/>

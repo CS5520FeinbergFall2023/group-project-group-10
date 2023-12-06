@@ -11,10 +11,11 @@
         <TextView
             android:id="@+id/msg_timestamp"
             android:layout_width="0dp"
+            android:fontFamily="@font/youngserifregular"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/timestamp"
-            android:textColor="#6F5329"/>
+            android:textColor="@color/dark_green"/>
         <!--
         <TextView
             android:id="@+id/msg_content"
@@ -40,7 +41,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/sentMessageInFrame"
-                android:textColor="@color/light_yellow"
+                android:textColor="@color/dark_green"
+                android:fontFamily="@font/youngserifregular"
                 android:background="@drawable/speech_bubble"
                 android:textSize="16sp"
                 android:maxWidth="200dp"
