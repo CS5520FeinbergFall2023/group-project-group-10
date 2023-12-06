@@ -1,8 +1,10 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
@@ -21,6 +23,8 @@ import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -64,7 +68,7 @@ public class CreatePostDialog extends DialogFragment {
     DatabaseReference dbRef;
 
     ProgressBar progress_bar;
-
+    private final int PERMISSION_REQUEST_READ_MEDIA_IMAGES = 1;
 
     @NonNull
     @Override
@@ -97,7 +101,16 @@ public class CreatePostDialog extends DialogFragment {
         addImgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getImg();
+                if (ContextCompat.checkSelfPermission(requireActivity(),
+                        Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+
+                    ActivityCompat.requestPermissions(requireActivity(),
+                            new String[]{Manifest.permission.READ_MEDIA_IMAGES},
+                            PERMISSION_REQUEST_READ_MEDIA_IMAGES);
+                } else {
+                    // Permission has already been granted, proceed with getting image
+                    getImg();
+                }
             }
         });
         postButton.setOnClickListener(new View.OnClickListener() {

@@ -2,6 +2,8 @@ package northeastern.cs5520fa23.greenthumbs.viewmodel.Profile;
 
 import static android.content.ContentValues.TAG;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -12,6 +14,8 @@ import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -94,6 +98,7 @@ public class ProfileFragment extends Fragment {
     private boolean isFriend;
     private boolean isRequested;
     Friend userFriend;
+    private final int PERMISSION_REQUEST_READ_MEDIA_IMAGES = 1;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -209,14 +214,32 @@ public class ProfileFragment extends Fragment {
             this.headerImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    getImg(headerImgSelect);
+                    if (ContextCompat.checkSelfPermission(requireActivity(),
+                            Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+
+                        ActivityCompat.requestPermissions(requireActivity(),
+                                new String[]{Manifest.permission.READ_MEDIA_IMAGES},
+                                PERMISSION_REQUEST_READ_MEDIA_IMAGES);
+                    } else {
+                        // Permission has already been granted, proceed with getting image
+                        getImg(headerImgSelect);
+                    }
 
                 }
             });
             this.profilePicture.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    getImg(profPicSelect);
+                    if (ContextCompat.checkSelfPermission(requireActivity(),
+                            Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+
+                        ActivityCompat.requestPermissions(requireActivity(),
+                                new String[]{Manifest.permission.READ_MEDIA_IMAGES},
+                                PERMISSION_REQUEST_READ_MEDIA_IMAGES);
+                    } else {
+                        // Permission has already been granted, proceed with getting image
+                        getImg(profPicSelect);
+                    }
 
                 }
             });
