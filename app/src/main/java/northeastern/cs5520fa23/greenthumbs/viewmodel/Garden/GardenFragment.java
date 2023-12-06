@@ -10,13 +10,22 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import androidx.recyclerview.widget.RecyclerView;
+
+
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import android.widget.Adapter;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.FriendRequests.FriendRequestAdapter;
@@ -36,6 +45,11 @@ public class GardenFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private List<GardenMenuItem> plantsItemList;
+    private RecyclerView gardenMenuRV;
+    private GardenAdapter gardenAdapter;
+    GridLayout gardenPlot;
+    ImageView testLettuce; // placeholder for menu options
 
     GridLayout gardenPlot;
     ImageView testLettuce; // placeholder for menu options
@@ -71,6 +85,32 @@ public class GardenFragment extends Fragment {
             String mParam1 = getArguments().getString(ARG_PARAM1);
             String mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        plantsItemList = new ArrayList<>();
+        populateMenu();
+
+    }
+
+    private void populateMenu() {
+        GardenMenuItem tomato = new GardenMenuItem("Tomato", R.drawable.tomato);
+        GardenMenuItem eggplant = new GardenMenuItem("Eggplant", R.drawable.eggplant);
+        GardenMenuItem cucumber = new GardenMenuItem("Cucumber", R.drawable.cucumber);
+        GardenMenuItem carrot = new GardenMenuItem("Carrot", R.drawable.carrot);
+        GardenMenuItem lettuce = new GardenMenuItem("Lettuce", R.drawable.lettuce);
+        GardenMenuItem broccoli = new GardenMenuItem("Broccoli", R.drawable.broccoli);
+        GardenMenuItem onion = new GardenMenuItem("Onion", R.drawable.onion);
+        GardenMenuItem peas = new GardenMenuItem("Peas", R.drawable.peas);
+        GardenMenuItem pepper = new GardenMenuItem("Pepper", R.drawable.pepper);
+        GardenMenuItem potato = new GardenMenuItem("Potato", R.drawable.potato);
+        plantsItemList.add(tomato);
+        plantsItemList.add(eggplant);
+        plantsItemList.add(cucumber);
+        plantsItemList.add(carrot);
+        plantsItemList.add(lettuce);
+        plantsItemList.add(broccoli);
+        plantsItemList.add(onion);
+        plantsItemList.add(peas);
+        plantsItemList.add(pepper);
+        plantsItemList.add(potato);
     }
 
     @Override
@@ -87,6 +127,14 @@ public class GardenFragment extends Fragment {
 
         gardenPlot = view.findViewById(R.id.garden_plot);
         testLettuce = view.findViewById(R.id.testLettuce);
+
+        this.gardenMenuRV = view.findViewById(R.id.garden_menu_rv);
+        this.gardenAdapter = new GardenAdapter(plantsItemList, getContext());
+        this.gardenMenuRV.setHasFixedSize(true);
+        this.gardenMenuRV.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        this.gardenMenuRV.setAdapter(gardenAdapter);
+
+
 
         // TODO: dialog asking user for ?x? plot
         gardenPlot.setColumnCount(9);

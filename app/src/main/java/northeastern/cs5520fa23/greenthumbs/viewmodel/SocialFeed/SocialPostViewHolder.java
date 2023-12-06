@@ -30,6 +30,7 @@ public class SocialPostViewHolder extends RecyclerView.ViewHolder {
 
     public SocialPostViewHolder(@NonNull View itemView) {
         super(itemView);
+        this.likesIcon = itemView.findViewById(R.id.like_icon);
         this.username = itemView.findViewById(R.id.post_username);
         this.postImg = itemView.findViewById(R.id.social_post_image);
         this.postText = itemView.findViewById(R.id.post_text);

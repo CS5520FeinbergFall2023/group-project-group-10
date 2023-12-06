@@ -60,6 +60,7 @@ public class UsersActivity extends AppCompatActivity implements FriendsAdapter.P
         };
         getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
         setContentView(R.layout.activity_users);
+        this.titleText = findViewById(R.id.friends_title);
         this.friendRV = findViewById(R.id.users_activity_rv);
         this.friendRV.setHasFixedSize(true);
         this.friendRV.setLayoutManager(new LinearLayoutManager(this));
@@ -80,6 +81,7 @@ public class UsersActivity extends AppCompatActivity implements FriendsAdapter.P
 
             @Override
             public boolean onQueryTextSubmit(String query) {
+                /*
                 if (query.length() >= 5) {
                     filterUsers(query);
                 } else {
@@ -89,18 +91,20 @@ public class UsersActivity extends AppCompatActivity implements FriendsAdapter.P
                     friendUserList.addAll(originalFriendsList);
                     friendsAdapter.notifyDataSetChanged();
                 }
+
+                 */
+                filterUsers(query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (newText.length() >= 5) {
+                    titleText.setText("Showing All Users");
                     filterUsers(newText);
                 } else {
-                    friendUserList.clear();
-                    friendsAdapter.notifyDataSetChanged();
-                    friendUserList.addAll(originalFriendsList);
-                    friendsAdapter.notifyDataSetChanged();
+                    titleText.setText("Friends");
+                    resetFriends();
                 }
                 return true;
             }
@@ -168,21 +172,19 @@ public class UsersActivity extends AppCompatActivity implements FriendsAdapter.P
                 filteredUsers.add(u);
             }
         }
-        /*
+
         friendUserList.clear();
-        friendsAdapter.getUserList().clear();
-        friendsAdapter.notifyDataSetChanged();
-        friendsAdapter.setUserList(friendUserList);
         friendsAdapter.notifyDataSetChanged();
         friendUserList.addAll(filteredUsers);
         friendsAdapter.notifyDataSetChanged();
 
-         */
-        friendsAdapter.getUserList().clear();
-        friendsAdapter.notifyDataSetChanged();
-        friendsAdapter.setUserList(filteredUsers);
-        friendsAdapter.notifyDataSetChanged();
+    }
 
+    private void resetFriends() {
+        friendUserList.clear();
+        friendsAdapter.notifyDataSetChanged();
+        friendUserList.addAll(originalFriendsList);
+        friendsAdapter.notifyDataSetChanged();
     }
 
     @Override

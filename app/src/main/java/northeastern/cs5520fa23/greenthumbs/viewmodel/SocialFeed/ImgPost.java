@@ -11,6 +11,7 @@ public class ImgPost {
     private String img_uri;
     private int num_likes;
     private int num_comments;
+    private boolean isLiked;
     public ImgPost () {}
 
 
@@ -50,6 +51,7 @@ public class ImgPost {
             img_uri = null;
         }
         this.tags = tags;
+        this.isLiked = false;
     }
 
     public String get_id() {
@@ -146,5 +148,13 @@ public class ImgPost {
                 ", num_likes=" + num_likes +
                 ", num_comments=" + num_comments +
                 '}';
+    }
+
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
     }
 }

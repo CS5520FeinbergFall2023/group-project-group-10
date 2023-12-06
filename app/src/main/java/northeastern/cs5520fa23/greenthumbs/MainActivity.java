@@ -192,6 +192,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+
     private void startWeatherService() {
         SharedPreferences sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE);
         float latitude = sharedPreferences.getFloat("HomeLatitude", 0);

@@ -284,7 +284,7 @@ public class ProfileFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     User user = dataSnapshot.getValue(User.class);
                     if (user.getHeader_image() != null) {
-                        Toast.makeText(getActivity(), "HERE", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getActivity(), "HERE", Toast.LENGTH_LONG).show();
 
                         loadHeaderImage(user.getHeader_image());
                     }

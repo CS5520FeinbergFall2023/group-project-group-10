@@ -114,4 +114,14 @@ public class MessageHistoryAdapter extends RecyclerView.Adapter<MessageHistoryVi
     public int getItemCount() {
         return chats.size();
     }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 }
