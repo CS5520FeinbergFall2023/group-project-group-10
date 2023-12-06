@@ -158,5 +158,15 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
 
     @Override
     public int getItemCount() {return posts.size();}
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 }
 
