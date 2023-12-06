@@ -43,8 +43,8 @@
         >
         <ImageView
             android:src="@drawable/ic_emptysqaure"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:id="@+id/testEmptySpot" />
     </GridLayout>
 
