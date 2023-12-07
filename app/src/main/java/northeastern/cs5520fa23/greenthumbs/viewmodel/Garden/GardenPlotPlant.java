@@ -1,5 +1,7 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.Garden;
 
+import android.widget.ImageView;
+
 public class GardenPlotPlant {
     private String date_planted;
     private String expected_finish;
@@ -7,17 +9,23 @@ public class GardenPlotPlant {
     private String plant_id;
     private String plant_type;
     private Integer position;
+    private Integer resId;
+    private ImageView holderView;
+    private GardenPlotViewHolder viewHolder;
 
     public GardenPlotPlant() {
     }
 
-    public GardenPlotPlant(String date_planted, String expected_finish, Boolean is_growing, String plant_id, String plant_type, Integer position) {
+    public GardenPlotPlant(String date_planted, String expected_finish, Boolean is_growing, String plant_id, String plant_type, Integer position, Integer resId, ImageView holderView, GardenPlotViewHolder viewHolder) {
         this.date_planted = date_planted;
         this.expected_finish = expected_finish;
         this.is_growing = is_growing;
         this.plant_id = plant_id;
         this.plant_type = plant_type;
         this.position = position;
+        this.resId = resId;
+        this.holderView = holderView;
+        this.viewHolder = viewHolder;
     }
 
     public String getDate_planted() {
@@ -66,5 +74,34 @@ public class GardenPlotPlant {
 
     public void setPosition(Integer position) {
         this.position = position;
+    }
+
+    public Integer getResId() {
+        return resId;
+    }
+
+    public void setResId(Integer resId) {
+        this.resId = resId;
+    }
+
+    public ImageView getHolderView() {
+        return holderView;
+    }
+
+    public void setHolderView(ImageView holderView) {
+        this.holderView = holderView;
+    }
+
+    public GardenPlotViewHolder getViewHolder() {
+        return viewHolder;
+    }
+
+    public void setViewHolder(GardenPlotViewHolder viewHolder) {
+        this.viewHolder = viewHolder;
+    }
+
+    public void resetPlant() {
+        this.setPlant_id(null);
+        this.setPlant_type("empty");
     }
 }
