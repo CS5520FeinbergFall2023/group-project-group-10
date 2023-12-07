@@ -17,6 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -99,6 +102,20 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
                     plant.setPlant_type("empty");
                     plant.setResId(plantIds.get(plant.getPlant_type().toLowerCase()));
                     holder.getPlotImage().setImageResource(R.drawable.baseline_crop_square_24);
+                }
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                try {
+                    Date finish = formatter.parse(plant.getExpected_finish());
+                    //Date today = formatter.parse(expectedFinish);
+                    Date today = new Date();
+                    if (!today.before(finish)) {
+                        Drawable background = context.getDrawable(R.drawable.rounded_corners_background_dg);
+                        holder.getPlotImage().setBackground(background);
+                    } else {
+                        holder.getPlotImage().setBackgroundResource(0);
+                    }
+                } catch (ParseException e) {
+
                 }
             } else {
                 plant.setViewHolder(holder);
@@ -233,6 +250,8 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
     public void harvestPlant(GardenPlotPlant plant) {
         plant.getHolderView().setImageResource(plantIds.get("empty"));
         plant.getViewHolder().getPlotImage().setImageResource(plantIds.get("empty"));
+        plant.getHolderView().setBackgroundResource(0);
+        plant.getViewHolder().getPlotImage().setBackgroundResource(0);
         plant.setResId(plantIds.get("empty"));
         plant.setPlant_type(null);
         plant.setPlant_id(null);
