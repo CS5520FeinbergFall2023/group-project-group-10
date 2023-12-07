@@ -67,9 +67,10 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
                     }
                 }
             }
+
+            // When this is is dragged onto / dropped onto
             holder.getPlotImage().setOnDragListener((v, e) -> {
 
-                // Handle each of the expected events.
                 switch(e.getAction()) {
 
                     case DragEvent.ACTION_DRAG_STARTED:
@@ -90,8 +91,6 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
                                 Log.d("PLANT ID LOG", "PLANT ID  " + plant.getPlant_id());
 
                             }
-
-
                         }
                         return false;
 
@@ -125,23 +124,22 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
                         return true;
 
                     case DragEvent.ACTION_DRAG_ENDED:
-
-                        // Turn off color tinting.
                         ((ImageView)v).clearColorFilter();
-
-                        // Invalidate the view to force a redraw.
                         v.invalidate();
+
+                        // potentially ad this back in later
                         //Drawable d = context.getResources().getDrawable(R.drawable.rounded_corners_orange);
                         //v.setBackground(d);
 
                         // Return true. The value is ignored.
                         return true;
-                    // An unknown action type is received.
                     default:
                         break;
                 }
                 return false;
             });
+
+            // When this is dragged
             holder.getPlotImage().setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {

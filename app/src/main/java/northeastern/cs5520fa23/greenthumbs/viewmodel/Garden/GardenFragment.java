@@ -155,29 +155,7 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
 
 
         // TODO: dialog asking user for ?x? plot
-        //gardenPlot.setColumnCount(3);
-        //gardenPlot.setRowCount(3);
 
-        /*
-
-        for(int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                GridLayout.Spec row = GridLayout.spec(i);
-                GridLayout.Spec col = GridLayout.spec(j);
-                ImageView newSquare = new ImageView(getContext());
-                //GridLayout.LayoutParams params = new GridLayout.LayoutParams(row,col);
-                //params.height = 50;
-                //params.width = 50;
-                //params.set
-                newSquare.setImageResource(R.drawable.baseline_crop_square_24);
-                gardenPlot.addView(newSquare);
-            }
-        }
-
-         */
-
-
-        // TODO: popuplate grid with imageviews of ic_emtpySqaure2.
 
         //setMenuDragListeners(); // for menu
         //setReceivingListeners(view); // for garden plot
