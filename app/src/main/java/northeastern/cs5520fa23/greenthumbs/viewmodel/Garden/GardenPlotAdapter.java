@@ -142,6 +142,36 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
                 }
                 return false;
             });
+            holder.getPlotImage().setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+
+                    // create data we want to send in drag event
+                    // TODO: use tags for imageviews to get resourceID, no function to get resourceID.
+                    if (plant.getPlant_type() != null && plantIds.containsKey(plant.getPlant_type().toLowerCase())) {
+                        ClipData.Item item = new ClipData.Item(String.valueOf(plantIds.get(plant.getPlant_type().toLowerCase())));
+                        String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
+                        // Create a new ClipData using "Lettuce" as a label.
+                        ClipData dragData = new ClipData("Lettuce", mimeTypes, item);
+                        View.DragShadowBuilder myShadow = new View.DragShadowBuilder(holder.getPlotImage());
+                        // Start the drag.
+                        v.startDragAndDrop(dragData, myShadow, null, 0);
+                    }
+                    else {
+                        ClipData.Item item = new ClipData.Item(String.valueOf(R.drawable.baseline_nature_24));
+                        String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
+                        // Create a new ClipData using "Lettuce" as a label.
+                        ClipData dragData = new ClipData("Lettuce", mimeTypes, item);
+                        View.DragShadowBuilder myShadow = new View.DragShadowBuilder(holder.getPlotImage());
+                        // Start the drag.
+                        v.startDragAndDrop(dragData, myShadow, null, 0);
+                    }
+
+
+//                img.setVisibility(View.INVISIBLE);
+                    return true; // Indicate that the long-click is handled.
+                }
+            });
         }
     }
 
