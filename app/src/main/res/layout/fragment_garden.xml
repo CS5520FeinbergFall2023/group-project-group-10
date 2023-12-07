@@ -9,6 +9,19 @@
 
     <!-- TODO: Update blank fragment layout -->
     <!-- TODO: Update blank fragment layout -->
+    <Button
+        android:id="@+id/garden_go_to_stats_button"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent=".7"
+        app:layout_constraintHeight_percent=".08"
+        android:backgroundTint="@color/dark_green"
+        android:text="See Your Stats"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/garden_menu_rv"
         android:layout_width="match_parent"
@@ -17,7 +30,7 @@
         app:layout_constraintHeight_percent=".15"
         android:minHeight="100dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/garden_go_to_stats_button" />
 
     <!--
     <TextView

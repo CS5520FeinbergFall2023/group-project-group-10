@@ -2,6 +2,7 @@ package northeastern.cs5520fa23.greenthumbs.viewmodel.Garden;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -19,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -31,6 +33,7 @@ import java.util.List;
 
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.FriendRequests.FriendRequestAdapter;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Garden.GardenStats.GardenStatsActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,6 +55,7 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
     private GardenAdapter gardenAdapter;
     GridLayout gardenPlot;
     private GridView gardenPlotView;
+    private Button goToStatsButton;
     ImageView testLettuce; // placeholder for menu options
 
     public GardenFragment() {
@@ -125,6 +129,14 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
 
         gardenPlot = view.findViewById(R.id.garden_plot);
         //testLettuce = view.findViewById(R.id.testLettuce);
+        this.goToStatsButton = view.findViewById(R.id.garden_go_to_stats_button);
+        this.goToStatsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), GardenStatsActivity.class);
+                getActivity().startActivity(i);
+            }
+        });
         this.gardenMenuRV = view.findViewById(R.id.garden_menu_rv);
         this.gardenAdapter = new GardenAdapter(plantsItemList, getContext(), this);
         this.gardenMenuRV.setHasFixedSize(true);
