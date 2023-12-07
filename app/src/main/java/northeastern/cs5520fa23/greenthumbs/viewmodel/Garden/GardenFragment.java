@@ -3,36 +3,35 @@ package northeastern.cs5520fa23.greenthumbs.viewmodel.Garden;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.Button;
-import android.widget.GridLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import northeastern.cs5520fa23.greenthumbs.R;
-import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.FriendRequests.FriendRequestAdapter;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Garden.GardenStats.GardenStatsActivity;
 
 /**
@@ -55,7 +54,11 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
     private GardenAdapter gardenAdapter;
     //GridLayout gardenPlot;
     private RecyclerView gardenPlotView;
+    private GardenPlotAdapter gardenPlotAdapter;
     private Button goToStatsButton;
+    private List<GardenPlotPlant> gardenPlotPlants;
+    private FirebaseUser currUser;
+    private FirebaseDatabase db;
     ImageView testLettuce; // placeholder for menu options
 
     public GardenFragment() {
@@ -87,7 +90,10 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        plantsItemList = new ArrayList<>();
+        this.plantsItemList = new ArrayList<>();
+        this.gardenPlotPlants= new ArrayList<>();
+        this.currUser = FirebaseAuth.getInstance().getCurrentUser();
+        this.db = FirebaseDatabase.getInstance();
         populateMenu();
 
     }
@@ -142,6 +148,11 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
         this.gardenMenuRV.setHasFixedSize(true);
         this.gardenMenuRV.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         this.gardenMenuRV.setAdapter(gardenAdapter);
+        this.gardenPlotView = view.findViewById(R.id.garden_plot_rv_grid);
+        this.gardenPlotView.setHasFixedSize(true);
+        this.gardenPlotView.setLayoutManager(new GridLayoutManager(getContext(), 4));
+        this.gardenPlotAdapter = new GardenPlotAdapter(gardenPlotPlants, this.getContext());
+        this.gardenPlotView.setAdapter(gardenPlotAdapter);
 
 
         // TODO: dialog asking user for ?x? plot
@@ -172,8 +183,59 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
         //setMenuDragListeners(); // for menu
         //setReceivingListeners(view); // for garden plot
         //setGridListeners();
+        populateGarden();
 
         // TODO: connect whats in garden plot to a data structure for DB, and reload on launch
+    }
+
+    private void populateGarden() {
+        Query gardenRef = db.getReference("users").child(currUser.getUid()).child("plants").child("garden").orderByKey();
+        //Query query = gardenRef.orderByChild("position");
+        gardenRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // handle incorrect sizing
+                if (snapshot.exists()) {
+                    HashMap <Integer, GardenPlotPlant> plantPositions = new HashMap<>();
+                    for (DataSnapshot plantSnapshot: snapshot.getChildren()) {
+                        GardenPlotPlant plant = plantSnapshot.getValue(GardenPlotPlant.class);
+                        plantPositions.put(plant.getPosition(), plant);
+                    }
+
+                    for (int i = 0; i < 16; i++) {
+                        Integer j = i;
+                        if (plantPositions.containsKey(j)) {
+                            //gardenPlotPlants.add(plantPositions.get(j));
+                        } else {
+                            GardenPlotPlant plant = new GardenPlotPlant();
+                            plant.setPosition(j);
+                            plantPositions.put(j, plant);
+                        }
+                        //gardenPlotPlants.add(gardenPlotPlants.get(j));
+                        //gardenPlotAdapter.notifyDataSetChanged();
+                    }
+                    for (int i = 0; i < 16; i++) {
+                        gardenPlotPlants.add(plantPositions.get(i));
+                        gardenPlotAdapter.notifyDataSetChanged();
+                    }
+
+
+                } else {
+                    for (int i = 0; i < 16; i++) {
+                        GardenPlotPlant plant = new GardenPlotPlant();
+                        plant.setPosition(i);
+                        gardenPlotPlants.add(plant);
+                        gardenPlotAdapter.notifyDataSetChanged();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override

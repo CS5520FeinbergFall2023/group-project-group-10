@@ -75,7 +75,8 @@
         app:layout_constraintTop_toTopOf="@id/garden_delete_icon"
         app:layout_constraintStart_toEndOf="@id/garden_delete_icon"
         app:layout_constraintEnd_toStartOf="@id/garden_harvest_icon"
-        android:text="<- Drag To Edit Garden ->"
+        android:text="Drag To Edit Garden"
+        android:gravity="center"
         android:fontFamily="@font/youngserifregular"
         android:textColor="@color/dark_green"/>
         

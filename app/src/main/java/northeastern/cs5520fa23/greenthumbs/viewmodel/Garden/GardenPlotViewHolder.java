@@ -14,4 +14,12 @@ public class GardenPlotViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         this.plotImage = itemView.findViewById(R.id.garden_cell_img);
     }
+
+    public ImageView getPlotImage() {
+        return plotImage;
+    }
+
+    public void setPlotImage(ImageView plotImage) {
+        this.plotImage = plotImage;
+    }
 }

@@ -1,4 +1,4 @@
-package northeastern.cs5520fa23.greenthumbs.viewmodel.Garden.GardenStats;
+package northeastern.cs5520fa23.greenthumbs.viewmodel.Garden;
 
 public class GardenPlotPlant {
     private String date_planted;
