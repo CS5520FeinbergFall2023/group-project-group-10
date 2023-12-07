@@ -296,7 +296,8 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
     }
 
     public void deletePlant(GardenPlotPlant plant) {
-        // updateDeleteDatabasePlants(plant)
+        updateDeleteDatabasePlants(plant);
+        /*
         plant.getHolderView().setImageResource(plantIds.get("empty"));
         plant.getViewHolder().getPlotImage().setImageResource(plantIds.get("empty"));
         plant.getHolderView().setBackgroundResource(0);
@@ -304,6 +305,8 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
         plant.setResId(plantIds.get("empty"));
         plant.setPlant_type(null);
         plant.setPlant_id(null);
+
+         */
     }
 
     private void addPlantToDatabase(GardenPlotPlant plant, String plantNameString) {
@@ -412,6 +415,48 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
             }
         });
 
+    }
+
+    private void updateDeleteDatabasePlants(GardenPlotPlant plantDeleting) {
+        String plantDeletingId = plantDeleting.getPlant_id();
+        String plantDeletingType = plantDeleting.getPlant_type();
+        if (plantDeletingId != null) {
+            DatabaseReference userPlantsRef = db.getReference("users").child(currUser.getUid()).child("plants").child("growing").child(plantDeletingType).child(plantDeletingId);
+
+            userPlantsRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (!task.isSuccessful()) {
+
+                    } else {
+                        updateDeleteDatabaseGarden(plantDeleting);
+                    }
+                }
+            });
+        }
+    }
+
+    private void updateDeleteDatabaseGarden(GardenPlotPlant plantDeleting) {
+        String plantDeletingId = plantDeleting.getPlant_id();
+        if (plantDeletingId != null) {
+            DatabaseReference userGardenRef = db.getReference("users").child(currUser.getUid()).child("plants").child("garden").child(plantDeletingId);
+
+            userGardenRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (!task.isSuccessful()) {
+
+                    } else {
+                        plantDeleting.clearPlant();
+                        plantDeleting.getHolderView().setImageResource(plantIds.get("empty"));
+                        plantDeleting.getViewHolder().getPlotImage().setImageResource(plantIds.get("empty"));
+                        plantDeleting.getHolderView().setBackgroundResource(0);
+                        plantDeleting.getViewHolder().getPlotImage().setBackgroundResource(0);
+                        plantDeleting.setResId(plantIds.get("empty"));
+                    }
+                }
+            });
+        }
     }
 
     @Override

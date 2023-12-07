@@ -93,19 +93,24 @@ public class GardenStatsActivity extends AppCompatActivity {
                     plantTotalsText.setVisibility(View.GONE);
                     noPlantText.setVisibility(View.VISIBLE);
                 } else {
-                    Pie plantPieChart = AnyChart.pie();
-                    List<DataEntry> plantStats = new ArrayList<>();
-                    for (String plant : plantTotals.keySet()) {
-                        plantStats.add(new ValueDataEntry(plant, plantTotals.get(plant)));
+                    try {
+                        Pie plantPieChart = AnyChart.pie();
+                        List<DataEntry> plantStats = new ArrayList<>();
+                        for (String plant : plantTotals.keySet()) {
+                            plantStats.add(new ValueDataEntry(plant, plantTotals.get(plant)));
+
+                        }
+                        plantPieChart.data(plantStats);
+                        plantPieChart.background().fill("#FFFBE6");
+                        chartView.setChart(plantPieChart);
+                        chartView.setVisibility(View.VISIBLE);
+                        plantTotalsRecyclerView.setVisibility(View.VISIBLE);
+                        plantTotalsText.setVisibility(View.VISIBLE);
+                        noPlantText.setVisibility(View.GONE);
+                    } catch (Exception e) {
 
                     }
-                    plantPieChart.data(plantStats);
-                    plantPieChart.background().fill("#FFFBE6");
-                    chartView.setChart(plantPieChart);
-                    chartView.setVisibility(View.VISIBLE);
-                    plantTotalsRecyclerView.setVisibility(View.VISIBLE);
-                    plantTotalsText.setVisibility(View.VISIBLE);
-                    noPlantText.setVisibility(View.GONE);
+
                 }
 
             }
