@@ -90,12 +90,6 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        this.plantsItemList = new ArrayList<>();
-        this.gardenPlotPlants= new ArrayList<>();
-        this.currUser = FirebaseAuth.getInstance().getCurrentUser();
-        this.db = FirebaseDatabase.getInstance();
-        populateMenu();
-
     }
 
     private void populateMenu() {
@@ -135,6 +129,11 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
 
         //gardenPlot = view.findViewById(R.id.garden_plot);
         //testLettuce = view.findViewById(R.id.testLettuce);
+        this.plantsItemList = new ArrayList<>();
+        this.gardenPlotPlants= new ArrayList<>();
+        this.currUser = FirebaseAuth.getInstance().getCurrentUser();
+        this.db = FirebaseDatabase.getInstance();
+        populateMenu();
         this.goToStatsButton = view.findViewById(R.id.garden_go_to_stats_button);
         this.goToStatsButton.setOnClickListener(new View.OnClickListener() {
             @Override
