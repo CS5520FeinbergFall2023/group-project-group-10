@@ -51,6 +51,51 @@
 
 
     <ImageView
+        android:id="@+id/garden_delete_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        android:src="@drawable/baseline_delete_forever_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="48dp"
+        android:layout_marginBottom="48dp"
+        />
+
+    <TextView
+        android:id="@+id/garden_delete_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete Plant Forever"
+        android:fontFamily="@font/youngserifregular"
+        android:textColor="@color/dark_green"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/garden_delete_icon"
+        app:layout_constraintStart_toStartOf="@id/garden_delete_icon"
+        app:layout_constraintTop_toBottomOf="@id/garden_delete_icon" />
+
+    <ImageView
+        android:id="@+id/garden_harvest_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:src="@drawable/baseline_shopping_basket_24"
+        android:layout_marginBottom="48dp"
+        android:layout_marginRight="48dp" />
+
+    <TextView
+        android:id="@+id/garden_harvest_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/youngserifregular"
+        android:textColor="@color/dark_green"
+        android:text="Mark As Grown"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/garden_harvest_icon"
+        app:layout_constraintStart_toStartOf="@id/garden_harvest_icon"
+        app:layout_constraintEnd_toEndOf="@id/garden_harvest_icon"/>
+    <!--
+    <ImageView
         android:id="@+id/testLettuce"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -60,4 +105,5 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
         android:src="@drawable/ic_lettuce"/>
+        -->
 </androidx.constraintlayout.widget.ConstraintLayout>

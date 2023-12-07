@@ -51,6 +51,7 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
     private RecyclerView gardenMenuRV;
     private GardenAdapter gardenAdapter;
     GridLayout gardenPlot;
+    private GridView gardenPlotView;
     ImageView testLettuce; // placeholder for menu options
 
     public GardenFragment() {
@@ -123,7 +124,7 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
 
 
         gardenPlot = view.findViewById(R.id.garden_plot);
-        testLettuce = view.findViewById(R.id.testLettuce);
+        //testLettuce = view.findViewById(R.id.testLettuce);
         this.gardenMenuRV = view.findViewById(R.id.garden_menu_rv);
         this.gardenAdapter = new GardenAdapter(plantsItemList, getContext(), this);
         this.gardenMenuRV.setHasFixedSize(true);
@@ -151,9 +152,10 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
             }
         }
 
+
         // TODO: popuplate grid with imageviews of ic_emtpySqaure2.
 
-        setMenuDragListeners(); // for menu
+        //setMenuDragListeners(); // for menu
         //setReceivingListeners(view); // for garden plot
         setGridListeners();
 
@@ -176,6 +178,7 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
         return true;
     }
 
+    /*
     private void setMenuDragListeners() {
         // TODo: replace testLettuce with function parameter
         testLettuce.setOnLongClickListener(new View.OnLongClickListener() {
@@ -197,6 +200,8 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
             }
         });
     }
+
+     */
 
     private void setGridListeners() {
         int rows = gardenPlot.getRowCount();
@@ -272,6 +277,8 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
                             int w = ((ImageView) v).getWidth();
                             int h = ((ImageView) v).getHeight();
                             Picasso.get().load(Integer.parseInt((String) dragData)).resize(w,h).into((ImageView) v);
+                            Drawable d = getResources().getDrawable(R.drawable.rounded_corners_orange);
+                            v.setBackground(d);
                             //((ImageView) v).setImageResource(Integer.parseInt((String) dragData));
                             ((ImageView)v).clearColorFilter();
 
@@ -284,8 +291,6 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
                             // Turn off color tinting.
                             ((ImageView)v).clearColorFilter();
 
-                            Drawable d = getResources().getDrawable(R.drawable.rounded_corners_orange);
-                            v.setBackground(d);
 
                             // Invalidate the view to force a redraw.
                             v.invalidate();
