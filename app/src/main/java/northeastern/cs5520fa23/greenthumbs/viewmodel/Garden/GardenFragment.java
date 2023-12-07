@@ -196,9 +196,9 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 // handle incorrect sizing
+                gardenPlotPlants.clear();
+                gardenPlotAdapter.notifyDataSetChanged();
                 if (snapshot.exists()) {
-                    gardenPlotPlants.clear();
-                    gardenPlotAdapter.notifyDataSetChanged();
                     HashMap <Integer, GardenPlotPlant> plantPositions = new HashMap<>();
                     for (DataSnapshot plantSnapshot: snapshot.getChildren()) {
                         GardenPlotPlant plant = plantSnapshot.getValue(GardenPlotPlant.class);

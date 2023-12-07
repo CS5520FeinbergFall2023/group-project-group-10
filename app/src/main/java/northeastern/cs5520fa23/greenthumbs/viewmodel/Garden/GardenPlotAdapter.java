@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -291,7 +292,13 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
     }
 
     public void harvestPlant(GardenPlotPlant plant) {
-        updateHarvestDatabasePlants(plant);
+        try {
+            Tasks.await(updateHarvestDatabasePlants(plant));
+        } catch (Exception e) {
+
+        }
+        //updateHarvestDatabasePlants(plant);
+        // want to wait for this and delete so things arent messed up with the double updates for growing stats
 
     }
 
@@ -374,6 +381,37 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
         });
     }
 
+    private Task updateHarvestDatabasePlants(GardenPlotPlant plantHarvested) {
+        Map<String, Object> plantHarvestedData = new HashMap<>();
+        plantHarvestedData.put("plant_id",plantHarvested.getPlant_id());
+        plantHarvestedData.put("plant_type", plantHarvested.getPlant_type());
+        plantHarvestedData.put("expected_finish", plantHarvested.getExpected_finish());
+        plantHarvestedData.put("date_planted", plantHarvested.getDate_planted());
+        plantHarvestedData.put("is_growing", false);
+        String plantHarvestedType = plantHarvested.getPlant_type();
+        String plantHarvestedId = plantHarvested.getPlant_id();
+        DatabaseReference userPlantsRef = db.getReference("users").child(currUser.getUid()).child("plants").child("growing").child(plantHarvestedType).child(plantHarvestedId);
+        Task updateTask = userPlantsRef.updateChildren(plantHarvestedData).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (!task.isSuccessful()) {
+
+                } else {
+                    try {
+                        Tasks.await(updateHarvestDatabaseGarden(plantHarvested ,plantHarvestedId));
+                    } catch (Exception e) {
+
+                    }
+                    //
+                    //updateHarvestDatabaseGarden(plantHarvested ,plantHarvestedId);
+                }
+            }
+        });
+
+        return updateTask;
+    }
+
+    /*
     private void updateHarvestDatabasePlants(GardenPlotPlant plantHarvested) {
         Map<String, Object> plantHarvestedData = new HashMap<>();
         plantHarvestedData.put("plant_id",plantHarvested.getPlant_id());
@@ -396,6 +434,35 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
         });
     }
 
+     */
+
+    private Task updateHarvestDatabaseGarden(GardenPlotPlant plantHarvested,String plantHarvestedId) {
+        DatabaseReference userGardenRef = db.getReference("users").child(currUser.getUid()).child("plants").child("garden").child(plantHarvestedId);
+
+        Task removeTask = userGardenRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (!task.isSuccessful()) {
+
+                } else {
+                    plantHarvested.clearPlant();
+                    plantHarvested.getHolderView().setImageResource(plantIds.get("empty"));
+                    plantHarvested.getViewHolder().getPlotImage().setImageResource(plantIds.get("empty"));
+                    plantHarvested.getHolderView().setBackgroundResource(0);
+                    plantHarvested.getViewHolder().getPlotImage().setBackgroundResource(0);
+                    plantHarvested.setResId(plantIds.get("empty"));
+                    try {Thread.sleep(1000);}
+                    catch (Exception e) {}
+                }
+            }
+        });
+
+        return removeTask;
+
+    }
+
+
+    /*
     private void updateHarvestDatabaseGarden(GardenPlotPlant plantHarvested,String plantHarvestedId) {
         DatabaseReference userGardenRef = db.getReference("users").child(currUser.getUid()).child("plants").child("garden").child(plantHarvestedId);
 
@@ -417,6 +484,8 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
 
     }
 
+
+     */
     private void updateDeleteDatabasePlants(GardenPlotPlant plantDeleting) {
         String plantDeletingId = plantDeleting.getPlant_id();
         String plantDeletingType = plantDeleting.getPlant_type();
@@ -453,6 +522,8 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
                         plantDeleting.getHolderView().setBackgroundResource(0);
                         plantDeleting.getViewHolder().getPlotImage().setBackgroundResource(0);
                         plantDeleting.setResId(plantIds.get("empty"));
+                        try {Thread.sleep(1000);}
+                        catch (Exception e) {}
                     }
                 }
             });

@@ -125,6 +125,8 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
         plantRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                plantList.clear();
+                growingChartAdapter.notifyDataSetChanged();
                 for (DataSnapshot plantsSnapshot: snapshot.getChildren()) {
                     //HashMap<String, Object> children = plantsSnapshot.getChildren();
                     Log.d("plant charts", plantsSnapshot.toString());
