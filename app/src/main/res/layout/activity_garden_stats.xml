@@ -24,4 +24,16 @@
         android:background="@color/dark_green"
         />
 
+    <com.anychart.AnyChartView
+        android:id="@+id/plant_pie_chart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent=".25"
+        app:layout_constraintWidth_percent=".5"
+        app:layout_constraintTop_toBottomOf="@id/stat_activity_header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
