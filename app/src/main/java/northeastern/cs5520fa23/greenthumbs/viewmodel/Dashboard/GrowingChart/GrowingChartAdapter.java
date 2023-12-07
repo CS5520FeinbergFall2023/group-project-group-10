@@ -36,11 +36,21 @@ public class GrowingChartAdapter extends RecyclerView.Adapter<GrowingChartViewHo
         this.growTimes.put("potato", 70);
         this.growTimes.put("broccoli", 70);
         this.growTimes.put("onion", 105);
-        this.growTimes.put("cucmber", 60);
+        this.growTimes.put("cucumber", 60);
         this.growTimes.put("peas", 60);
 
         this.plantResIds = new HashMap<>();
         this.plantResIds.put("tomato", R.drawable.tomato);
+        this.plantResIds.put("eggplant", R.drawable.eggplant);
+        this.plantResIds.put("cucumber", R.drawable.cucumber);
+        this.plantResIds.put("carrot", R.drawable.carrot);
+        this.plantResIds.put("lettuce", R.drawable.lettuce);
+        this.plantResIds.put("broccoli", R.drawable.broccoli);
+        this.plantResIds.put("onion", R.drawable.onion);
+        this.plantResIds.put("peas", R.drawable.peas);
+        this.plantResIds.put("pepper", R.drawable.pepper);
+        this.plantResIds.put("potato", R.drawable.potato);
+        this.plantResIds.put("default", R.drawable.baseline_nature_24);
     }
 
     @NonNull
