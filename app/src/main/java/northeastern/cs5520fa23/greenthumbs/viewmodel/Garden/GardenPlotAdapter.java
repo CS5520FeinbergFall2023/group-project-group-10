@@ -291,16 +291,12 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
     }
 
     public void harvestPlant(GardenPlotPlant plant) {
-        plant.getHolderView().setImageResource(plantIds.get("empty"));
-        plant.getViewHolder().getPlotImage().setImageResource(plantIds.get("empty"));
-        plant.getHolderView().setBackgroundResource(0);
-        plant.getViewHolder().getPlotImage().setBackgroundResource(0);
-        plant.setResId(plantIds.get("empty"));
-        plant.setPlant_type(null);
-        plant.setPlant_id(null);
+        updateHarvestDatabasePlants(plant);
+
     }
 
     public void deletePlant(GardenPlotPlant plant) {
+        // updateDeleteDatabasePlants(plant)
         plant.getHolderView().setImageResource(plantIds.get("empty"));
         plant.getViewHolder().getPlotImage().setImageResource(plantIds.get("empty"));
         plant.getHolderView().setBackgroundResource(0);
@@ -311,7 +307,7 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
     }
 
     private void addPlantToDatabase(GardenPlotPlant plant, String plantNameString) {
-        plant.clearPlant();
+        //plant.clearPlant(); // might not need here - do for harvest and delete though probably
         if (this.growTimes.containsKey(plantNameString)) {
             Map<String, Object> newPlant = new HashMap<>();
             Calendar calendar = Calendar.getInstance();
@@ -355,18 +351,6 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
                     }
                 }
             });
-            //plant.pla
-            /*
-            this.date_planted = date_planted;
-        this.expected_finish = expected_finish;
-        this.is_growing = is_growing;
-        this.plant_id = plant_id;
-        this.plant_type = plant_type;
-        this.position = position;
-        this.resId = resId;
-        this.holderView = holderView;
-        this.viewHolder = viewHolder;
-             */
         }
     }
 
@@ -386,6 +370,50 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
             }
         });
     }
+
+    private void updateHarvestDatabasePlants(GardenPlotPlant plantHarvested) {
+        Map<String, Object> plantHarvestedData = new HashMap<>();
+        plantHarvestedData.put("plant_id",plantHarvested.getPlant_id());
+        plantHarvestedData.put("plant_type", plantHarvested.getPlant_type());
+        plantHarvestedData.put("expected_finish", plantHarvested.getExpected_finish());
+        plantHarvestedData.put("date_planted", plantHarvested.getDate_planted());
+        plantHarvestedData.put("is_growing", false);
+        String plantHarvestedType = plantHarvested.getPlant_type();
+        String plantHarvestedId = plantHarvested.getPlant_id();
+        DatabaseReference userPlantsRef = db.getReference("users").child(currUser.getUid()).child("plants").child("growing").child(plantHarvestedType).child(plantHarvestedId);
+        userPlantsRef.updateChildren(plantHarvestedData).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (!task.isSuccessful()) {
+
+                } else {
+                    updateHarvestDatabaseGarden(plantHarvested ,plantHarvestedId);
+                }
+            }
+        });
+    }
+
+    private void updateHarvestDatabaseGarden(GardenPlotPlant plantHarvested,String plantHarvestedId) {
+        DatabaseReference userGardenRef = db.getReference("users").child(currUser.getUid()).child("plants").child("garden").child(plantHarvestedId);
+
+        userGardenRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (!task.isSuccessful()) {
+
+                } else {
+                    plantHarvested.clearPlant();
+                    plantHarvested.getHolderView().setImageResource(plantIds.get("empty"));
+                    plantHarvested.getViewHolder().getPlotImage().setImageResource(plantIds.get("empty"));
+                    plantHarvested.getHolderView().setBackgroundResource(0);
+                    plantHarvested.getViewHolder().getPlotImage().setBackgroundResource(0);
+                    plantHarvested.setResId(plantIds.get("empty"));
+                }
+            }
+        });
+
+    }
+
     @Override
     public int getItemCount() {
         return plotPlants.size();
