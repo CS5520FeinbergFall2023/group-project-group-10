@@ -100,8 +100,11 @@ public class GardenPlotPlant {
         this.viewHolder = viewHolder;
     }
 
-    public void resetPlant() {
+    public void clearPlant() {
         this.setPlant_id(null);
         this.setPlant_type("empty");
+        this.setDate_planted(null);
+        this.setExpected_finish(null);
+        this.setIs_growing(false);
     }
 }

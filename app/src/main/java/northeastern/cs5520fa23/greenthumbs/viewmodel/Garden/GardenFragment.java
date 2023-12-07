@@ -156,6 +156,7 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
         this.deleteIcon = view.findViewById(R.id.garden_delete_icon);
         this.harvestIcon = view.findViewById(R.id.garden_harvest_icon);
         setHarvestListener();
+        setDeleteListener();
         populateMenu();
         this.goToStatsButton = view.findViewById(R.id.garden_go_to_stats_button);
         this.goToStatsButton.setOnClickListener(new View.OnClickListener() {
@@ -196,6 +197,8 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 // handle incorrect sizing
                 if (snapshot.exists()) {
+                    gardenPlotPlants.clear();
+                    gardenPlotAdapter.notifyDataSetChanged();
                     HashMap <Integer, GardenPlotPlant> plantPositions = new HashMap<>();
                     for (DataSnapshot plantSnapshot: snapshot.getChildren()) {
                         GardenPlotPlant plant = plantSnapshot.getValue(GardenPlotPlant.class);
@@ -241,10 +244,11 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
     @Override
     public boolean dragPlant(String plantName, int resId, ImageView plantImage) {
         //ImageView
+        String plantNameMenu = "menu_" + plantName;
         ClipData.Item item = new ClipData.Item(String.valueOf(resId));
         String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
         // Create a new ClipData using "Lettuce" as a label.
-        ClipData dragData = new ClipData(plantName, mimeTypes, item);
+        ClipData dragData = new ClipData(plantNameMenu, mimeTypes, item);
         View.DragShadowBuilder myShadow = new View.DragShadowBuilder(plantImage);
         // Start the drag.
         plantImage.startDragAndDrop(dragData, myShadow, null, 0);
@@ -326,6 +330,84 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
                     //gardenPlotAdapter.harvestPlant(pl);
                     if (plantMoving != null) {
                         gardenPlotAdapter.harvestPlant(plantMoving);
+                        plantMoving = null;
+                    }
+                    ((ImageView)view).clearColorFilter();
+
+                    view.invalidate();
+                    return true;
+
+                case DragEvent.ACTION_DRAG_ENDED:
+                    ((ImageView)view).clearColorFilter();
+                    view.invalidate();
+
+                    // potentially ad this back in later
+                    //Drawable d = context.getResources().getDrawable(R.drawable.rounded_corners_orange);
+                    //v.setBackground(d);
+
+                    // Return true. The value is ignored.
+                    return true;
+                default:
+                    break;
+            }
+            return false;
+        });
+    }
+
+    private void setDeleteListener() {
+        deleteIcon.setOnDragListener((view, event) -> {
+
+            switch(event.getAction()) {
+
+                case DragEvent.ACTION_DRAG_STARTED:
+
+                    // Determine whether this View can accept the dragged data.
+                    if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
+
+                        // keep the blue stuff from bryan
+                        //int id = holder.getPlotImage().getId();
+
+                        //if (plant.getPlant_id() == null) {
+                        //Log.d("PLANT ID LOG", "onBindViewHolder: no image at" + position);
+                        ((ImageView)view).setColorFilter(Color.parseColor("#4B7DFA"));
+                        view.invalidate();
+                        return true;
+                        //} else {
+                        //  Log.d("PLANT ID LOG", "IMG AT " + position);
+                        //Log.d("PLANT ID LOG", "HOLDER ID " + holder.getPlantId());
+                        //Log.d("PLANT ID LOG", "PLANT ID  " + plant.getPlant_id());
+
+                    }
+                    //}
+                    return false;
+
+                case DragEvent.ACTION_DRAG_ENTERED:
+
+                    ((ImageView)view).setColorFilter(Color.parseColor("#49A36A"));
+                    view.invalidate();
+                    return true;
+
+                case DragEvent.ACTION_DRAG_LOCATION: // doesn't matter
+                    return true;
+
+                case DragEvent.ACTION_DRAG_EXITED:
+                    ((ImageView)view).setColorFilter(Color.parseColor("#4B7DFA"));
+                    view.invalidate();
+                    return true;
+
+                case DragEvent.ACTION_DROP:
+
+                    // Get the item containing the dragged data.
+                    ClipData.Item item = event.getClipData().getItemAt(0);
+                    CharSequence dragData = item.getText();
+                    //plant.setPlant_id((String) dragData);
+                    //holder.setPlantId((String) dragData);
+
+                    // Set imageView in garden plot to display new image based on clipboard data
+                    //((ImageView) view).setImageResource(Integer.parseInt((String) dragData));
+                    //gardenPlotAdapter.harvestPlant(pl);
+                    if (plantMoving != null) {
+                        gardenPlotAdapter.deletePlant(plantMoving);
                         plantMoving = null;
                     }
                     ((ImageView)view).clearColorFilter();

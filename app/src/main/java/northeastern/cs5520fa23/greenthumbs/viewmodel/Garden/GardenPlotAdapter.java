@@ -11,26 +11,41 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.GrowingChart.Plant;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat.ChatActivity;
 
 public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder> {
     private List<GardenPlotPlant> plotPlants;
     private Context context;
     private HashMap<String, Integer> plantIds;
     private Integer count;
+    private HashMap<String, Integer> growTimes;
+    private FirebaseDatabase db;
+    private FirebaseUser currUser;
 
     public interface PlotPlantDragCallback {
         boolean dragPlotPlant(GardenPlotPlant plant, ImageView plotImage);
@@ -38,10 +53,24 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
 
     private PlotPlantDragCallback plotPlantDragCallback;
     public GardenPlotAdapter(List<GardenPlotPlant> plotPlants, Context context, PlotPlantDragCallback plotPlantDragCallback) {
+        this.db = FirebaseDatabase.getInstance();
+        this.currUser = FirebaseAuth.getInstance().getCurrentUser();
         this.plotPlants = plotPlants;
         this.context = context;
         this.plotPlantDragCallback = plotPlantDragCallback;
         this.count = 1;
+
+        this.growTimes = new HashMap<>();
+        this.growTimes.put("tomato", 100);
+        this.growTimes.put("eggplant", 85);
+        this.growTimes.put("lettuce", 53);
+        this.growTimes.put("pepper", 78);
+        this.growTimes.put("carrot", 68);
+        this.growTimes.put("potato", 70);
+        this.growTimes.put("broccoli", 70);
+        this.growTimes.put("onion", 105);
+        this.growTimes.put("cucumber", 60);
+        this.growTimes.put("peas", 60);
 
         this.plantIds = new HashMap<>();
         this.plantIds.put("tomato", R.drawable.tomato);
@@ -105,13 +134,16 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
                 }
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                 try {
-                    Date finish = formatter.parse(plant.getExpected_finish());
-                    //Date today = formatter.parse(expectedFinish);
-                    Date today = new Date();
-                    if (!today.before(finish)) {
-                        Drawable background = context.getDrawable(R.drawable.rounded_corners_background_dg);
-                        holder.getPlotImage().setBackground(background);
-                    } else {
+                    if (plant.getExpected_finish() != null) {
+                        Date finish = formatter.parse(plant.getExpected_finish());
+                        //Date today = formatter.parse(expectedFinish);
+                        Date today = new Date();
+                        if (!today.before(finish)) {
+                            Drawable background = context.getDrawable(R.drawable.rounded_corners_background_dg);
+                            holder.getPlotImage().setBackground(background);
+                        }
+                    }
+                    else {
                         holder.getPlotImage().setBackgroundResource(0);
                     }
                 } catch (ParseException e) {
@@ -144,6 +176,7 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
                                 Log.d("PLANT ID LOG", "IMG AT " + position);
                                 Log.d("PLANT ID LOG", "HOLDER ID " + holder.getPlantId());
                                 Log.d("PLANT ID LOG", "PLANT ID  " + plant.getPlant_id());
+                                return false;
 
                             }
                         }
@@ -164,30 +197,42 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
                         return true;
 
                     case DragEvent.ACTION_DROP:
+                        if (plant.getPlant_id() == null && plant.getPlant_type() == "empty") {
+                            ClipData.Item item = event.getClipData().getItemAt(0);
+                            CharSequence dragData = item.getText();
+                            ClipDescription plantDescription = event.getClipData().getDescription();
+                            CharSequence plantName = plantDescription.getLabel();
+                            String plantNameString = (String) plantName;
+                            if (plantNameString.length() >= 5) {
+                                if (plantNameString.contains("menu_")) {
+                                    plantNameString = plantNameString.toLowerCase();
+                                    plantNameString = plantNameString.substring(5);
+                                    addPlantToDatabase(plant, plantNameString);
+                                    count++;
+                                    String newId = plantName + "_" + count;
+                                    plant.setPlant_id(newId);
+                                    holder.setPlantId(newId);
+                                    Log.d("ON DROP NAME", "plant name: " + plantNameString);
+                                    plant.setPlant_type(plantNameString);
 
-                        // Get the item containing the dragged data.
-                        ClipData.Item item = event.getClipData().getItemAt(0);
-                        CharSequence dragData = item.getText();
-                        ClipDescription plantDescription = event.getClipData().getDescription();
-                        CharSequence plantName = plantDescription.getLabel();
-                        String plantNameString = (String) plantName;
-                        plantNameString = plantNameString.toLowerCase();
-                        count++;
-                        String newId = plantName + "_" + count;
-                        plant.setPlant_id(newId);
-                        holder.setPlantId(newId);
-                        Log.d("ON DROP NAME", "plant name: " + plantNameString);
-                        plant.setPlant_type(plantNameString);
+                                    // Set imageView in garden plot to display new image based on clipboard data
+                                    //((ImageView) view).setImageResource(Integer.parseInt((String) dragData));
+                                    //((ImageView) view).setImageResource();
 
-                        // Set imageView in garden plot to display new image based on clipboard data
-                        //((ImageView) view).setImageResource(Integer.parseInt((String) dragData));
-                        //((ImageView) view).setImageResource();
-                        Picasso.get().load(plantIds.get(plantNameString)).resize(60,60).into((ImageView) view);
+                                    Picasso.get().load(plantIds.get(plantNameString)).resize(60,60).into((ImageView) view);
 
-                        ((ImageView)view).clearColorFilter();
+                                }
+                            }
 
-                        view.invalidate();
-                        return true;
+                            ((ImageView)view).clearColorFilter();
+
+                            view.invalidate();
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                        //return true;
 
                     case DragEvent.ACTION_DRAG_ENDED:
                         ((ImageView)view).clearColorFilter();
@@ -210,8 +255,6 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
                 @Override
                 public boolean onLongClick(View v) {
 
-                    // create data we want to send in drag event
-                    // TODO: use tags for imageviews to get resourceID, no function to get resourceID.
                     if (plant.getPlant_type() != null && plantIds.containsKey(plant.getPlant_type().toLowerCase())) {
                         plotPlantDragCallback.dragPlotPlant(plant, holder.getPlotImage());
                         /*
@@ -255,9 +298,94 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
         plant.setResId(plantIds.get("empty"));
         plant.setPlant_type(null);
         plant.setPlant_id(null);
-
     }
 
+    public void deletePlant(GardenPlotPlant plant) {
+        plant.getHolderView().setImageResource(plantIds.get("empty"));
+        plant.getViewHolder().getPlotImage().setImageResource(plantIds.get("empty"));
+        plant.getHolderView().setBackgroundResource(0);
+        plant.getViewHolder().getPlotImage().setBackgroundResource(0);
+        plant.setResId(plantIds.get("empty"));
+        plant.setPlant_type(null);
+        plant.setPlant_id(null);
+    }
+
+    private void addPlantToDatabase(GardenPlotPlant plant, String plantNameString) {
+        plant.clearPlant();
+        if (this.growTimes.containsKey(plantNameString)) {
+            Map<String, Object> newPlant = new HashMap<>();
+            Calendar calendar = Calendar.getInstance();
+            Integer plantGrowTime = this.growTimes.get(plantNameString);
+            calendar.add(Calendar.DATE, plantGrowTime);
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date today = new Date();
+            String date_planted = formatter.format(today);
+            Date expectedFinish = calendar.getTime();
+            String expected_finish = formatter.format(expectedFinish);
+            //plant.setDate_planted(date_planted);
+            //plant.setExpected_finish(expected_finish);
+            //plant.setIs_growing(true);
+            Boolean is_growing = true;
+            Integer plantPostion = plant.getPosition();
+            //plant.setPlant_type(plantNameString);
+            DatabaseReference userPlantsRef = db.getReference("users").child(currUser.getUid()).child("plants").child("growing").child(plantNameString);
+            userPlantsRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if (!task.isSuccessful()) {
+                        Toast.makeText(context, "Unable to upload plant to user's plants", Toast.LENGTH_LONG);
+                    } else {
+                        String newPlantId = userPlantsRef.push().getKey();
+                        newPlant.put("date_planted", date_planted);
+                        newPlant.put("expected_finish", expected_finish);
+                        newPlant.put("plant_id", newPlantId);
+                        newPlant.put("is_growing", is_growing);
+                        newPlant.put("plant_type", plantNameString);
+                        userPlantsRef.child(newPlantId).setValue(newPlant).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (!task.isSuccessful()) {
+                                    Toast.makeText(context, "Unable to upload plant to user's plants", Toast.LENGTH_LONG);
+                                } else {
+                                    addPlantToGarden(newPlant, newPlantId, plantPostion);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+            //plant.pla
+            /*
+            this.date_planted = date_planted;
+        this.expected_finish = expected_finish;
+        this.is_growing = is_growing;
+        this.plant_id = plant_id;
+        this.plant_type = plant_type;
+        this.position = position;
+        this.resId = resId;
+        this.holderView = holderView;
+        this.viewHolder = viewHolder;
+             */
+        }
+    }
+
+    private void addPlantToGarden(Map<String, Object> newPlant, String newPlantId, Integer position) {
+        newPlant.put("position", position);
+
+        //plotPlants.clear();
+        //notifyDataSetChanged();
+        DatabaseReference gardenRef = db.getReference("users").child(currUser.getUid()).child("plants").child("garden");
+        gardenRef.child(newPlantId).updateChildren(newPlant).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (!task.isSuccessful()) {
+                    Toast.makeText(context, "Unable to upload plant to user's garden", Toast.LENGTH_LONG);
+                } else {
+                }
+            }
+        });
+    }
     @Override
     public int getItemCount() {
         return plotPlants.size();
