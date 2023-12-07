@@ -10,6 +10,7 @@ import northeastern.cs5520fa23.greenthumbs.R;
 
 public class GardenPlotViewHolder extends RecyclerView.ViewHolder {
     ImageView plotImage;
+    String plantId;
     public GardenPlotViewHolder(@NonNull View itemView) {
         super(itemView);
         this.plotImage = itemView.findViewById(R.id.garden_cell_img);
@@ -21,5 +22,13 @@ public class GardenPlotViewHolder extends RecyclerView.ViewHolder {
 
     public void setPlotImage(ImageView plotImage) {
         this.plotImage = plotImage;
+    }
+
+    public String getPlantId() {
+        return plantId;
+    }
+
+    public void setPlantId(String plantId) {
+        this.plantId = plantId;
     }
 }

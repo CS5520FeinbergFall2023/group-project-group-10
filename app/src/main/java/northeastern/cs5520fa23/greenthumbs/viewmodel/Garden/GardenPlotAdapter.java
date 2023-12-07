@@ -5,6 +5,7 @@ import android.content.ClipDescription;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,15 +78,26 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
                         if (e.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
 
                             // keep the blue stuff from bryan
-                            ((ImageView)v).setColorFilter(Color.BLUE);
-                            v.invalidate();
-                            return true;
+                            //int id = holder.getPlotImage().getId();
+                            if (plant.getPlant_id() == null) {
+                                Log.d("PLANT ID LOG", "onBindViewHolder: no image at" + position);
+                                ((ImageView)v).setColorFilter(Color.parseColor("#4B7DFA"));
+                                v.invalidate();
+                                return true;
+                            } else {
+                                Log.d("PLANT ID LOG", "IMG AT " + position);
+                                Log.d("PLANT ID LOG", "HOLDER ID " + holder.getPlantId());
+                                Log.d("PLANT ID LOG", "PLANT ID  " + plant.getPlant_id());
+
+                            }
+
+
                         }
                         return false;
 
                     case DragEvent.ACTION_DRAG_ENTERED:
 
-                        ((ImageView)v).setColorFilter(Color.GREEN);
+                        ((ImageView)v).setColorFilter(Color.parseColor("#49A36A"));
                         v.invalidate();
                         return true;
 
@@ -93,7 +105,7 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
                         return true;
 
                     case DragEvent.ACTION_DRAG_EXITED:
-                        ((ImageView)v).setColorFilter(Color.BLUE);
+                        ((ImageView)v).setColorFilter(Color.parseColor("#4B7DFA"));
                         v.invalidate();
                         return true;
 
@@ -102,6 +114,8 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
                         // Get the item containing the dragged data.
                         ClipData.Item item = e.getClipData().getItemAt(0);
                         CharSequence dragData = item.getText();
+                        plant.setPlant_id((String) dragData);
+                        holder.setPlantId((String) dragData);
 
                         // Set imageView in garden plot to display new image based on clipboard data
                         ((ImageView) v).setImageResource(Integer.parseInt((String) dragData));
