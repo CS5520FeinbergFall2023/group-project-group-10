@@ -3,6 +3,7 @@ package northeastern.cs5520fa23.greenthumbs.model.services;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
@@ -77,6 +78,14 @@ public class WeatherService extends Service {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public List<WeatherForecast.Period> getForecast() {
+        SharedPreferences sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE);
+        float latitude = sharedPreferences.getFloat("HomeLatitude", 0);
+        float longitude = sharedPreferences.getFloat("HomeLongitude", 0);
+        String urlString = getForecastUrl(latitude, longitude);
+        return fetchPeriodData(urlString);
     }
 }
 

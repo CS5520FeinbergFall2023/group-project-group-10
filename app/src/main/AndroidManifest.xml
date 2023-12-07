@@ -55,6 +55,7 @@
         </activity>
 
         <service android:name=".model.services.WeatherService" />
+        <service android:name=".model.services.BackgroundPostService" android:exported="false"/>
     </application>
 
 </manifest>
