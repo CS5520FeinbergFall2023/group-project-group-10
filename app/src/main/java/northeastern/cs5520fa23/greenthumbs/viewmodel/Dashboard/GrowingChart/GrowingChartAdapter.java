@@ -2,6 +2,7 @@ package northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.GrowingChart;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -96,6 +97,15 @@ public class GrowingChartAdapter extends RecyclerView.Adapter<GrowingChartViewHo
                                 double percentGrownPercent = dayDif / (growTime + 0.0);
                                 Integer percentGrown = (int)(percentGrownPercent * 100);
                                 holder.getProgressBar().setProgress(percentGrown);
+                                if (percentGrown < 34) {
+                                    holder.getProgressBar().setProgressTintList(ColorStateList.valueOf(Color.parseColor("#F0AF6C")));
+                                } else if (percentGrown > 33 && percentGrown < 67) {
+                                    holder.getProgressBar().setProgressTintList(ColorStateList.valueOf(Color.parseColor("#F0CC6C")));
+                                } else if (percentGrown > 66 && percentGrown < 100) {
+                                    holder.getProgressBar().setProgressTintList(ColorStateList.valueOf(Color.parseColor("#49A36A")));
+                                } else {
+                                    holder.getProgressBar().setProgressTintList(ColorStateList.valueOf(Color.parseColor("#356859")));
+                                }
                             } catch (ParseException e) {
 
                             }

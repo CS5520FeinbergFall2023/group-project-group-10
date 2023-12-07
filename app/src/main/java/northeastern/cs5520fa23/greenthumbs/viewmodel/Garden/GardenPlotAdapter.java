@@ -142,6 +142,7 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
                         if (!today.before(finish)) {
                             Drawable background = context.getDrawable(R.drawable.rounded_corners_background_dg);
                             holder.getPlotImage().setBackground(background);
+                            //plant.getHolderView().setBackground(background);
                         }
                     }
                     else {
