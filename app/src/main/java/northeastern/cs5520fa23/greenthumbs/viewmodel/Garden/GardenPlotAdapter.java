@@ -117,8 +117,8 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
 
                         // Invalidate the view to force a redraw.
                         v.invalidate();
-                        Drawable d = context.getResources().getDrawable(R.drawable.rounded_corners_orange);
-                        v.setBackground(d);
+                        //Drawable d = context.getResources().getDrawable(R.drawable.rounded_corners_orange);
+                        //v.setBackground(d);
 
                         // Return true. The value is ignored.
                         return true;
