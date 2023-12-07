@@ -81,6 +81,7 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
     private FirebaseUser currUser;
     private List<String> friendIds;
     private HashMap<String, Integer> numPlants;
+    private List<ImgPost> friendPosts;
 
     public SocialFragment() {
         // Required empty public constructor
@@ -111,11 +112,6 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        this.postList = new ArrayList<>();
-        this.originalPosts = new ArrayList<>();
-        this.friendIds = new ArrayList<>();
-        this.numPlants = new HashMap<>();
     }
 
     @Override
@@ -127,7 +123,11 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        this.postList = new ArrayList<>();
+        this.originalPosts = new ArrayList<>();
+        this.friendIds = new ArrayList<>();
+        this.numPlants = new HashMap<>();
+        this.friendPosts = new ArrayList<>();
 
         currUser = FirebaseAuth.getInstance().getCurrentUser();
         this.usersIcon = view.findViewById(R.id.social_search_icon);
@@ -149,8 +149,13 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                filterPosts(newText);
-                return true;
+                if (friendsSwitch.isChecked()) {
+                    filterPosts(newText, true);
+                    return true;
+                } else {
+                    filterPosts(newText, false);
+                    return true;
+                }
             }
 
         });
@@ -300,8 +305,9 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
                             ImgPost currPost = dataSnapshot.getValue(ImgPost.class);
                                 postList.add(currPost);
                                 originalPosts.add(currPost);
+
                         }
-                        getUserTopPlants();
+                        getUserTopPlants(refreshOnFriends);
                     }
 
                     @Override
@@ -381,11 +387,20 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
             return false;
         }
     }
-    private void filterPosts(String filterQuery) {
+    private void filterPosts(String filterQuery, boolean friendsOnly) {
+
         List<ImgPost> filteredPosts = new ArrayList<>();
+
         for (ImgPost post : originalPosts) {
             if (inFilter(post, filterQuery) == true) {
-                filteredPosts.add(post);
+                if (friendsOnly) {
+                    if (friendIds.contains(post.getUid())) {
+                        filteredPosts.add(post);
+                    }
+                } else {
+                    filteredPosts.add(post);
+
+                }
             }
         }
         socialAdapter.setPosts(filteredPosts);
@@ -399,13 +414,14 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
                 Log.d("FILTER_FRIENDS", postList.get(i).getUid());
             }
         }
+        Collections.reverse(filteredPosts);
         socialAdapter.setPosts(filteredPosts);
     }
     private void filterAllPosts() {
         socialAdapter.setPosts(originalPosts);
     }
 
-    private void getUserTopPlants() {
+    private void getUserTopPlants(boolean refreshOnFriends) {
         DatabaseReference plantsRef = FirebaseDatabase.getInstance().getReference("users").child(currUser.getUid()).child("plants");
         plantsRef.child("growing").orderByKey().addValueEventListener(new ValueEventListener() {
             @Override
@@ -424,6 +440,14 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
                 //if (refreshOnFriends) {filterFriendsPosts();}
                 postList = sortedPosts;
                 socialAdapter.setPosts(postList);
+                for (ImgPost currPost : postList) {
+                    if (friendIds.contains(currPost.getUid())) {
+                        friendPosts.add(currPost);
+                    }
+                }
+                if (refreshOnFriends) {
+                    filterFriendsPosts();
+                }
                 swipeRefreshLayout.setRefreshing(false);
             }
 
