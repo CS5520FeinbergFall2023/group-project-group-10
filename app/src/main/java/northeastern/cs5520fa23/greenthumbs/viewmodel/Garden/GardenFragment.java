@@ -53,8 +53,8 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
     private List<GardenMenuItem> plantsItemList;
     private RecyclerView gardenMenuRV;
     private GardenAdapter gardenAdapter;
-    GridLayout gardenPlot;
-    private GridView gardenPlotView;
+    //GridLayout gardenPlot;
+    private RecyclerView gardenPlotView;
     private Button goToStatsButton;
     ImageView testLettuce; // placeholder for menu options
 
@@ -127,7 +127,7 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
         super.onViewCreated(view, savedInstanceState);
 
 
-        gardenPlot = view.findViewById(R.id.garden_plot);
+        //gardenPlot = view.findViewById(R.id.garden_plot);
         //testLettuce = view.findViewById(R.id.testLettuce);
         this.goToStatsButton = view.findViewById(R.id.garden_go_to_stats_button);
         this.goToStatsButton.setOnClickListener(new View.OnClickListener() {
@@ -145,10 +145,10 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
 
 
         // TODO: dialog asking user for ?x? plot
-        gardenPlot.setColumnCount(3);
-        gardenPlot.setRowCount(3);
+        //gardenPlot.setColumnCount(3);
+        //gardenPlot.setRowCount(3);
 
-
+        /*
 
         for(int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -164,12 +164,14 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
             }
         }
 
+         */
+
 
         // TODO: popuplate grid with imageviews of ic_emtpySqaure2.
 
         //setMenuDragListeners(); // for menu
         //setReceivingListeners(view); // for garden plot
-        setGridListeners();
+        //setGridListeners();
 
         // TODO: connect whats in garden plot to a data structure for DB, and reload on launch
     }
@@ -215,6 +217,7 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
 
      */
 
+    /*
     private void setGridListeners() {
         int rows = gardenPlot.getRowCount();
         int cols = gardenPlot.getColumnCount();
@@ -320,6 +323,8 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
         }
 
     }
+
+     */
     /*
     private void setReceivingListeners(View view) {
 
