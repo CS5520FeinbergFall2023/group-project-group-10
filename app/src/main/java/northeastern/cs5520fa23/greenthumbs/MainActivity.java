@@ -22,6 +22,7 @@ import android.widget.Toast;
 import northeastern.cs5520fa23.greenthumbs.model.services.WeatherService;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat.ChatActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.MessageHomeFragment;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SetLocationFragment;
 import android.view.MenuItem;
@@ -127,8 +128,16 @@ public class MainActivity extends AppCompatActivity {
         toolbar.inflateMenu(R.menu.appbar);
         toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.appbar_profile) {
-                Fragment profileFragment = ProfileFragment.newInstance(username, Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, profileFragment).commit();
+                //Fragment profileFragment = ProfileFragment.newInstance(username, Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
+                //getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, profileFragment).commit();
+                Intent i = new Intent(MainActivity.this, ProfileActivity.class);
+                Bundle extras = new Bundle();
+                ArrayList<String> userInfo = new ArrayList<>();
+                userInfo.add(username);
+                userInfo.add(uid);
+                extras.putStringArrayList("user_info", userInfo);
+                i.putExtra("profile_info", extras);
+                this.startActivity(i);
                 return true;
             }
             return false;
