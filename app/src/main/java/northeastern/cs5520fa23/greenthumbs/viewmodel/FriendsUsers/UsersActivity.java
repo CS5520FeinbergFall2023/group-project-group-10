@@ -77,6 +77,11 @@ public class UsersActivity extends AppCompatActivity implements FriendsAdapter.P
         this.userSearch = findViewById(R.id.users_activity_search);
         this.userRV = findViewById(R.id.users_activity_rv);
         this.titleText = findViewById(R.id.friends_title);
+
+        if (savedInstanceState != null) {
+            String savedSearchQuery = savedInstanceState.getString("searchQuery", "");
+            userSearch.setQuery(savedSearchQuery, false);
+        }
         this.userSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
@@ -188,6 +193,12 @@ public class UsersActivity extends AppCompatActivity implements FriendsAdapter.P
         //friendsAdapter.notifyDataSetChanged();
 
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("searchQuery", userSearch.getQuery().toString());
     }
 
     private void resetFriends() {
