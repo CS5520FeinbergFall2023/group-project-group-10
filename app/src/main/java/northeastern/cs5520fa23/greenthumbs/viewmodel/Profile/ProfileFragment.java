@@ -262,7 +262,7 @@ public class ProfileFragment extends Fragment implements SocialAdapter.UsernameC
         socialRecyclerView.setHasFixedSize(true);
         socialRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         this.postList = new ArrayList<>();
-        socialAdapter = new SocialAdapter(postList, getContext(), null);
+        socialAdapter = new SocialAdapter(postList, getContext(), this);
         socialRecyclerView.setAdapter(socialAdapter);
         /*
         headerImgSelect = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {

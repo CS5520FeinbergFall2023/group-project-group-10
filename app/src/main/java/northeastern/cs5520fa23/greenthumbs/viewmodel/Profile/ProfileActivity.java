@@ -187,7 +187,7 @@ public class ProfileActivity extends AppCompatActivity implements SocialAdapter.
         socialRecyclerView.setHasFixedSize(true);
         socialRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         this.postList = new ArrayList<>();
-        socialAdapter = new SocialAdapter(postList, this, null);
+        socialAdapter = new SocialAdapter(postList, this, this);
         socialRecyclerView.setAdapter(socialAdapter);
 
         if (isUsersProfile) {
