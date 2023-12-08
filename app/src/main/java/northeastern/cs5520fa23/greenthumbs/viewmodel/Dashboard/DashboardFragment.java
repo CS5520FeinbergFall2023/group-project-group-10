@@ -16,6 +16,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import northeastern.cs5520fa23.greenthumbs.R;
@@ -44,8 +46,11 @@ import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.FriendRequests.Fr
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.FriendRequests.FriendRequestAdapter;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.PlantRecommendations.PlantRecommendationAdapter;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.PlantRecommendations.PlantViewModel;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.Posts.PostAdapter;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.Weather.WeatherViewModel;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.MessageHistoryAdapter;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.Friend;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.ImgPost;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,6 +78,9 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
     private PlantViewModel plantViewModel;
     private RecyclerView recyclerView;
     private PlantRecommendationAdapter adapter;
+    private RecyclerView dashPostsRecyclerView;
+    private PostAdapter postAdapter;
+    private List<ImgPost> postList;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -139,6 +147,16 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
                 recyclerView.setAdapter(adapter);
             }
         });
+
+        dashPostsRecyclerView = view.findViewById(R.id.dash_posts_rv);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        dashPostsRecyclerView.setLayoutManager(layoutManager);
+
+        postList = new ArrayList<>();
+        postAdapter = new PostAdapter(postList);
+        dashPostsRecyclerView.setAdapter(postAdapter);
+
+        addPosts();
 
     }
 
@@ -241,4 +259,59 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
             //
         }
     }
+
+    private void addPosts() {
+        postList.clear();
+        postAdapter.notifyDataSetChanged();
+
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("posts");
+        DatabaseReference friendRef = FirebaseDatabase.getInstance().getReference("users").child(currUser.getUid()).child("friends");
+
+        // Fetch friends
+        friendRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<String> friendIds = new ArrayList<>();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Friend userFriend = dataSnapshot.getValue(Friend.class);
+                    if (userFriend != null && "friends".equals(userFriend.getStatus())) {
+                        friendIds.add(userFriend.getFriend_id());
+                    }
+                }
+
+                // Fetch posts
+                dbRef.orderByChild("timestamp").limitToLast(100).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        List<ImgPost> tempPosts = new ArrayList<>();
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            ImgPost currPost = dataSnapshot.getValue(ImgPost.class);
+                            if (currPost != null && friendIds.contains(currPost.getUid())) {
+                                tempPosts.add(currPost);
+                            }
+                        }
+
+                        // Sort and take top 3 posts
+                        Collections.sort(tempPosts, (p1, p2) -> p2.getTimestamp().compareTo(p1.getTimestamp()));
+                        for (int i = 0; i < Math.min(3, tempPosts.size()); i++) {
+                            postList.add(tempPosts.get(i));
+                        }
+
+                        postAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("DashboardFragment", "Failed to read posts", error.toException());
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("DashboardFragment", "Failed to read friends list", error.toException());
+            }
+        });
+    }
+
 }
