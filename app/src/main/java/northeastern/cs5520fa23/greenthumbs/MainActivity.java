@@ -87,26 +87,29 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user == null) {
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        if (firebaseUser == null) {
             Intent i = new Intent(MainActivity.this, LogInActivity.class);
             startActivity(i);
             finish();
             return;
         }
-        uid = mAuth.getCurrentUser().getUid();
+        uid = firebaseUser.getUid();
 
         FirebaseDatabase.getInstance().getReference("users").child(uid).get().addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
                 Toast.makeText(MainActivity.this, "Unable to fetch username", Toast.LENGTH_LONG).show();
             } else {
                 User currUser = task.getResult().getValue(User.class);
-                assert currUser != null;
-                username = currUser.getUsername();
+                if (currUser != null) {
+                    username = currUser.getUsername();
+                } else {
+                    Intent i = new Intent(MainActivity.this, LogInActivity.class);
+                    startActivity(i);
+                    finish();
+                }
             }
         });
-
-
 
         // ### Home Location ###
         //if (!isHomeLocationSet()) {
@@ -198,14 +201,11 @@ public class MainActivity extends AppCompatActivity {
                     //toolbar.action(R.id.appbar_profile);
                 }
             }
-
-
-
         } else {
             // When app is opened go to dashboard
             getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment, "DASH").commit();
         }
-    }
+    };
 
 
 
@@ -237,6 +237,5 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.overlay_frame).setVisibility(View.GONE);
         }
     }
-
 
 }

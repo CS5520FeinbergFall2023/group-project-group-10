@@ -1,13 +1,11 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.Settings;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
-
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import com.google.firebase.auth.FirebaseAuth;
 import northeastern.cs5520fa23.greenthumbs.LogInActivity;
@@ -16,10 +14,9 @@ import northeastern.cs5520fa23.greenthumbs.viewmodel.SetLocationFragment;
 
 public class SettingsFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
+    private View settingFragmentView;
     private static final String ARG_PARAM2 = "param2";
-
     public SettingsFragment(){
-
     }
 
     @Override
@@ -36,7 +33,7 @@ public class SettingsFragment extends Fragment {
                              ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View settingFragmentView = inflater.inflate(R.layout.fragment_settings, container, false);
+        settingFragmentView = inflater.inflate(R.layout.fragment_settings, container, false);
 
         Button accountSettingsButton = settingFragmentView.findViewById(R.id.AccountSettingsbtn);
         accountSettingsButton.setOnClickListener(v -> {
@@ -52,6 +49,11 @@ public class SettingsFragment extends Fragment {
 
         Button logoutBtn = settingFragmentView.findViewById(R.id.LogOutBtn);
         logoutBtn.setOnClickListener(v -> logOutUser());
+
+        if (savedInstanceState != null) {
+            settingFragmentView.findViewById(R.id.AccountSettingsbtn).setVisibility(savedInstanceState.getInt("accountSettingsVisibility", View.VISIBLE));
+            settingFragmentView.findViewById(R.id.SetLocationbtn).setVisibility(savedInstanceState.getInt("setLocationVisibility", View.VISIBLE));
+        }
         return settingFragmentView;
     }
 
@@ -70,6 +72,12 @@ public class SettingsFragment extends Fragment {
             getActivity().finish();
 
         }
+    }
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("accountSettingsVisibility", settingFragmentView.findViewById(R.id.AccountSettingsbtn).getVisibility());
+        outState.putInt("setLocationVisibility", settingFragmentView.findViewById(R.id.SetLocationbtn).getVisibility());
     }
 
     private void showSetLocationFragment() {
