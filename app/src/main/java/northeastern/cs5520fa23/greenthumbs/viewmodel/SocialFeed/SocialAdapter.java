@@ -217,6 +217,8 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
                 }
                 if (geolocation != null) {
                     holder.getGeolocationText().setText(geolocation);
+                } else {
+                    holder.getGeolocationText().setText("");
                 }
                 holder.getCommentIcon().setOnClickListener(new View.OnClickListener() {
                     @Override
