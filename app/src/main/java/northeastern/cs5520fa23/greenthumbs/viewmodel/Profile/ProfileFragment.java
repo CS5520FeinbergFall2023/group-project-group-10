@@ -350,7 +350,7 @@ public class ProfileFragment extends Fragment {
 
         Map<String, Object> updates = new HashMap<>();
         uploadProfilePic(updates);
-        isEditing = false;
+        //isEditing = false;
         /*
         if (headerUri != null) {
             updates.put("header_image", headerUri.toString());
@@ -366,7 +366,7 @@ public class ProfileFragment extends Fragment {
         //Toast.makeText(getContext(), "post loaded not data", Toast.LENGTH_LONG).show();
 
         Query profileQuery = db.getReference("users").orderByChild("user_id").equalTo(profUid);
-        profileQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+        profileQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
@@ -488,7 +488,7 @@ public class ProfileFragment extends Fragment {
                                 @Override
                                 public void onSuccess(Void unused) {
                                     if (headerEdited) {
-                                        updates.put("header_image", link);
+                                        updates.put("profile_picture", link);
                                         uploadHeaderImage(updates);
                                     } else {
                                         finishProfileUpdates(updates);
@@ -502,6 +502,7 @@ public class ProfileFragment extends Fragment {
                 }
             });
         } else {
+            uploadHeaderImage(updates);
             finishProfileUpdates(updates);
         }
 
@@ -536,7 +537,7 @@ public class ProfileFragment extends Fragment {
                             db.getReference("users").child(currUser.getUid()).child("header_image").setValue(link).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    updates.put("profile_picture", link);
+                                    updates.put("header_image", link);
                                     finishProfileUpdates(updates);
                                     //CreatePostDialog.this.getDialog().cancel();
                                 }
@@ -558,11 +559,13 @@ public class ProfileFragment extends Fragment {
             public void onComplete(@NonNull Task<Void> task) {
                 if (!task.isSuccessful()) {
                     Toast.makeText(getContext(), "Unable to update profile", Toast.LENGTH_LONG).show();
+                    isEditing = false;
+
                 } else {
                     isEditing = false;
                     headerEdited = false;
                     profilePictureEdited = false;
-                    loadData();
+                    //loadData();
                     //bioEdited = false;
                 }
             }
