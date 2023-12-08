@@ -131,11 +131,15 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
         recyclerView = view.findViewById(R.id.plant_recommendations_rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        plantViewModel = new ViewModelProvider(this).get(PlantViewModel.class);
         plantViewModel.getPlantRecommendations().observe(getViewLifecycleOwner(), newPlantRecommendations -> {
-            adapter = new PlantRecommendationAdapter(newPlantRecommendations);
-            recyclerView.setAdapter(adapter);
+            if (newPlantRecommendations != null && !newPlantRecommendations.isEmpty()) {
+                if (adapter == null) {
+                    adapter = new PlantRecommendationAdapter(newPlantRecommendations);
+                    recyclerView.setAdapter(adapter);
+                }
+            }
         });
+
     }
 
     private void getFriendRequests() {
