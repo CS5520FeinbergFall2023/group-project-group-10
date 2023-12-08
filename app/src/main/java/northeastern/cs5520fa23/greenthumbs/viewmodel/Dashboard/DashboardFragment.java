@@ -2,7 +2,10 @@ package northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard;
 
 import static androidx.core.content.ContextCompat.registerReceiver;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -91,6 +95,7 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
         db = FirebaseDatabase.getInstance();
         friendRequestList = new ArrayList<>();
         weatherViewModel = new ViewModelProvider(requireActivity()).get(WeatherViewModel.class);
+        startWeatherService();
         weatherUpdateReceiver = new WeatherUpdateReceiver(weatherViewModel);
     }
 
@@ -185,7 +190,7 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
                 return R.drawable.sunny_24;
             case "cloudy":
                 return R.drawable.cloud_24;
-            case "rainy":
+            case "rain":
                 return R.drawable.water_drop_24;
             case "snow":
                 return R.drawable.snow_24;
@@ -193,6 +198,20 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
                 return R.drawable.fog_24;
             default:
                 return R.drawable.baseline_question_mark_24;
+        }
+    }
+
+    private void startWeatherService() {
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("AppPreferences", Context.MODE_PRIVATE);
+        float latitude = sharedPreferences.getFloat("latitude", 0);
+        float longitude = sharedPreferences.getFloat("longitude", 0);
+        if (latitude != 0 && longitude != 0) {
+            Intent serviceIntent = new Intent(this.getContext(), WeatherService.class);
+            serviceIntent.putExtra(WeatherService.latitude, latitude);
+            serviceIntent.putExtra(WeatherService.longitude, longitude);
+            getContext().startService(serviceIntent);
+        } else {
+            //
         }
     }
 }

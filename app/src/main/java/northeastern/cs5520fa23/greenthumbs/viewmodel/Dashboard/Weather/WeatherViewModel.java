@@ -18,5 +18,6 @@ public class WeatherViewModel extends ViewModel {
     public void setForecasts(ArrayList<String> newForecasts) {
         forecasts.setValue(newForecasts);
     }
+
 }
 
