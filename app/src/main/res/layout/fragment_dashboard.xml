@@ -182,6 +182,7 @@
         app:layout_constraintHeight_percent=".20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/plant_recommendations_text"/>
+        app:layout_constraintTop_toBottomOf="@id/plant_recommendations_text"
+        android:orientation="horizontal"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

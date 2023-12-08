@@ -129,14 +129,14 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
         weatherViewModel.getForecasts().observe(getViewLifecycleOwner(), this::updateUIWithWeatherData);
 
         recyclerView = view.findViewById(R.id.plant_recommendations_rv);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         plantViewModel.getPlantRecommendations().observe(getViewLifecycleOwner(), newPlantRecommendations -> {
             if (newPlantRecommendations != null && !newPlantRecommendations.isEmpty()) {
                 if (adapter == null) {
                     adapter = new PlantRecommendationAdapter(newPlantRecommendations);
-                    recyclerView.setAdapter(adapter);
                 }
+                recyclerView.setAdapter(adapter);
             }
         });
 

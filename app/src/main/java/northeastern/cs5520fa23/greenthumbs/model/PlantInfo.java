@@ -26,17 +26,17 @@ public class PlantInfo {
 
         zonePlants.put("6b", Arrays.asList("Broccoli", "Carrot", "Cucumber", "Lettuce", "Onion", "Peas", "Pepper", "Potato", "Tomato"));
 
-        zonePlants.put("7a", Arrays.asList("Broccoli", "Carrot", "Cucumber", "Eggplant", "Lettuce", "Onion", "Peas", "Pepper", "Potato", "Tomato"));
+        zonePlants.put("7a", Arrays.asList("Broccoli", "Cucumber", "Eggplant", "Lettuce", "Peas", "Pepper", "Potato", "Tomato"));
 
-        zonePlants.put("7b", Arrays.asList("Broccoli", "Carrot", "Cucumber", "Eggplant", "Lettuce", "Onion", "Peas", "Pepper", "Potato", "Tomato"));
+        zonePlants.put("7b", Arrays.asList("Broccoli", "Carrot", "Lettuce", "Onion", "Peas", "Pepper", "Potato"));
 
         zonePlants.put("8a", Arrays.asList("Broccoli", "Carrot", "Cucumber", "Eggplant", "Lettuce", "Onion", "Pepper"));
 
-        zonePlants.put("8b", Arrays.asList("Broccoli", "Carrot", "Cucumber", "Eggplant", "Lettuce", "Onion", "Pepper", "Potato", "Tomato"));
+        zonePlants.put("8b", Arrays.asList("Broccoli", "Carrot", "Cucumber", "Lettuce", "Onion", "Pepper", "Potato", "Tomato"));
 
-        zonePlants.put("9a", Arrays.asList("Broccoli", "Carrot", "Cucumber", "Eggplant", "Lettuce", "Onion", "Pepper", "Potato", "Tomato"));
+        zonePlants.put("9a", Arrays.asList("Broccoli", "Carrot", "Cucumber", "Eggplant", "Lettuce", "Pepper", "Potato", "Tomato"));
 
-        zonePlants.put("9b", Arrays.asList("Broccoli", "Carrot", "Cucumber", "Eggplant", "Lettuce", "Onion", "Potato", "Tomato"));
+        zonePlants.put("9b", Arrays.asList("Broccoli", "Carrot", "Cucumber", "Eggplant", "Lettuce", "Onion", "Tomato"));
 
         zonePlants.put("10a", Arrays.asList("Broccoli", "Carrot", "Cucumber", "Eggplant", "Lettuce", "Onion", "Pepper", "Tomato"));
 
