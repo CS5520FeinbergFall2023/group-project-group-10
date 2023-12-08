@@ -25,34 +25,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-
-        <ImageButton
-            android:id="@+id/btnShowSetLocation"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/cloud_24"
-            android:contentDescription="@string/set_location_description"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp" />
-
-        <ImageButton
-            android:id="@+id/btnShowSetLocation"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/cloud_24"
-            android:contentDescription="@string/set_location_description"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp" />
     </FrameLayout>
-    <FrameLayout
-        android:id="@+id/overlay_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"

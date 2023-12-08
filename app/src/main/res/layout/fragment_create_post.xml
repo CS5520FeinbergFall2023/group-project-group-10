@@ -5,9 +5,7 @@
     android:id="@+id/social_post_layout"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
-    tools:context="viewmodel.SocialFeed.SocialFragment"
-    >
-
+    tools:context=".viewmodel.SocialFeed.SocialFragment">
 
     <LinearLayout
         android:id="@+id/create_post_layout"

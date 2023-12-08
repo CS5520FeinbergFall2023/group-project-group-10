@@ -3,6 +3,7 @@ package northeastern.cs5520fa23.greenthumbs.viewmodel.Profile;
 import static android.content.ContentValues.TAG;
 
 import android.Manifest;
+
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -18,6 +19,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -245,6 +247,7 @@ public class ProfileFragment extends Fragment {
                 @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
                 @Override
                 public void onClick(View v) {
+
                     if (isEditing) {
                         if (ContextCompat.checkSelfPermission(requireActivity(),
                                 Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {

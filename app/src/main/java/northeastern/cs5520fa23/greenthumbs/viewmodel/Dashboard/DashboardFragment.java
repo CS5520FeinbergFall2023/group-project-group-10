@@ -1,16 +1,27 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard;
 
+import static androidx.core.content.ContextCompat.registerReceiver;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,8 +36,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import northeastern.cs5520fa23.greenthumbs.R;
+import northeastern.cs5520fa23.greenthumbs.model.services.WeatherService;
+import northeastern.cs5520fa23.greenthumbs.model.weather.WeatherUpdateReceiver;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.FriendRequests.FriendRequest;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.FriendRequests.FriendRequestAdapter;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.Weather.WeatherViewModel;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.MessageHistoryAdapter;
 
 /**
@@ -49,6 +63,8 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
     private List<FriendRequest> friendRequestList;
     private FirebaseUser currUser;
     private FirebaseDatabase db;
+    private WeatherUpdateReceiver weatherUpdateReceiver;
+    private WeatherViewModel weatherViewModel;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -75,13 +91,12 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
         currUser = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseDatabase.getInstance();
         friendRequestList = new ArrayList<>();
+        weatherViewModel = new ViewModelProvider(requireActivity()).get(WeatherViewModel.class);
+        startWeatherService();
+        weatherUpdateReceiver = new WeatherUpdateReceiver(weatherViewModel);
     }
 
     @Override
@@ -100,6 +115,7 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
         friendRequestAdapter = new FriendRequestAdapter(friendRequestList, getContext(), this);
         frRecyclerView.setAdapter(friendRequestAdapter);
         getFriendRequests();
+        weatherViewModel.getForecasts().observe(getViewLifecycleOwner(), this::updateUIWithWeatherData);
     }
 
     private void getFriendRequests() {
@@ -132,5 +148,70 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
     public void removeRequestCallback(int position) {
         friendRequestList.remove(position);
         friendRequestAdapter.notifyItemRemoved(position);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter(WeatherService.ACTION_WEATHER_UPDATE);
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(weatherUpdateReceiver, filter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(weatherUpdateReceiver);
+    }
+
+    private void updateUIWithWeatherData(ArrayList<String> forecasts) {
+        ImageView imgToday = this.requireView().findViewById(R.id.img_weather_today);
+        TextView txtToday = this.requireView().findViewById(R.id.txt_weather_today);
+        ImageView imgTomorrow = this.requireView().findViewById(R.id.img_weather_tomorrow);
+        TextView txtTomorrow = this.requireView().findViewById(R.id.txt_weather_tomorrow);
+        ImageView imgDayAfter = this.requireView().findViewById(R.id.img_weather_day_after);
+        TextView txtDayAfter = this.requireView().findViewById(R.id.txt_weather_day_after);
+
+        // Update the UI components with the new data
+        updateWeatherView(imgToday, txtToday, forecasts.get(0));
+        updateWeatherView(imgTomorrow, txtTomorrow, forecasts.get(1));
+        updateWeatherView(imgDayAfter, txtDayAfter, forecasts.get(2));
+    }
+
+    private void updateWeatherView(ImageView weatherIcon, TextView weatherText, String forecast) {
+        int resourceIcon = getWeatherIconResource(forecast);
+        weatherIcon.setImageResource(resourceIcon);
+        weatherText.setText(forecast);
+    }
+
+    private int getWeatherIconResource(String forecast) {
+        switch (forecast.toLowerCase()) {
+            case "sunny":
+            case "clear":
+                return R.drawable.sunny_24;
+            case "cloudy":
+                return R.drawable.cloud_24;
+            case "rain":
+                return R.drawable.water_drop_24;
+            case "snow":
+                return R.drawable.snow_24;
+            case "fog":
+                return R.drawable.fog_24;
+            default:
+                return R.drawable.baseline_question_mark_24;
+        }
+    }
+
+    private void startWeatherService() {
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("AppPreferences", Context.MODE_PRIVATE);
+        float latitude = sharedPreferences.getFloat("latitude", 0);
+        float longitude = sharedPreferences.getFloat("longitude", 0);
+        if (latitude != 0 && longitude != 0) {
+            Intent serviceIntent = new Intent(this.getContext(), WeatherService.class);
+            serviceIntent.putExtra(WeatherService.latitude, latitude);
+            serviceIntent.putExtra(WeatherService.longitude, longitude);
+            getContext().startService(serviceIntent);
+        } else {
+            //
+        }
     }
 }

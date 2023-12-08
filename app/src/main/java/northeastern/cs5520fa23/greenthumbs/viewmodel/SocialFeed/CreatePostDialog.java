@@ -24,7 +24,9 @@ import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import androidx.annotation.RequiresApi;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
@@ -72,7 +74,6 @@ public class CreatePostDialog extends DialogFragment {
 
     ProgressBar progress_bar;
     private final int PERMISSION_REQUEST_READ_MEDIA_IMAGES = 1;
-
 
     @NonNull
     @Override
