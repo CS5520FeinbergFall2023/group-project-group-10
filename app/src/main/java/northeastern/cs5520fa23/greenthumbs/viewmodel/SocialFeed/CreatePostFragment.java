@@ -1,10 +1,14 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -37,6 +41,7 @@ public class CreatePostFragment extends Fragment {
     private Button addImgButton;
     private ImageView postImage;
     private Button postButton;
+    private final int PERMISSION_REQUEST_READ_MEDIA_IMAGES = 1;
 
     public CreatePostFragment() {
         // Required empty public constructor
@@ -82,7 +87,16 @@ public class CreatePostFragment extends Fragment {
         addImgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getImg();
+                if (ContextCompat.checkSelfPermission(requireActivity(),
+                        Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+
+                    ActivityCompat.requestPermissions(requireActivity(),
+                            new String[]{Manifest.permission.READ_MEDIA_IMAGES},
+                            PERMISSION_REQUEST_READ_MEDIA_IMAGES);
+                } else {
+                    // Permission has already been granted, proceed with getting image
+                    getImg();
+                }
             }
         });
         //postButton = view.findViewById(R.id.create_post_button);

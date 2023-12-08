@@ -5,14 +5,20 @@ import static android.app.Activity.RESULT_OK;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -29,6 +35,11 @@ import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import androidx.annotation.RequiresApi;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 
@@ -46,11 +57,14 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import northeastern.cs5520fa23.greenthumbs.R;
 
@@ -152,6 +166,7 @@ public class CreatePostDialog extends DialogFragment {
                 post.put("tags", postTags.getText().toString());
                 post.put("post_text", postText.getText().toString());
                 post.put("uid", currUser.getUid().toString());
+                post.put("geo_location", getCurrentLocation());
                 dbRef.child("users").child(currUser.getUid()).child("username").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -233,5 +248,24 @@ public class CreatePostDialog extends DialogFragment {
                 }
             });
         }
+    }
+
+    private String getCurrentLocation() {
+        Geocoder geocoder = new Geocoder(this.requireContext(), Locale.getDefault());
+        SharedPreferences sharedPreferences = this.requireContext().getSharedPreferences("AppPreferences", Context.MODE_PRIVATE);
+        float latitude = sharedPreferences.getFloat("latitude", 0);
+        float longitude = sharedPreferences.getFloat("longitude", 0);
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                String cityName = addresses.get(0).getLocality();
+                String stateName = addresses.get(0).getAdminArea();
+                return cityName + ", " + stateName;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle exception
+        }
+        return "";
     }
 }

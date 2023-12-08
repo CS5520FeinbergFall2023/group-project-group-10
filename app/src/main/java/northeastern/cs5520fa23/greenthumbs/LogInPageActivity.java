@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import northeastern.cs5520fa23.greenthumbs.model.AuthHelper;
+
 public class LogInPageActivity extends AppCompatActivity {
     private EditText emailEditText;
     private EditText passwordEditText;
@@ -53,6 +55,7 @@ public class LogInPageActivity extends AppCompatActivity {
                         Intent i = new Intent(LogInPageActivity.this, MainActivity.class);
                         startActivity(i);
                         finish();
+                        AuthHelper.storeUserDetails(this);
                     } else {
                         Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                     }
