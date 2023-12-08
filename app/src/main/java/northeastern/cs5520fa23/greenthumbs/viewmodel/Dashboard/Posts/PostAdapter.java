@@ -1,5 +1,6 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.Posts;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -35,7 +38,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.postText.setText(post.getPost_text());
         holder.numLikes.setText(String.valueOf(post.getNum_likes()));
         holder.numComments.setText(String.valueOf(post.getNum_comments()));
-        // Set post image if you have an image URL or resource
+        String uri = post.getImg_uri();
+        if (uri != null && !uri.isEmpty()) {
+            Picasso.get().load(uri).into(holder.postImage);
+        }
     }
 
     @Override
