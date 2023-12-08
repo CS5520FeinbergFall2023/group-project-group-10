@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
         Intent serviceIntent = new Intent(this, BackgroundService.class);
         serviceIntent.putExtra("userIdKey", uid);
 
+        /*
         FirebaseDatabase.getInstance().getReference("users").child(uid).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -122,6 +123,23 @@ public class MainActivity extends AppCompatActivity {
                     username = currUser.getUsername();
                     serviceIntent.putExtra("username", username);
                     startService(serviceIntent);
+                }
+            }
+
+         */
+        FirebaseDatabase.getInstance().getReference("users").child(uid).get().addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                Toast.makeText(MainActivity.this, "Unable to fetch username", Toast.LENGTH_LONG).show();
+            } else {
+                User currUser = task.getResult().getValue(User.class);
+                if (currUser != null) {
+                    username = currUser.getUsername();
+                    serviceIntent.putExtra("username", username);
+                    startService(serviceIntent);
+                } else {
+                    Intent i = new Intent(MainActivity.this, LogInActivity.class);
+                    startActivity(i);
+                    finish();
                 }
             }
         });
@@ -139,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                         .build())
                 .build();
 
-        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+        WorkManager.getInstance(MainActivity.this).enqueueUniquePeriodicWork(
                 "weatherCheck",
                 ExistingPeriodicWorkPolicy.KEEP, weatherCheckRequest);
 
@@ -164,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
                 userInfo.add(uid);
                 extras.putStringArrayList("user_info", userInfo);
                 i.putExtra("profile_info", extras);
-                this.startActivity(i);
+                startActivity(i);
                 return true;
             }
             return false;
@@ -250,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
         float longitude = sharedPreferences.getFloat("longitude", 0);
 
         if (latitude != 0 && longitude != 0) {
-            Intent serviceIntent = new Intent(this, PlantRecommendationService.class);
+            Intent serviceIntent = new Intent(MainActivity.this, PlantRecommendationService.class);
             serviceIntent.putExtra(PlantRecommendationService.latitude, latitude);
             serviceIntent.putExtra(PlantRecommendationService.longitude, longitude);
             startService(serviceIntent);
@@ -290,9 +308,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestLocationPermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         } else {
             getUserLocation();
         }
@@ -300,12 +318,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        MainActivity.super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getUserLocation();
             } else {
-                Toast.makeText(this, "Location permissions not provided, " +
+                Toast.makeText(MainActivity.this, "Location permissions not provided, " +
                         "please provide the permissions to enable location based features" +
                         "", Toast.LENGTH_LONG).show();
             }
@@ -317,12 +335,12 @@ public class MainActivity extends AppCompatActivity {
         float latitude = sharedPreferences.getFloat("latitude", 0);
         float longitude = sharedPreferences.getFloat("longitude", 0);
         if (latitude != 0 && longitude != 0) {
-            Intent serviceIntent = new Intent(this, WeatherService.class);
+            Intent serviceIntent = new Intent(MainActivity.this, WeatherService.class);
             serviceIntent.putExtra(WeatherService.latitude, latitude);
             serviceIntent.putExtra(WeatherService.longitude, longitude);
             startService(serviceIntent);
         } else {
-            Toast.makeText(this, "Location Undetermined. Please update your location " +
+            Toast.makeText(MainActivity.this, "Location Undetermined. Please update your location " +
                     "in the settings menu.", Toast.LENGTH_LONG).show();
         }
     }

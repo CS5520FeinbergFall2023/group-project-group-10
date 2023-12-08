@@ -74,8 +74,8 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
     private RecyclerView frRecyclerView;
     private FriendRequestAdapter friendRequestAdapter;
     private List<FriendRequest> friendRequestList;
-    //private RecyclerView growingChartRecyclerView;
-    //private GrowingChartAdapter growingChartAdapter;
+    private RecyclerView growingChartRecyclerView;
+    private GrowingChartAdapter growingChartAdapter;
     private FirebaseUser currUser;
     private FirebaseDatabase db;
     private HashMap<String, Integer> growTimes;
@@ -115,6 +115,7 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /*
         currUser = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseDatabase.getInstance();
         friendRequestList = new ArrayList<>();
@@ -124,6 +125,8 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
         startWeatherService();
         weatherUpdateReceiver = new WeatherUpdateReceiver(weatherViewModel);
         plantRecommendationReceiver = new PlantRecommendationReceiver(plantViewModel);
+
+         */
     }
 
     @Override
@@ -137,6 +140,16 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        currUser = FirebaseAuth.getInstance().getCurrentUser();
+        db = FirebaseDatabase.getInstance();
+        friendRequestList = new ArrayList<>();
+        plantList = new ArrayList<>();
+        weatherViewModel = new ViewModelProvider(requireActivity()).get(WeatherViewModel.class);
+        plantViewModel = new ViewModelProvider(requireActivity()).get(PlantViewModel.class);
+        startWeatherService();
+        weatherUpdateReceiver = new WeatherUpdateReceiver(weatherViewModel);
+        plantRecommendationReceiver = new PlantRecommendationReceiver(plantViewModel);
+
         this.frRecyclerView = view.findViewById(R.id.dash_notification_rv);
         this.frRecyclerView.setHasFixedSize(true);
         this.frRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -145,12 +158,12 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
         getFriendRequests();
         this.growTimes = new HashMap<>();
         this.growTimes.put("tomato", 50);
-        //this.growingChartRecyclerView = view.findViewById(R.id.dashboard_progress_bars_rv);
-        //this.growingChartRecyclerView.setHasFixedSize(true);
-        //this.growingChartRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        //this.growingChartAdapter = new GrowingChartAdapter(plantList, getContext());
-        //this.growingChartRecyclerView.setAdapter(this.growingChartAdapter);
-        //getPlants();
+        this.growingChartRecyclerView = view.findViewById(R.id.dashboard_progress_bars_rv);
+        this.growingChartRecyclerView.setHasFixedSize(true);
+        this.growingChartRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        this.growingChartAdapter = new GrowingChartAdapter(plantList, getContext());
+        this.growingChartRecyclerView.setAdapter(this.growingChartAdapter);
+        getPlants();
 
         weatherViewModel.getForecasts().observe(getViewLifecycleOwner(), this::updateUIWithWeatherData);
 
@@ -177,7 +190,7 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
         addPosts();
 
     }
-    /*
+
     private void getPlants() {
         DatabaseReference plantRef = db.getReference("users").child(currUser.getUid()).child("plants").child("growing");
         plantRef.addValueEventListener(new ValueEventListener() {
@@ -221,8 +234,6 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
 
     }
 
-
-     */
     private void getFriendRequests() {
         DatabaseReference frRef = db.getReference("users").child(currUser.getUid());
         Query frQuery = frRef.child("friend_requests").orderByChild("approved").equalTo("false");
