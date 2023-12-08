@@ -254,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isHomeLocationSet() {
         SharedPreferences sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE);
-        return sharedPreferences.contains("HomeLatitude") && sharedPreferences.contains("HomeLongitude");
+        return sharedPreferences.contains("latitude") && sharedPreferences.contains("longitude");
     }
 
     private void getUserLocation() {
