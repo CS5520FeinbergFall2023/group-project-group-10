@@ -4,7 +4,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
-    
+
     <string name="sign_up">Sign Up</string>
     <string name="log_in">Log In</string>
     <string name="large_text">
@@ -113,4 +113,11 @@
     <string name="edit_password">Edit Password</string>
     <string name="save_changes">Save Changes</string>
     <string name="delete_account">Delete Account</string>
+    <string name="information">Information</string>
+    <string name="set_location">Set Location</string>
+    <string name="adrian_theodor">Adrian Theodor</string>
+    <string name="raphael_russo">Raphael Russo</string>
+    <string name="karthik_jayaram_bharadwaj">Karthik Jayaram Bharadwaj</string>
+    <string name="bryan_teck_yean_ang">Bryan Teck Yean Ang</string>
+    <string name="application_by">Application By</string>
 </resources>

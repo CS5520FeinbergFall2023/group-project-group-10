@@ -27,17 +27,20 @@ public class SocialPostViewHolder extends RecyclerView.ViewHolder {
     public TextView replies;
     public TextView time;
     private boolean hasImg;
+    private ImageView postProfPic;
 
 
 
     public SocialPostViewHolder(@NonNull View itemView) {
         super(itemView);
+        this.likesIcon = itemView.findViewById(R.id.like_icon);
         this.username = itemView.findViewById(R.id.post_username);
         this.postImg = itemView.findViewById(R.id.social_post_image);
         this.postText = itemView.findViewById(R.id.post_text);
         this.likes = itemView.findViewById(R.id.num_likes);
         this.replies = itemView.findViewById(R.id.num_comments);
         this.commentIcon = itemView.findViewById(R.id.comment_icon);
+        this.postProfPic = itemView.findViewById(R.id.post_prof_pic);
         this.storageUri = null;
         this.hasImg = false;
         this.commentIcon.setOnClickListener(new View.OnClickListener() {
@@ -121,4 +124,11 @@ public class SocialPostViewHolder extends RecyclerView.ViewHolder {
         this.hasImg = hasImg;
     }
 
+    public ImageView getPostProfPic() {
+        return postProfPic;
+    }
+
+    public void setPostProfPic(ImageView postProfPic) {
+        this.postProfPic = postProfPic;
+    }
 }

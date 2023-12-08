@@ -30,7 +30,7 @@
             android:id="@+id/create_post_tags"
             android:layout_width="match_parent"
             android:layout_height="63dp"
-            android:hint="Add Tags"
+            android:hint="Add Tags e.g. tomato, potato"
             android:minHeight="30dp" />
 
 
