@@ -57,6 +57,10 @@ public class PlantRecommendationReceiver extends BroadcastReceiver {
                 return R.drawable.onion;
             case "potato":
                 return R.drawable.potato;
+            case "peas":
+                return R.drawable.peas;
+            case "pepper":
+                return R.drawable.pepper;
         }
         return R.drawable.baseline_question_mark_24;
     }
