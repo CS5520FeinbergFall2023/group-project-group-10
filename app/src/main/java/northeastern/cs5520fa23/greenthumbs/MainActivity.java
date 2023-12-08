@@ -1,4 +1,5 @@
 package northeastern.cs5520fa23.greenthumbs;
+
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,6 +9,7 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -19,12 +21,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
+
 import northeastern.cs5520fa23.greenthumbs.model.services.WeatherService;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat.ChatActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.MessageHomeFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SetLocationFragment;
+
 import android.view.MenuItem;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -36,8 +41,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.Objects;
+
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.DashboardFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Garden.GardenFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Settings.SettingsFragment;
@@ -101,18 +108,17 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Unable to fetch username", Toast.LENGTH_LONG).show();
             } else {
                 User currUser = task.getResult().getValue(User.class);
-                assert currUser != null;
+//                assert currUser != null;
                 username = currUser.getUsername();
             }
         });
 
 
-
         // ### Home Location ###
         //if (!isHomeLocationSet()) {
-            //showSetLocationFragment();
+        //showSetLocationFragment();
         //} else {
-            //startWeatherService();
+        //startWeatherService();
         //}
         //ImageButton btnShowSetLocation = findViewById(R.id.btnShowSetLocation);
         //btnShowSetLocation.setOnClickListener(view -> showSetLocationFragment());
@@ -176,12 +182,12 @@ public class MainActivity extends AppCompatActivity {
          */
 
         if (getIntent().getExtras() != null) {
-            boolean goChat  = getIntent().getBooleanExtra("to_chat", false);
+            boolean goChat = getIntent().getBooleanExtra("to_chat", false);
             if (goChat) {
                 navBar.setSelectedItemId(R.id.messages_menu_item);
                 //getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment).commit();
             }
-            boolean goPosts  = getIntent().getBooleanExtra("to_posts", false);
+            boolean goPosts = getIntent().getBooleanExtra("to_posts", false);
             if (goPosts) {
                 navBar.setSelectedItemId(R.id.social_menu_item);
             }
@@ -198,14 +204,35 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
-
         } else {
             // When app is opened go to dashboard
             getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment, "DASH").commit();
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        int checkedItemId = navBar.getSelectedItemId();
+        outState.putInt("selectedItemId", checkedItemId);
+    }
 
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        int checkItemId = savedInstanceState.getInt("selectedItemId");
+        if (checkItemId == R.id.dash_menu_item) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment, "DASH").addToBackStack("DASH").commit();
+        } else if (checkItemId == R.id.social_menu_item) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, socialFragment, "SOCIAL").addToBackStack("SOCIAL").commit();
+        } else if (checkItemId == R.id.garden_menu_item) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, gardenFragment, "GARDEN").addToBackStack("GARDEN").commit();
+        } else if (checkItemId == R.id.settings_menu_item) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, settingsFragment).commit();
+        } else if (checkItemId == R.id.messages_menu_item) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment, "MESSAGE").addToBackStack("MESSAGE").commit();
+        }
+    }
 
     private void startWeatherService() {
         SharedPreferences sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE);
