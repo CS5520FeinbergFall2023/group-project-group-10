@@ -128,6 +128,8 @@ public class MainActivity extends AppCompatActivity {
             requestLocationPermissions();
         }
 
+        startPlantRecommendationService();
+
         PeriodicWorkRequest weatherCheckRequest = new PeriodicWorkRequest.Builder(WeatherCheckWorker.class,
                 1, TimeUnit.HOURS) // Run every 1 hour, for example
                 .setConstraints(new Constraints.Builder()
@@ -244,8 +246,8 @@ public class MainActivity extends AppCompatActivity {
             serviceIntent.putExtra(PlantRecommendationService.longitude, longitude);
             startService(serviceIntent);
         } else {
-            Toast.makeText(this, "Location Undetermined. Please update your location " +
-                    "in the settings menu.", Toast.LENGTH_LONG).show();
+            /*Toast.makeText(this, "Location Undetermined. Please update your location " +
+                    "in the settings menu.", Toast.LENGTH_LONG).show();*/
         }
     }
 
