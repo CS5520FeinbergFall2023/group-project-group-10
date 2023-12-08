@@ -29,8 +29,7 @@
         <activity android:name=".SignUpPageActivity"/>
         <activity android:name=".viewmodel.Messages.Chat.ChatActivity"
             android:exported="false" />
-        <activity android:name=".viewmodel.Settings.UserSettingsActivity">
-        </activity>
+
         <activity
             android:name=".LogInActivity"
             android:exported="false" />

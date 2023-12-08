@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.FrameLayout;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.google.firebase.auth.FirebaseAuth;
 import northeastern.cs5520fa23.greenthumbs.LogInActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
@@ -16,10 +18,18 @@ import northeastern.cs5520fa23.greenthumbs.viewmodel.SetLocationFragment;
 
 public class SettingsFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
+    private View settingFragmentView;
     private static final String ARG_PARAM2 = "param2";
 
     public SettingsFragment(){
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Show the UI elements again
+        showUIElements();
     }
 
     @Override
@@ -36,12 +46,18 @@ public class SettingsFragment extends Fragment {
                              ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View settingFragmentView = inflater.inflate(R.layout.fragment_settings, container, false);
+        settingFragmentView = inflater.inflate(R.layout.fragment_settings, container, false);
 
         Button accountSettingsButton = settingFragmentView.findViewById(R.id.AccountSettingsbtn);
         accountSettingsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), UserSettingsActivity.class);
-            startActivity(intent);
+            hideOtherUIElements();
+            UserSettingsFragment userSettingsFragment = new UserSettingsFragment();
+            FrameLayout fragmentContainer = settingFragmentView.findViewById(R.id.fragment_container);
+            fragmentContainer.setVisibility(View.VISIBLE);
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, userSettingsFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         });
 
         Button btnShowSetLocation = settingFragmentView.findViewById(R.id.SetLocationbtn);
@@ -52,7 +68,23 @@ public class SettingsFragment extends Fragment {
 
         Button logoutBtn = settingFragmentView.findViewById(R.id.LogOutBtn);
         logoutBtn.setOnClickListener(v -> logOutUser());
+
+        showUIElements();
         return settingFragmentView;
+    }
+
+    private void hideOtherUIElements() {
+        settingFragmentView.findViewById(R.id.Informationbtn).setVisibility(View.GONE);
+        settingFragmentView.findViewById(R.id.AccountSettingsbtn).setVisibility(View.GONE);
+        settingFragmentView.findViewById(R.id.SetLocationbtn).setVisibility(View.GONE);
+        settingFragmentView.findViewById(R.id.LogOutBtn).setVisibility(View.GONE);
+    }
+
+    private void showUIElements() {
+        settingFragmentView.findViewById(R.id.Informationbtn).setVisibility(View.VISIBLE);
+        settingFragmentView.findViewById(R.id.AccountSettingsbtn).setVisibility(View.VISIBLE);
+        settingFragmentView.findViewById(R.id.SetLocationbtn).setVisibility(View.VISIBLE);
+        settingFragmentView.findViewById(R.id.LogOutBtn).setVisibility(View.VISIBLE);
     }
 
     private void showInformation() {
@@ -69,6 +101,14 @@ public class SettingsFragment extends Fragment {
         if(getActivity() != null){
             getActivity().finish();
 
+        }
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            showUIElements();
         }
     }
 
