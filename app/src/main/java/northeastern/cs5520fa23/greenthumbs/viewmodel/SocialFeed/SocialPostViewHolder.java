@@ -28,6 +28,7 @@ public class SocialPostViewHolder extends RecyclerView.ViewHolder {
     public TextView time;
     private boolean hasImg;
     private ImageView postProfPic;
+    private TextView geolocationText;
 
 
 
@@ -41,20 +42,9 @@ public class SocialPostViewHolder extends RecyclerView.ViewHolder {
         this.replies = itemView.findViewById(R.id.num_comments);
         this.commentIcon = itemView.findViewById(R.id.comment_icon);
         this.postProfPic = itemView.findViewById(R.id.post_prof_pic);
+        this.geolocationText = itemView.findViewById(R.id.post_location_view);
         this.storageUri = null;
         this.hasImg = false;
-        this.commentIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(itemView.getContext(), SocialPostDetailsActivity.class);
-                i.putExtra("_id", get_id());
-                i.putExtra("post_text", postText.getText().toString());
-                i.putExtra("post_username", username.getText().toString());
-                i.putExtra("img_source", storageUri);
-                i.putExtra("has_img", hasImg);
-                itemView.getContext().startActivity(i);
-            }
-        });
     }
 
     public TextView getUsername() {
@@ -130,5 +120,13 @@ public class SocialPostViewHolder extends RecyclerView.ViewHolder {
 
     public void setPostProfPic(ImageView postProfPic) {
         this.postProfPic = postProfPic;
+    }
+
+    public TextView getGeolocationText() {
+        return geolocationText;
+    }
+
+    public void setGeolocationText(TextView geolocationText) {
+        this.geolocationText = geolocationText;
     }
 }

@@ -304,8 +304,16 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                             ImgPost currPost = dataSnapshot.getValue(ImgPost.class);
-                                postList.add(currPost);
-                                originalPosts.add(currPost);
+                            if (currPost != null) {
+                                if (currPost.get_id() != null) {
+                                    //if (currPost.getTags() != null) {
+                                        postList.add(currPost);
+                                        originalPosts.add(currPost);
+                                        //socialAdapter.notifyDataSetChanged();
+                                    //}
+                                }
+                            }
+
 
                         }
                         getUserTopPlants(refreshOnFriends);

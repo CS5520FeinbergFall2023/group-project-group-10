@@ -167,6 +167,10 @@ public class CreatePostDialog extends DialogFragment {
                 post.put("post_text", postText.getText().toString());
                 post.put("uid", currUser.getUid().toString());
                 post.put("geo_location", getCurrentLocation());
+                if (post.get(postId) == null) {
+                    Toast.makeText(getContext(), "Unable to create post", Toast.LENGTH_SHORT).show();
+                    CreatePostDialog.this.getDialog().cancel();
+                }
                 dbRef.child("users").child(currUser.getUid()).child("username").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
