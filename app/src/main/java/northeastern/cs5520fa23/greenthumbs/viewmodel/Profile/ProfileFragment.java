@@ -66,6 +66,7 @@ import java.util.Map;
 import northeastern.cs5520fa23.greenthumbs.MainActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.FriendsUsers.UsersActivity;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat.ChatActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.CreatePostDialog;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.ImgPost;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.SocialAdapter;
@@ -231,6 +232,15 @@ public class ProfileFragment extends Fragment {
         this.usernameView.setTextColor(getResources().getColor(R.color.black));
         this.userBioView.setTextColor(getResources().getColor(R.color.black));
         this.sendMsgButton = view.findViewById(R.id.profile_msg_button);
+        this.sendMsgButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getContext(), ChatActivity.class);
+                i.putExtra("other_username", username);
+                getActivity().startActivity(i);
+
+            }
+        });
         this.addFriendButton = view.findViewById(R.id.profile_friend_button);
         this.addFriendButton.setOnClickListener(new View.OnClickListener() {
             @Override
