@@ -123,18 +123,6 @@ public class MainActivity extends AppCompatActivity {
                     serviceIntent.putExtra("username", username);
                     startService(serviceIntent);
                 }
-        FirebaseDatabase.getInstance().getReference("users").child(uid).get().addOnCompleteListener(task -> {
-            if (!task.isSuccessful()) {
-                Toast.makeText(MainActivity.this, "Unable to fetch username", Toast.LENGTH_LONG).show();
-            } else {
-                User currUser = task.getResult().getValue(User.class);
-                if (currUser != null) {
-                    username = currUser.getUsername();
-                } else {
-                    Intent i = new Intent(MainActivity.this, LogInActivity.class);
-                    startActivity(i);
-                    finish();
-                }
             }
         });
 
@@ -147,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         PeriodicWorkRequest weatherCheckRequest = new PeriodicWorkRequest.Builder(WeatherCheckWorker.class,
                 1, TimeUnit.HOURS) // Run every 1 hour, for example
                 .setConstraints(new Constraints.Builder()
-                        .setRequiredNetworkType(NetworkType.CONNECTED) // Requires network connectivity
+                        .setRequiredNetworkType(NetworkType.CONNECTED)
                         .build())
                 .build();
 
