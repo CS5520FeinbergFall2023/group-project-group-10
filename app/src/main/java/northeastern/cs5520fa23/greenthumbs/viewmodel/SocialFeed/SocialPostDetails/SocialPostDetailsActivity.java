@@ -149,7 +149,7 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
                     }
                 });
             } else {
-                Toast.makeText(this, "NO IMAGE", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "NO IMAGE", Toast.LENGTH_SHORT).show();
                 postImage.setVisibility(View.GONE);
                 /*
                 ViewGroup.LayoutParams rvParams = commentRV.getLayoutParams();
