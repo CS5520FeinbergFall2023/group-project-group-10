@@ -1,16 +1,12 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.Settings;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
-
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-
 import com.google.firebase.auth.FirebaseAuth;
 import northeastern.cs5520fa23.greenthumbs.LogInActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
@@ -20,16 +16,7 @@ public class SettingsFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private View settingFragmentView;
     private static final String ARG_PARAM2 = "param2";
-
     public SettingsFragment(){
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        // Show the UI elements again
-        showUIElements();
     }
 
     @Override
@@ -63,22 +50,11 @@ public class SettingsFragment extends Fragment {
         Button logoutBtn = settingFragmentView.findViewById(R.id.LogOutBtn);
         logoutBtn.setOnClickListener(v -> logOutUser());
 
-        showUIElements();
+        if (savedInstanceState != null) {
+            settingFragmentView.findViewById(R.id.AccountSettingsbtn).setVisibility(savedInstanceState.getInt("accountSettingsVisibility", View.VISIBLE));
+            settingFragmentView.findViewById(R.id.SetLocationbtn).setVisibility(savedInstanceState.getInt("setLocationVisibility", View.VISIBLE));
+        }
         return settingFragmentView;
-    }
-
-    private void hideOtherUIElements() {
-        settingFragmentView.findViewById(R.id.Informationbtn).setVisibility(View.GONE);
-        settingFragmentView.findViewById(R.id.AccountSettingsbtn).setVisibility(View.GONE);
-        settingFragmentView.findViewById(R.id.SetLocationbtn).setVisibility(View.GONE);
-        settingFragmentView.findViewById(R.id.LogOutBtn).setVisibility(View.GONE);
-    }
-
-    private void showUIElements() {
-        settingFragmentView.findViewById(R.id.Informationbtn).setVisibility(View.VISIBLE);
-        settingFragmentView.findViewById(R.id.AccountSettingsbtn).setVisibility(View.VISIBLE);
-        settingFragmentView.findViewById(R.id.SetLocationbtn).setVisibility(View.VISIBLE);
-        settingFragmentView.findViewById(R.id.LogOutBtn).setVisibility(View.VISIBLE);
     }
 
     private void showInformation() {
@@ -97,13 +73,11 @@ public class SettingsFragment extends Fragment {
 
         }
     }
-
     @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (!hidden) {
-            showUIElements();
-        }
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("accountSettingsVisibility", settingFragmentView.findViewById(R.id.AccountSettingsbtn).getVisibility());
+        outState.putInt("setLocationVisibility", settingFragmentView.findViewById(R.id.SetLocationbtn).getVisibility());
     }
 
     private void showSetLocationFragment() {

@@ -37,19 +37,18 @@ public class UserSettingsActivity extends AppCompatActivity {
         firstNameSettingsET = findViewById(R.id.editFirstNameSetting);
         lastNameSettingsET = findViewById(R.id.editLastNameSetting);
 
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseDatabase.getInstance();
-        currentUser = mAuth.getCurrentUser();
-        loadUserData();
-
+        if (savedInstanceState != null) {
+            usernameSettingsET.setText(savedInstanceState.getString("username", ""));
+            firstNameSettingsET.setText(savedInstanceState.getString("firstName", ""));
+            lastNameSettingsET.setText(savedInstanceState.getString("lastName", ""));
+        } else {
+            mAuth = FirebaseAuth.getInstance();
+            db = FirebaseDatabase.getInstance();
+            currentUser = mAuth.getCurrentUser();
+            loadUserData();
+        }
         Button saveChangesBtn = findViewById(R.id.save_changes_settings);
         saveChangesBtn.setOnClickListener(v -> saveUserChanges());
-    }
-
-    private void redirectToLogin() {
-        Intent intent = new Intent(this, LogInActivity.class);
-        startActivity(intent);
-        finish();
     }
 
     private void saveUserChanges() {
@@ -75,6 +74,14 @@ public class UserSettingsActivity extends AppCompatActivity {
         } else {
             Toast.makeText(UserSettingsActivity.this, "No user", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("username", usernameSettingsET.getText().toString());
+        outState.putString("firstName", firstNameSettingsET.getText().toString());
+        outState.putString("lastName", lastNameSettingsET.getText().toString());
     }
 
 
