@@ -48,7 +48,8 @@ public class WeatherService extends Service {
 
         new Thread(() -> {
             String urlString = getForecastUrl(boxX, boxY);
-            fetchPeriodData(urlString, WeatherService.this);
+            List<String> requiredPeriods = fetchPeriodData(urlString);
+            broadcastMessage(requiredPeriods, this);
         }).start();
 
         return START_NOT_STICKY;
@@ -74,7 +75,7 @@ public class WeatherService extends Service {
      * The period 0 marks the current weather conditions.
      * @param url URL to fetch temperature from
      */
-    public static void fetchPeriodData(String url, Context context) {
+    public static List<String> fetchPeriodData(String url) {
         Request request = new Request.Builder().url(url).build();
 
         try (Response response = client.newCall(request).execute()) {
@@ -86,12 +87,11 @@ public class WeatherService extends Service {
             requiredPeriods.add(checkWeatherCondition(periods.get(0).getShortForecast()));
             requiredPeriods.add(checkWeatherCondition(periods.get(24).getShortForecast()));
             requiredPeriods.add(checkWeatherCondition(periods.get(48).getShortForecast()));
-            Intent intent = new Intent(ACTION_WEATHER_UPDATE);
-            intent.putStringArrayListExtra(EXTRA_WEATHER_DATA, new ArrayList<>(requiredPeriods));
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+            return requiredPeriods;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return new ArrayList<>();
     }
 
 
@@ -104,13 +104,20 @@ public class WeatherService extends Service {
             }
         }
         return "";
+    }
 
-    public List<WeatherForecast.Period> getForecast() {
+    public List<String> getForecast() {
         SharedPreferences sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE);
         float latitude = sharedPreferences.getFloat("HomeLatitude", 0);
         float longitude = sharedPreferences.getFloat("HomeLongitude", 0);
         String urlString = getForecastUrl(latitude, longitude);
         return fetchPeriodData(urlString);
+    }
+
+    public void broadcastMessage(List<String> requiredPeriods, Context context) {
+        Intent intent = new Intent(ACTION_WEATHER_UPDATE);
+        intent.putStringArrayListExtra(EXTRA_WEATHER_DATA, new ArrayList<>(requiredPeriods));
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 }
 

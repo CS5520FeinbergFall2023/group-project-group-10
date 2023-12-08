@@ -6,6 +6,7 @@ import java.util.List;
 
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.model.services.WeatherService;
+import northeastern.cs5520fa23.greenthumbs.model.weather.WeatherForecast;
 
 public class WeatherAlertHelper {
     private WeatherService weatherService;
@@ -18,19 +19,19 @@ public class WeatherAlertHelper {
     }
 
     public void checkWeatherAndNotify() {
-        List<WeatherForecast.Period> periods = weatherService.getForecast();
+        List<String> periods = weatherService.getForecast();
 
-        if (shouldNotify(periods.get(0).getShortForecast())) {
-            NotificationHelper.showNotification(context, "Weather Alert for Today", generateMessage(periods.get(0).getShortForecast()), R.drawable.weather_warning);
+        if (shouldNotify(periods.get(0))) {
+            NotificationHelper.showNotification(context, "Weather Alert for Today", generateMessage(periods.get(0)), R.drawable.weather_warning);
         }
 
         // Check tomorrow's weather and send a notification
-        if (shouldNotify(periods.get(24).getShortForecast())) {
-            NotificationHelper.showNotification(context, "Weather Alert for Tomorrow", generateMessage(periods.get(24).getShortForecast()), R.drawable.weather_warning);
+        if (shouldNotify(periods.get(1))) {
+            NotificationHelper.showNotification(context, "Weather Alert for Tomorrow", generateMessage(periods.get(1)), R.drawable.weather_warning);
         }
 
-        if (shouldNotify(periods.get(48).getShortForecast())) {
-            NotificationHelper.showNotification(context,"Weather Alert for the Day After Tomorrow", generateMessage(periods.get(48).getShortForecast()), R.drawable.weather_warning);
+        if (shouldNotify(periods.get(2))) {
+            NotificationHelper.showNotification(context,"Weather Alert for the Day After Tomorrow", generateMessage(periods.get(2)), R.drawable.weather_warning);
         }
     }
 

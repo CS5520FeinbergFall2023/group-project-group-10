@@ -10,43 +10,41 @@ public class PlantInfo {
     private static final Map<String, List<String>> zonePlants = new HashMap<>();
 
     static {
-        zonePlants.put("3a", Arrays.asList("Kale", "Leeks", "Raspberries", "Blue Spruce", "Juniper"));
+        zonePlants.put("3a", Arrays.asList("Peas")); // Hardier vegetables like peas can survive in colder zones
 
-        zonePlants.put("3b", Arrays.asList("Brussels Sprouts", "Rhubarb", "Strawberries", "Aspen", "Dogwood"));
+        zonePlants.put("3b", Arrays.asList("Peas", "Lettuce"));
 
-        zonePlants.put("4a", Arrays.asList("Spinach", "Parsnips", "Plums", "Birch Trees", "Lilac Shrubs"));
+        zonePlants.put("4a", Arrays.asList("Peas", "Carrot", "Lettuce"));
 
-        zonePlants.put("4b", Arrays.asList("Lettuce", "Beets", "Cherries", "Maple Trees", "Rose Bushes"));
+        zonePlants.put("4b", Arrays.asList("Peas", "Carrot", "Lettuce"));
 
-        zonePlants.put("5a", Arrays.asList("Broccoli", "Carrots", "Apples", "Oak Trees", "Azalea Shrubs"));
+        zonePlants.put("5a", Arrays.asList("Broccoli", "Carrot", "Lettuce", "Peas", "Potato"));
 
-        zonePlants.put("5b", Arrays.asList("Cauliflower", "Swiss Chard", "Pears", "Elm Trees", "Holly Bushes"));
+        zonePlants.put("5b", Arrays.asList("Broccoli", "Carrot", "Lettuce", "Peas", "Potato"));
 
-        zonePlants.put("6a", Arrays.asList("Peas", "Garlic", "Peaches", "Cedar Trees", "Rhododendrons"));
+        zonePlants.put("6a", Arrays.asList("Broccoli", "Carrot", "Cucumber", "Lettuce", "Onion", "Peas", "Pepper", "Potato"));
 
-        zonePlants.put("6b", Arrays.asList("Tomatoes", "Peppers", "Grapes", "Japanese Maple", "Hydrangea"));
+        zonePlants.put("6b", Arrays.asList("Broccoli", "Carrot", "Cucumber", "Lettuce", "Onion", "Peas", "Pepper", "Potato", "Tomato"));
 
-        zonePlants.put("7a", Arrays.asList("Cucumbers", "Squash", "Figs", "Pine Trees", "Magnolia"));
+        zonePlants.put("7a", Arrays.asList("Broccoli", "Carrot", "Cucumber", "Eggplant", "Lettuce", "Onion", "Peas", "Pepper", "Potato", "Tomato"));
 
-        zonePlants.put("7b", Arrays.asList("Sweet Corn", "Okra", "Kiwi", "Cypress Trees", "Camellia Shrubs"));
+        zonePlants.put("7b", Arrays.asList("Broccoli", "Carrot", "Cucumber", "Eggplant", "Lettuce", "Onion", "Peas", "Pepper", "Potato", "Tomato"));
 
-        zonePlants.put("8a", Arrays.asList("Green Beans", "Melons", "Citrus", "Olive Trees", "Palm Trees"));
+        zonePlants.put("8a", Arrays.asList("Broccoli", "Carrot", "Cucumber", "Eggplant", "Lettuce", "Onion", "Pepper", "Potato", "Tomato"));
 
-        zonePlants.put("8b", Arrays.asList("Eggplant", "Sweet Potatoes", "Pomegranates", "Bamboo", "Bougainvillea"));
+        zonePlants.put("8b", Arrays.asList("Broccoli", "Carrot", "Cucumber", "Eggplant", "Lettuce", "Onion", "Pepper", "Potato", "Tomato"));
 
-        zonePlants.put("9a", Arrays.asList("Bell Peppers", "Tomatillos", "Avocados", "Oak Trees", "Hibiscus"));
+        zonePlants.put("9a", Arrays.asList("Broccoli", "Carrot", "Cucumber", "Eggplant", "Lettuce", "Onion", "Pepper", "Potato", "Tomato"));
 
-        zonePlants.put("9b", Arrays.asList("Chili Peppers", "Lemons", "Mangoes", "Palm Trees", "Bird of Paradise"));
+        zonePlants.put("9b", Arrays.asList("Broccoli", "Carrot", "Cucumber", "Eggplant", "Lettuce", "Onion", "Pepper", "Potato", "Tomato"));
 
-        zonePlants.put("10a", Arrays.asList("Cucumbers", "Papayas", "Guavas", "Bamboo", "Orchids"));
+        zonePlants.put("10a", Arrays.asList("Broccoli", "Carrot", "Cucumber", "Eggplant", "Lettuce", "Onion", "Pepper", "Tomato"));
 
-        zonePlants.put("10b", Arrays.asList("Tomatoes", "Bananas", "Coconuts", "Palm Trees", "Flowering Hibiscus"));
+        zonePlants.put("10b", Arrays.asList("Broccoli", "Carrot", "Cucumber", "Eggplant", "Lettuce", "Onion", "Pepper", "Tomato"));
 
-        zonePlants.put("11a", Arrays.asList("Sweet Potatoes", "Pineapples", "Mango Trees", "Ficus Trees", "Bougainvillea"));
+        zonePlants.put("11a", Arrays.asList("Cucumber", "Eggplant", "Pepper", "Tomato"));
 
-        zonePlants.put("11b", Arrays.asList("Peppers", "Dragon Fruit", "Palm Trees", "Bird of Paradise", "Tropical Hibiscus"));
-
-        // Add more zones and their corresponding plants as needed
+        zonePlants.put("11b", Arrays.asList("Cucumber", "Eggplant", "Pepper", "Tomato"));
     }
 
     public static List<String> getPlantsForZone(String zone) {
