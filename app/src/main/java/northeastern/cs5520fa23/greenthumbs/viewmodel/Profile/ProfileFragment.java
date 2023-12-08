@@ -1,25 +1,34 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.Profile;
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
 
+import static northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.CreatePostDialog.REQUEST_GET_IMAGE;
+
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,13 +101,17 @@ public class ProfileFragment extends Fragment {
     private List<ImgPost> postList;
     private ImageView headerImage;
     private ImageView profilePicture;
-    private ActivityResultLauncher<PickVisualMediaRequest> headerImgSelect;
-    private ActivityResultLauncher<PickVisualMediaRequest> profPicSelect;
+    //private ActivityResultLauncher<PickVisualMediaRequest> headerImgSelect;
+    //private ActivityResultLauncher<PickVisualMediaRequest> profPicSelect;
     private Uri profPicUri;
     private Uri headerUri;
     private Map<String, String> friends;
     private boolean isFriend;
     private boolean isRequested;
+    private boolean headerEdited;
+    private boolean profilePictureEdited;
+    private boolean bioEdited;
+
     Friend userFriend;
 
     public ProfileFragment() {
@@ -121,15 +134,7 @@ public class ProfileFragment extends Fragment {
             username = getArguments().getString(ARG_USERNAME);
             profUid = getArguments().getString(ARG_CURRUID);
         }
-        currUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        // determine if this is the users own profile
-        if (profUid.equals(currUser.getUid())) {
-            isUsersProfile = true;
-        } else {
-            isUsersProfile = false;
-        }
-        this.db = FirebaseDatabase.getInstance();
 
     }
 
@@ -158,6 +163,60 @@ public class ProfileFragment extends Fragment {
         };
         getActivity().getOnBackPressedDispatcher().addCallback(getActivity(), backPressedCallback);
         */
+        currUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        // determine if this is the users own profile
+        if (profUid.equals(currUser.getUid())) {
+            isUsersProfile = true;
+        } else {
+            isUsersProfile = false;
+        }
+        this.db = FirebaseDatabase.getInstance();
+        this.profilePictureEdited = false;
+        this.headerEdited = false;
+        this.bioEdited = false;
+
+        ActivityResultLauncher<Intent> headerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult o) {
+                if (o.getResultCode() == RESULT_OK) {
+                    if (o.getData() != null) {
+                        Intent data = o.getData();
+                        if (data.getData() != null) {
+                            Uri uri = data.getData();
+                            try {
+                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), uri);
+                                headerImage.setImageBitmap(bitmap);
+                                headerEdited = true;
+                            } catch (Exception e) {
+                                Toast.makeText(getContext(), "Unable to get image", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        ActivityResultLauncher<Intent> profilePictureLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult o) {
+                if (o.getResultCode() == RESULT_OK) {
+                    if (o.getData() != null) {
+                        Intent data = o.getData();
+                        if (data.getData() != null) {
+                            Uri uri = data.getData();
+                            try {
+                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), uri);
+                                profilePicture.setImageBitmap(bitmap);
+                                profilePictureEdited = true;
+                            } catch (Exception e) {
+                                Toast.makeText(getContext(), "Unable to get image", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
         this.usernameView = view.findViewById(R.id.profile_name);
         this.headerImage = view.findViewById(R.id.profile_header_image);
@@ -186,6 +245,7 @@ public class ProfileFragment extends Fragment {
         this.postList = new ArrayList<>();
         socialAdapter = new SocialAdapter(postList, getContext(), null);
         socialRecyclerView.setAdapter(socialAdapter);
+        /*
         headerImgSelect = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
             if (uri != null) {
                 //headerImage.setImageURI(uri);
@@ -204,6 +264,8 @@ public class ProfileFragment extends Fragment {
                 // something here like a toast or something
             }
         });
+
+         */
         //uploadProfilePic();
 
         // hide message and add friend button if this is their own profile and enable edit profile
@@ -237,7 +299,14 @@ public class ProfileFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     if (isEditing) {
-                        getImg(headerImgSelect);
+                        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_GET_IMAGE);
+                            Toast.makeText(getContext(), "Need photo access", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            headerLauncher.launch(galleryIntent);
+                        }
+                        //getImg(headerImgSelect);
                     }
                 }
             });
@@ -245,7 +314,14 @@ public class ProfileFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     if (isEditing) {
-                        getImg(profPicSelect);
+                        //getImg(profPicSelect);
+                        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_GET_IMAGE);
+                            Toast.makeText(getContext(), "Need photo access", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            profilePictureLauncher.launch(galleryIntent);
+                        }
                     }
                 }
             });
@@ -265,31 +341,26 @@ public class ProfileFragment extends Fragment {
         loadData();
     }
 
-    private void getImg(ActivityResultLauncher<PickVisualMediaRequest> request) {
-        request.launch(new PickVisualMediaRequest.Builder().setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE).build());
-    }
+    //private void getImg(ActivityResultLauncher<PickVisualMediaRequest> request) {
+    //    request.launch(new PickVisualMediaRequest.Builder().setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE).build());
+    //}
     private void saveProfileUpdates() {
-        uploadProfilePic();
-        uploadHeaderImage();
+        //uploadProfilePic();
+        //uploadHeaderImage();
+
         Map<String, Object> updates = new HashMap<>();
+        uploadProfilePic(updates);
+        isEditing = false;
+        /*
         if (headerUri != null) {
             updates.put("header_image", headerUri.toString());
         }
         if (profPicUri != null) {
             updates.put("profile_pic", profPicUri.toString());
         }
-        updates.put("username", usernameView.getText().toString());
-        updates.put("user_bio", userBioView.getText().toString());
-        db.getReference("users").child(currUser.getUid()).updateChildren(updates).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (!task.isSuccessful()) {
-                    Toast.makeText(getContext(), "Unable to update profile", Toast.LENGTH_LONG).show();
-                } else {
 
-                }
-            }
-        });
+         */
+        //updates.put("username", usernameView.getText().toString());
     }
     private void loadData() {
         //Toast.makeText(getContext(), "post loaded not data", Toast.LENGTH_LONG).show();
@@ -388,82 +459,114 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    private void uploadProfilePic() {
-        if (((BitmapDrawable) profilePicture.getDrawable()).getBitmap() == null) {
-            return;
-        }
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-        String imgPath = "profile_pics/" + profUid;
-        StorageReference profPicStorageRef = storageReference.child(imgPath);
-        profPicStorageRef.delete();
-        //Boolean t = profPicStorageRef == null;
-        //Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_LONG).show();
-        Bitmap bitmap = ((BitmapDrawable) profilePicture.getDrawable()).getBitmap();
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-        byte[] data = outputStream.toByteArray();
-
-
-        UploadTask uploadTask = profPicStorageRef.putBytes(data); // upload then on the upload get the download link for the post
-        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        String link = uri.toString();
-                        db.getReference("users").child(currUser.getUid()).child("profile_pic").setValue(link).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                saveProfileUpdates();
-                                //CreatePostDialog.this.getDialog().cancel();
-                            }
-                        });
-                    }
-                });
-
+    private void uploadProfilePic(Map<String, Object> updates) {
+        if (profilePictureEdited) {
+            if (((BitmapDrawable) profilePicture.getDrawable()).getBitmap() == null) {
+                return;
             }
-        });
+            StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+            String imgPath = "profile_pics/" + profUid;
+            StorageReference profPicStorageRef = storageReference.child(imgPath);
+            profPicStorageRef.delete();
+            //Boolean t = profPicStorageRef == null;
+            //Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_LONG).show();
+            Bitmap bitmap = ((BitmapDrawable) profilePicture.getDrawable()).getBitmap();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            byte[] data = outputStream.toByteArray();
+
+
+            UploadTask uploadTask = profPicStorageRef.putBytes(data); // upload then on the upload get the download link for the post
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String link = uri.toString();
+                            db.getReference("users").child(currUser.getUid()).child("profile_pic").setValue(link).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    if (headerEdited) {
+                                        updates.put("header_image", link);
+                                        uploadHeaderImage(updates);
+                                    } else {
+                                        finishProfileUpdates(updates);
+                                    }
+                                    //CreatePostDialog.this.getDialog().cancel();
+                                }
+                            });
+                        }
+                    });
+
+                }
+            });
+        } else {
+            finishProfileUpdates(updates);
+        }
+
 
     }
 
-    private void uploadHeaderImage() {
-        if (((BitmapDrawable) headerImage.getDrawable()) == null) {
-            return;
+    private void uploadHeaderImage(Map<String, Object> updates) {
+        if (headerEdited) {
+            if (((BitmapDrawable) headerImage.getDrawable()) == null) {
+                return;
+            }
+            StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+            String imgPath = "header_images/" + profUid;
+            StorageReference headerStorageRef = storageReference.child(imgPath);
+            headerStorageRef.delete();
+            //Boolean t = profPicStorageRef == null;
+            //Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_LONG).show();
+            Bitmap bitmap = ((BitmapDrawable) headerImage.getDrawable()).getBitmap();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            byte[] data = outputStream.toByteArray();
+
+
+            UploadTask uploadTask = headerStorageRef.putBytes(data); // upload then on the upload get the download link for the post
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String link = uri.toString();
+                            db.getReference("users").child(currUser.getUid()).child("header_image").setValue(link).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    updates.put("profile_picture", link);
+                                    finishProfileUpdates(updates);
+                                    //CreatePostDialog.this.getDialog().cancel();
+                                }
+                            });
+                        }
+                    });
+
+                }
+            });
+        } else {
+            finishProfileUpdates(updates);
         }
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-        String imgPath = "header_images/" + profUid;
-        StorageReference headerStorageRef = storageReference.child(imgPath);
-        headerStorageRef.delete();
-        //Boolean t = profPicStorageRef == null;
-        //Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_LONG).show();
-        Bitmap bitmap = ((BitmapDrawable) headerImage.getDrawable()).getBitmap();
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-        byte[] data = outputStream.toByteArray();
+    }
 
-
-        UploadTask uploadTask = headerStorageRef.putBytes(data); // upload then on the upload get the download link for the post
-        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+    private void finishProfileUpdates(Map<String, Object> updates) {
+        updates.put("user_bio", userBioView.getText().toString());
+        db.getReference("users").child(currUser.getUid()).updateChildren(updates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        String link = uri.toString();
-                        db.getReference("users").child(currUser.getUid()).child("header_image").setValue(link).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                saveProfileUpdates();
-                                //CreatePostDialog.this.getDialog().cancel();
-                            }
-                        });
-                    }
-                });
-
+            public void onComplete(@NonNull Task<Void> task) {
+                if (!task.isSuccessful()) {
+                    Toast.makeText(getContext(), "Unable to update profile", Toast.LENGTH_LONG).show();
+                } else {
+                    isEditing = false;
+                    headerEdited = false;
+                    profilePictureEdited = false;
+                    loadData();
+                    //bioEdited = false;
+                }
             }
         });
-
     }
 
     private void getFriends() {

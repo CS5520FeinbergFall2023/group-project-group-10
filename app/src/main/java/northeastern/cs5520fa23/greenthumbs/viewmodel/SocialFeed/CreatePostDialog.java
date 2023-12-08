@@ -69,7 +69,7 @@ public class CreatePostDialog extends DialogFragment {
     private ActivityResultLauncher<PickVisualMediaRequest> imgSelect;
     private FirebaseDatabase db;
     private Map<String, Object> post;
-    static final int REQUEST_GET_IMAGE = 1;
+    public static final int REQUEST_GET_IMAGE = 1;
     FirebaseUser currUser;
     DatabaseReference dbRef;
 
