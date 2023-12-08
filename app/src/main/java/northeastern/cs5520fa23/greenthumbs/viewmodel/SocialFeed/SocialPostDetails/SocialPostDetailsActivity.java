@@ -2,6 +2,7 @@ package northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.SocialPostDetai
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -9,14 +10,17 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,6 +66,7 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
     private FirebaseDatabase db;
     private DatabaseReference dbRef;
     private DatabaseReference commentRef;
+    private NestedScrollView scrollView;
     FirebaseUser currUser;
     private Map<String, Object> newComment;
 
@@ -72,6 +77,7 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.social_post_detailed);
         this._id = getIntent().getStringExtra("_id");
         currUser = FirebaseAuth.getInstance().getCurrentUser();
+        scrollView = findViewById(R.id.post_detail_content_sv);
         newComment = new HashMap<>();
         db = FirebaseDatabase.getInstance();
         //String postPath = "posts/" + this._id;
@@ -119,6 +125,9 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
         });
         postText = findViewById(R.id.post_detail_post_text);
         postText.setText(getIntent().getStringExtra("post_text"));
+        //
+
+        //
         usernameText = findViewById(R.id.post_detail_username);
         usernameText.setText(getIntent().getStringExtra("post_username"));
         postImage = findViewById(R.id.post_detail_post_image);
@@ -133,14 +142,36 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
                 imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Picasso.get().load(uri).resize(postImage.getWidth(), postImage.getHeight()).centerCrop().into(postImage);
+                        Picasso.get().load(uri).resize(postImage.getWidth(), postImage.getHeight()).centerInside().into(postImage);
+
                         //Glide.with(SocialPostDetailsActivity.this).load(uri).into(postImage);
                         getComments();
                     }
                 });
             } else {
-                Toast.makeText(this, "NO IMAGE", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "NO IMAGE", Toast.LENGTH_SHORT).show();
                 postImage.setVisibility(View.GONE);
+                /*
+                ViewGroup.LayoutParams rvParams = commentRV.getLayoutParams();
+                double commentsHeight = SocialPostDetailsActivity.this.getWindow().getDecorView().getHeight() * 0.7;
+                rvParams.height = (int) commentsHeight;
+                commentRV.setLayoutParams(rvParams);
+
+                ViewGroup.LayoutParams svParams = scrollView.getLayoutParams();
+                double viewHeight = SocialPostDetailsActivity.this.getWindow().getDecorView().getHeight();
+                double textHeight = postText.getHeight();
+                double imgHeight = viewHeight * .3;
+                double availRoom = viewHeight - imgHeight;
+                double maxSVHeight = viewHeight * .125;
+                if (maxSVHeight < textHeight) {
+                    svParams.height = (int) ((viewHeight * .125) - textHeight - imgHeight);
+                } else {
+                    svParams.height = (int) ((viewHeight * .125) - textHeight - imgHeight);
+                }
+                scrollView.setLayoutParams(svParams);
+
+                 */
+
                 getComments();
             }
 
@@ -208,6 +239,7 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
                         commentList.add(currComment);
                     }
                     commentAdapter.notifyDataSetChanged();
+                    commentRV.smoothScrollToPosition(commentList.size());
                 }
             }
 

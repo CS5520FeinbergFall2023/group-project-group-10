@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +23,14 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.FriendRequests.FriendRequest;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.FriendRequests.FriendRequestAdapter;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.GrowingChart.GrowingChartAdapter;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.GrowingChart.Plant;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.MessageHistoryAdapter;
 
 /**
@@ -47,8 +51,12 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
     private RecyclerView frRecyclerView;
     private FriendRequestAdapter friendRequestAdapter;
     private List<FriendRequest> friendRequestList;
+    private RecyclerView growingChartRecyclerView;
+    private GrowingChartAdapter growingChartAdapter;
     private FirebaseUser currUser;
     private FirebaseDatabase db;
+    private HashMap<String, Integer> growTimes;
+    private List<Plant> plantList;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -82,6 +90,7 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
         currUser = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseDatabase.getInstance();
         friendRequestList = new ArrayList<>();
+        plantList = new ArrayList<>();
     }
 
     @Override
@@ -94,12 +103,64 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        frRecyclerView = view.findViewById(R.id.dash_notification_rv);
-        frRecyclerView.setHasFixedSize(true);
-        frRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        friendRequestAdapter = new FriendRequestAdapter(friendRequestList, getContext(), this);
-        frRecyclerView.setAdapter(friendRequestAdapter);
+        this.frRecyclerView = view.findViewById(R.id.dash_notification_rv);
+        this.frRecyclerView.setHasFixedSize(true);
+        this.frRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        this.friendRequestAdapter = new FriendRequestAdapter(friendRequestList, getContext(), this);
+        this.frRecyclerView.setAdapter(friendRequestAdapter);
         getFriendRequests();
+        this.growTimes = new HashMap<>();
+        this.growTimes.put("tomato", 50);
+        this.growingChartRecyclerView = view.findViewById(R.id.dashboard_progress_bars_rv);
+        this.growingChartRecyclerView.setHasFixedSize(true);
+        this.growingChartRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        this.growingChartAdapter = new GrowingChartAdapter(plantList, getContext());
+        this.growingChartRecyclerView.setAdapter(this.growingChartAdapter);
+        getPlants();
+
+    }
+
+    private void getPlants() {
+        DatabaseReference plantRef = db.getReference("users").child(currUser.getUid()).child("plants").child("growing");
+        plantRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                plantList.clear();
+                growingChartAdapter.notifyDataSetChanged();
+                for (DataSnapshot plantsSnapshot: snapshot.getChildren()) {
+                    //HashMap<String, Object> children = plantsSnapshot.getChildren();
+                    Log.d("plant charts", plantsSnapshot.toString());
+
+                    for (DataSnapshot plantSnapshot : plantsSnapshot.getChildren()) {
+                        Log.d("plant charts", plantSnapshot.toString());
+                        try {
+                            Plant plant = plantSnapshot.getValue(Plant.class);
+                            if (plant != null) {
+                                if (plant.isIs_growing() != null && plant.isIs_growing() == true) {
+                                    plantList.add(plant);
+                                    growingChartAdapter.notifyDataSetChanged();
+                                }
+                            }
+                        } catch (Error e) {
+                            Log.d("plant charts error", plantSnapshot.toString());
+                        }
+                        //for (DataSnapshot plantSnapshot : plantTypeSnapshot.getChildren()) {
+
+                        //}
+
+
+                    }
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     private void getFriendRequests() {

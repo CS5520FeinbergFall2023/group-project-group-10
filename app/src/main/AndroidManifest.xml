@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -21,17 +23,21 @@
         <activity android:name=".viewmodel.Settings.UserSettingsActivity">
         </activity>
         <activity
+            android:name=".viewmodel.Garden.GardenStats.GardenStatsActivity"
+            android:exported="false" />
+        <activity
             android:name=".viewmodel.FriendsUsers.UsersActivity"
             android:exported="false" />
         <activity
             android:name=".RegisterActivity"
             android:exported="false" />
-        <activity android:name=".viewmodel.Settings.InformationActivity"/>
-        <activity android:name=".LogInPageActivity"/>
-        <activity android:name=".SignUpPageActivity"/>
-        <activity android:name=".viewmodel.Messages.Chat.ChatActivity"
+        <activity android:name=".viewmodel.Settings.InformationActivity" />
+        <activity android:name=".LogInPageActivity" />
+        <activity android:name=".SignUpPageActivity" />
+        <activity
+            android:name=".viewmodel.Messages.Chat.ChatActivity"
             android:exported="false" />
-
+        <activity android:name=".viewmodel.Settings.UserSettingsActivity" />
         <activity
             android:name=".LogInActivity"
             android:exported="false" />

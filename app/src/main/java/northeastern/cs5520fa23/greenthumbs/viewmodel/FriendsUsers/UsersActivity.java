@@ -168,15 +168,25 @@ public class UsersActivity extends AppCompatActivity implements FriendsAdapter.P
     private void filterUsers(String userQuery) {
         List<User> filteredUsers = new ArrayList<>();
         for (User u : originalUsers) {
+
             if (u.getUsername().contains(userQuery)) {
                 filteredUsers.add(u);
             }
         }
+        for (int i = friendsAdapter.getItemCount() - 1; i >= 0; i--) {
+            friendUserList.remove(i);
+            friendsAdapter.notifyItemRemoved(i);
+        }
+        for (int i = 0; i < filteredUsers.size(); i++) {
+            friendUserList.add(filteredUsers.get(i));
+            friendsAdapter.notifyItemInserted(i);
+        }
 
-        friendUserList.clear();
-        friendsAdapter.notifyDataSetChanged();
-        friendUserList.addAll(filteredUsers);
-        friendsAdapter.notifyDataSetChanged();
+        //friendUserList.clear();
+        //friendsAdapter.notifyDataSetChanged();
+        //friendUserList.addAll(filteredUsers);
+        //friendsAdapter.notifyDataSetChanged();
+
 
     }
 

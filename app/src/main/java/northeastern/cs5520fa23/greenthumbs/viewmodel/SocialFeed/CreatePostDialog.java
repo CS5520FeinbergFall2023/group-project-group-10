@@ -1,14 +1,20 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,11 +22,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -60,6 +69,7 @@ public class CreatePostDialog extends DialogFragment {
     private ActivityResultLauncher<PickVisualMediaRequest> imgSelect;
     private FirebaseDatabase db;
     private Map<String, Object> post;
+    public static final int REQUEST_GET_IMAGE = 1;
     FirebaseUser currUser;
     DatabaseReference dbRef;
 
@@ -93,11 +103,39 @@ public class CreatePostDialog extends DialogFragment {
                 // something here like a toast or something
             }
         });
+        ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult o) {
+                if (o.getResultCode() == RESULT_OK) {
+                    if (o.getData() != null) {
+                        Intent data = o.getData();
+                        if (data.getData() != null) {
+                            Uri uri = data.getData();
+                            try {
+                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), uri);
+                                postImage.setImageBitmap(bitmap);
+                                postImage.setVisibility(View.VISIBLE);
+                                hasImage = true;
+                            } catch (Exception e) {
+                                Toast.makeText(getContext(), "Unable to get image", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
         postImage.setVisibility(View.GONE);
         addImgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getImg();
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_GET_IMAGE);
+                    Toast.makeText(getContext(), "Need photo access", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    galleryLauncher.launch(galleryIntent);
+                }
             }
         });
         postButton.setOnClickListener(new View.OnClickListener() {
@@ -141,7 +179,14 @@ public class CreatePostDialog extends DialogFragment {
     }
 
     private void getImg() {
-        imgSelect.launch(new PickVisualMediaRequest.Builder().setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE).build());
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_GET_IMAGE);
+            Toast.makeText(getContext(), "Need photo access", Toast.LENGTH_SHORT).show();
+        } else {
+            Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            //galleryLauncher.launch(galleryIntent);
+        }
+        //imgSelect.launch(new PickVisualMediaRequest.Builder().setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE).build());
     }
 
     private void uploadPost(String postId) {

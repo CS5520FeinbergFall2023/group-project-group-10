@@ -7,4 +7,9 @@
     <color name="custom_orange">#FD5523</color>
     <color name="light_green">#B9E4C9</color>
     <color name="less_light_yellow">#FFF8D2</color>
+    <color name="garden_orange">#F08854</color>
+    <color name="lighter_orange">#F0AF6C</color>
+    <color name="planty_brown">#9B7B68</color>
+    <color name="darker_yellow">#F0CC6C</color>
+    <color name="middle_green">#49A36A</color>
 </resources>
