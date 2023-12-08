@@ -28,6 +28,7 @@ import northeastern.cs5520fa23.greenthumbs.MainActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat.ChatActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.Friend;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.ImgPost;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.User;
@@ -210,6 +211,8 @@ public class UsersActivity extends AppCompatActivity implements FriendsAdapter.P
 
     @Override
     public void openProfileCallback(String username, String userId) {
+
+        /*
         Intent i = new Intent(this, MainActivity.class);
         Bundle extras = new Bundle();
         ArrayList<String> userInfo = new ArrayList<>();
@@ -218,6 +221,17 @@ public class UsersActivity extends AppCompatActivity implements FriendsAdapter.P
         extras.putStringArrayList("user_info", userInfo);
         i.putExtra("profile_info", extras);
         this.startActivity(i);
+
+         */
+        Intent i = new Intent(this, ProfileActivity.class);
+        Bundle extras = new Bundle();
+        ArrayList<String> userInfo = new ArrayList<>();
+        userInfo.add(username);
+        userInfo.add(userId);
+        extras.putStringArrayList("user_info", userInfo);
+        i.putExtra("profile_info", extras);
+        this.startActivity(i);
+
     }
 
 }

@@ -69,6 +69,7 @@
         android:layout_height="0dp"
         android:fontFamily="@font/youngserifregular"
         android:textColor="@color/dark_green"
+        android:padding="10dp"
         android:hint="Add a comment"
         android:imeOptions="actionGo|actionDone"
         app:layout_constraintBottom_toBottomOf="parent"

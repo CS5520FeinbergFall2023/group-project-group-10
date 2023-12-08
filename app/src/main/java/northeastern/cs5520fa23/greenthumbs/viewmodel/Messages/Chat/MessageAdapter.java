@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import northeastern.cs5520fa23.greenthumbs.R;
@@ -43,7 +46,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageViewHolder> {
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
         ChatMessage msg = messages.get(position);
         if (msg != null) {
-            String timestamp = msg.getTimestamp();
+            String timestampFull = msg.getTimestamp();
+            String timestamp;
+            try {
+                Date date = new SimpleDateFormat("yyyy-MM-dd").parse(timestampFull);
+                timestamp = new SimpleDateFormat("yyyy-MM-dd").format(date);
+
+            } catch (Exception e) {
+                timestamp = timestampFull;
+            }
+
             String msgContent = msg.getMessageContent();
 
             if (timestamp != null) {

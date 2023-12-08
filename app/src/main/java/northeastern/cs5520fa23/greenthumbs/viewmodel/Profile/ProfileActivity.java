@@ -1,9 +1,17 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.Profile;
 
-import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
-
 import static northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.CreatePostDialog.REQUEST_GET_IMAGE;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Intent;
@@ -12,34 +20,14 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.activity.OnBackPressedCallback;
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.PickVisualMediaRequest;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -63,28 +51,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import northeastern.cs5520fa23.greenthumbs.MainActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
-import northeastern.cs5520fa23.greenthumbs.viewmodel.FriendsUsers.UsersActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat.ChatActivity;
-import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.CreatePostDialog;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.ImgPost;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.Like;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.SocialAdapter;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.User;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ProfileFragment extends Fragment implements SocialAdapter.UsernameCallback {
+public class ProfileActivity extends AppCompatActivity implements SocialAdapter.UsernameCallback {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_USERNAME = "username_param";
-    private static final String ARG_CURRUID = "uid_param";
-
-    // TODO: Rename and change types of parameters
     FirebaseDatabase db;
     private String username;
     private String profUid;
@@ -112,67 +87,17 @@ public class ProfileFragment extends Fragment implements SocialAdapter.UsernameC
     private boolean headerEdited;
     private boolean profilePictureEdited;
     private boolean bioEdited;
-
     Friend userFriend;
-
-    public ProfileFragment() {
-        // Required empty public constructor
-    }
-
-    public static ProfileFragment newInstance(String param1, String param2) {
-        ProfileFragment fragment = new ProfileFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_USERNAME, param1);
-        args.putString(ARG_CURRUID, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private Bundle extras;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            username = getArguments().getString(ARG_USERNAME);
-            profUid = getArguments().getString(ARG_CURRUID);
-        }
+        setContentView(R.layout.activity_profile);
+        ArrayList<String> profileInfo = getIntent().getBundleExtra("profile_info").getStringArrayList("user_info");
+        username = profileInfo.get(0);
+        profUid = profileInfo.get(1);
 
-
-    }
-
-    @Override
-    public void openProfileCallback(String username, String posterId) {
-        //Fragment profileFragment = ProfileFragment.newInstance(username, posterId);
-        //getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), profileFragment).addToBackStack(null).commit();
-    }
-
-    @Override
-    public void addLikeCallback(ImgPost post) {}
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        /*
-        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                FragmentManager manager = getActivity().getSupportFragmentManager();
-                manager.popBackStackImmediate();
-
-
-
-
-
-            }
-        };
-        getActivity().getOnBackPressedDispatcher().addCallback(getActivity(), backPressedCallback);
-        */
         currUser = FirebaseAuth.getInstance().getCurrentUser();
 
         // determine if this is the users own profile
@@ -195,11 +120,11 @@ public class ProfileFragment extends Fragment implements SocialAdapter.UsernameC
                         if (data.getData() != null) {
                             Uri uri = data.getData();
                             try {
-                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), uri);
+                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                                 headerImage.setImageBitmap(bitmap);
                                 headerEdited = true;
                             } catch (Exception e) {
-                                Toast.makeText(getContext(), "Unable to get image", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ProfileActivity.this, "Unable to get image", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -216,11 +141,11 @@ public class ProfileFragment extends Fragment implements SocialAdapter.UsernameC
                         if (data.getData() != null) {
                             Uri uri = data.getData();
                             try {
-                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), uri);
+                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                                 profilePicture.setImageBitmap(bitmap);
                                 profilePictureEdited = true;
                             } catch (Exception e) {
-                                Toast.makeText(getContext(), "Unable to get image", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ProfileActivity.this, "Unable to get image", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -228,66 +153,43 @@ public class ProfileFragment extends Fragment implements SocialAdapter.UsernameC
             }
         });
 
-        this.usernameView = view.findViewById(R.id.profile_name);
-        this.headerImage = view.findViewById(R.id.profile_header_image);
-        this.profilePicture = view.findViewById(R.id.profile_prof_pic);
+        this.usernameView = findViewById(R.id.profile_name_activity);
+        this.headerImage = findViewById(R.id.profile_header_image_activity);
+        this.profilePicture = findViewById(R.id.profile_prof_pic_activity);
         this.isEditing = false;
         this.friends = new HashMap<>();
         getFriends();
         this.usernameView.setText(this.username);
         this.usernameView.setEnabled(false);
-        this.userBioView = view.findViewById(R.id.profile_user_bio);
+        this.userBioView = findViewById(R.id.profile_user_bio_activity);
         this.userBioView.setEnabled(false);
-        this.usernameView.setTextColor(getResources().getColor(R.color.black));
-        this.userBioView.setTextColor(getResources().getColor(R.color.black));
-        this.sendMsgButton = view.findViewById(R.id.profile_msg_button);
+        //this.usernameView.setTextColor(getResources().getColor(R.color.black));
+        //this.userBioView.setTextColor(getResources().getColor(R.color.black));
+        this.sendMsgButton = findViewById(R.id.profile_msg_button_activity);
         this.sendMsgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getContext(), ChatActivity.class);
+                Intent i = new Intent(ProfileActivity.this, ChatActivity.class);
                 i.putExtra("other_username", username);
-                getActivity().startActivity(i);
+                startActivity(i);
 
             }
         });
-        this.addFriendButton = view.findViewById(R.id.profile_friend_button);
+        this.addFriendButton = findViewById(R.id.profile_friend_button_activity);
         this.addFriendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleFriendClick();
             }
         });
-        this.editProfileButton = view.findViewById(R.id.profile_edit_button);
-        socialRecyclerView = view.findViewById(R.id.profile_posts_rv);
+        this.editProfileButton = findViewById(R.id.profile_edit_button_activity);
+        socialRecyclerView = findViewById(R.id.profile_posts_rv_activity);
         socialRecyclerView.setHasFixedSize(true);
-        socialRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        socialRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         this.postList = new ArrayList<>();
-        socialAdapter = new SocialAdapter(postList, getContext(), this);
+        socialAdapter = new SocialAdapter(postList, this, this);
         socialRecyclerView.setAdapter(socialAdapter);
-        /*
-        headerImgSelect = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-            if (uri != null) {
-                //headerImage.setImageURI(uri);
-                headerUri = uri;
-                headerImage.setImageURI(headerUri);
-            } else {
-                // something here like a toast or something
-            }
-        });
-        profPicSelect = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-            if (uri != null) {
-                //profilePicture.setImageURI(uri);
-                profPicUri = uri;
-                profilePicture.setImageURI(profPicUri);
-            } else {
-                // something here like a toast or something
-            }
-        });
 
-         */
-        //uploadProfilePic();
-
-        // hide message and add friend button if this is their own profile and enable edit profile
         if (isUsersProfile) {
             this.sendMsgButton.setEnabled(false);
             this.sendMsgButton.setVisibility(View.GONE);
@@ -318,9 +220,9 @@ public class ProfileFragment extends Fragment implements SocialAdapter.UsernameC
                 @Override
                 public void onClick(View v) {
                     if (isEditing) {
-                        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_GET_IMAGE);
-                            Toast.makeText(getContext(), "Need photo access", Toast.LENGTH_SHORT).show();
+                        if (ActivityCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(ProfileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_GET_IMAGE);
+                            Toast.makeText(ProfileActivity.this, "Need photo access", Toast.LENGTH_SHORT).show();
                         } else {
                             Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                             headerLauncher.launch(galleryIntent);
@@ -334,9 +236,9 @@ public class ProfileFragment extends Fragment implements SocialAdapter.UsernameC
                 public void onClick(View v) {
                     if (isEditing) {
                         //getImg(profPicSelect);
-                        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_GET_IMAGE);
-                            Toast.makeText(getContext(), "Need photo access", Toast.LENGTH_SHORT).show();
+                        if (ActivityCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(ProfileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_GET_IMAGE);
+                            Toast.makeText(ProfileActivity.this, "Need photo access", Toast.LENGTH_SHORT).show();
                         } else {
                             Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                             profilePictureLauncher.launch(galleryIntent);
@@ -360,9 +262,6 @@ public class ProfileFragment extends Fragment implements SocialAdapter.UsernameC
         loadData();
     }
 
-    //private void getImg(ActivityResultLauncher<PickVisualMediaRequest> request) {
-    //    request.launch(new PickVisualMediaRequest.Builder().setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE).build());
-    //}
     private void saveProfileUpdates() {
         //uploadProfilePic();
         //uploadHeaderImage();
@@ -472,7 +371,7 @@ public class ProfileFragment extends Fragment implements SocialAdapter.UsernameC
                 } catch (IllegalArgumentException e) {
                     Log.d("ERROR IMG", "prof pic" + " " + profilePicture.getWidth() + " " + profilePicture.getHeight());
                 }
-               // Picasso.get().load(uri).resize(profilePicture.getWidth(), profilePicture.getHeight()).centerCrop().into(profilePicture);
+                // Picasso.get().load(uri).resize(profilePicture.getWidth(), profilePicture.getHeight()).centerCrop().into(profilePicture);
                 //Glide.with(getContext()).load(uri).into(profilePicture);
             }
         });
@@ -577,7 +476,7 @@ public class ProfileFragment extends Fragment implements SocialAdapter.UsernameC
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (!task.isSuccessful()) {
-                    Toast.makeText(getContext(), "Unable to update profile", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ProfileActivity.this, "Unable to update profile", Toast.LENGTH_LONG).show();
                     isEditing = false;
 
                 } else {
@@ -640,7 +539,7 @@ public class ProfileFragment extends Fragment implements SocialAdapter.UsernameC
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (!task.isSuccessful()) {
-                                    Toast.makeText(getContext(), "Unable to send friend request", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(ProfileActivity.this, "Unable to send friend request", Toast.LENGTH_LONG).show();
                                 } else {
                                     Map<String, Object> userFriendUpdate = new HashMap<>();
                                     userFriendUpdate.put("status", "requested");
@@ -650,9 +549,9 @@ public class ProfileFragment extends Fragment implements SocialAdapter.UsernameC
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (!task.isSuccessful()) {
-                                                Toast.makeText(getContext(), "Unable to send friend request", Toast.LENGTH_LONG).show();
+                                                Toast.makeText(ProfileActivity.this, "Unable to send friend request", Toast.LENGTH_LONG).show();
                                             } else {
-                                                Toast.makeText(getContext(), "Friend Request Sent", Toast.LENGTH_LONG).show();
+                                                Toast.makeText(ProfileActivity.this, "Friend Request Sent", Toast.LENGTH_LONG).show();
                                                 addFriendButton.setText("Requested");
                                                 addFriendButton.setEnabled(false);
                                             }
@@ -674,8 +573,33 @@ public class ProfileFragment extends Fragment implements SocialAdapter.UsernameC
                 othersFriendRef.removeValue();
                 isFriend = false;
                 addFriendButton.setText("Add Friend");
-                Toast.makeText(getContext(), "Unfriended", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfileActivity.this, "Unfriended", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+
+    @Override
+    public void openProfileCallback(String username, String posterId) {
+        Toast.makeText(ProfileActivity.this, "You're already on their profile!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void addLikeCallback(ImgPost post) {
+        String postId = post.get_id();
+        if (!post.isLiked()) {
+            Like newLike = new Like(currUser.getUid(), currUser.getUid());
+            FirebaseDatabase.getInstance().getReference("posts").child(postId).child("likes").child(currUser.getUid()).setValue(newLike).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (!task.isSuccessful()) {
+                        Toast.makeText(ProfileActivity.this, "Unable to add like", Toast.LENGTH_LONG).show();
+                    } else {
+                        post.setLiked(true);
+                        post.setNum_likes(post.getNum_likes() + 1);
+                    }
+                }
+            });
         }
     }
 }
