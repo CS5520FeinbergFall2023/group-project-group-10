@@ -112,6 +112,7 @@ public class ChatActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("messageInput", msgInput.getText().toString());
+
     }
 
 
