@@ -1,5 +1,6 @@
 package northeastern.cs5520fa23.greenthumbs;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -13,8 +14,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +32,8 @@ public class SignUpPageActivity extends AppCompatActivity {
     private EditText emailEditText;
     private EditText passwordEditText;
     private Button signUpButton;
+
+    private ProgressDialog progressDialog;
 
     private FirebaseFirestore db;
 
@@ -85,18 +91,47 @@ public class SignUpPageActivity extends AppCompatActivity {
     }
 
     private void createUser(String email, String password, String username, String firstName, String lastName, UserCreationCallback callback){
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Creating Account...");
+        progressDialog.setCancelable(false); // Optional: make the dialog not cancelable
+        progressDialog.show();
+
+        DatabaseReference dbref = FirebaseDatabase.getInstance().getReference("users");
+        dbref.orderByChild("username").equalTo(username).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    progressDialog.dismiss();
+                    Toast.makeText(SignUpPageActivity.this, "Username already taken. Please choose another.", Toast.LENGTH_SHORT).show();
+                } else {
+                    progressDialog.dismiss();
+                    createFirebaseUser(email, password, username, firstName, lastName, callback);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                progressDialog.dismiss();
+                Toast.makeText(SignUpPageActivity.this, "Error checking username uniqueness", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void createFirebaseUser(String email, String password, String username, String firstName, String lastName, UserCreationCallback callback) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
+                    progressDialog.dismiss();
                     if (task.isSuccessful()) {
                         FirebaseUser fbUser = mAuth.getCurrentUser();
-                        Map<String, Object> user = new HashMap<>();
-                        user.put("username", username);
-                        user.put("firstName", firstName);
-                        user.put("lastName", lastName);
-                        user.put("email", email);
-
                         if (fbUser != null) {
+                            Map<String, Object> user = new HashMap<>();
+                            user.put("username", username);
+                            user.put("firstName", firstName);
+                            user.put("lastName", lastName);
+                            user.put("email", email);
                             user.put("user_id", fbUser.getUid());
+
                             DatabaseReference dbref = FirebaseDatabase.getInstance().getReference("users");
                             dbref.child(fbUser.getUid()).setValue(user)
                                     .addOnSuccessListener(aVoid -> {
@@ -104,7 +139,7 @@ public class SignUpPageActivity extends AppCompatActivity {
                                         callback.onSuccess(fbUser);
                                     })
                                     .addOnFailureListener(e -> {
-                                        Toast.makeText(SignUpPageActivity.this, "Failure to Create New User", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SignUpPageActivity.this, "Failure to Save User Data", Toast.LENGTH_SHORT).show();
                                         callback.onFailure(e);
                                     });
                         } else {
@@ -123,6 +158,14 @@ public class SignUpPageActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("username", usernameEditText.getText().toString());
@@ -136,6 +179,11 @@ public class SignUpPageActivity extends AppCompatActivity {
     private boolean validateInput(String username, String firstName, String lastName, String email, String password) {
         if(username.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()){
             Toast.makeText(this, "Please fill all empty fields!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if(username.length() < 5) {
+            Toast.makeText(this, "Username must be at least 5 characters", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
