@@ -77,7 +77,7 @@ import northeastern.cs5520fa23.greenthumbs.viewmodel.User;
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements SocialAdapter.UsernameCallback {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -138,6 +138,15 @@ public class ProfileFragment extends Fragment {
 
 
     }
+
+    @Override
+    public void openProfileCallback(String username, String posterId) {
+        //Fragment profileFragment = ProfileFragment.newInstance(username, posterId);
+        //getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), profileFragment).addToBackStack(null).commit();
+    }
+
+    @Override
+    public void addLikeCallback(ImgPost post) {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -181,6 +181,8 @@ public class MainActivity extends AppCompatActivity {
                 navBar.setSelectedItemId(R.id.messages_menu_item);
                 //getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment).commit();
             }
+
+            // can maybe be removed with new nav
             boolean goPosts  = getIntent().getBooleanExtra("to_posts", false);
             if (goPosts) {
                 navBar.setSelectedItemId(R.id.social_menu_item);
@@ -191,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
                     String goUsername = profileInfo.get(0);
                     String goUid = profileInfo.get(1);
                     profileFragment = ProfileFragment.newInstance(goUsername, goUid);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).addToBackStack(null).commit();
+                    //getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).addToBackStack(null).commit();
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, profileFragment).addToBackStack(null).commit();
                     //toolbar.action(R.id.appbar_profile);
                 }
