@@ -78,7 +78,7 @@
                     android:id="@+id/post_location_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="San Jose, California"
+                    android:text="Mountain View, California"
                     android:textColor="@android:color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     tools:layout_editor_absoluteY="8dp"

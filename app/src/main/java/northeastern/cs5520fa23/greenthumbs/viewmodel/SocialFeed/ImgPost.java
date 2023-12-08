@@ -12,6 +12,7 @@ public class ImgPost {
     private int num_likes;
     private int num_comments;
     private boolean isLiked;
+    private String geo_location;
     public ImgPost () {}
 
 
@@ -36,7 +37,7 @@ public class ImgPost {
      *   },
      */
 
-    public ImgPost (String _id, String uid, String username, boolean has_img, String img_uri, String timestamp, String tags, String post_text, int num_likes, int num_comments ) {
+    public ImgPost (String _id, String uid, String username, boolean has_img, String img_uri, String timestamp, String tags, String post_text, int num_likes, int num_comments, String geo_location ) {
         this._id = _id;
         this.uid = uid;
         this.username = username;
@@ -52,6 +53,7 @@ public class ImgPost {
         }
         this.tags = tags;
         this.isLiked = false;
+        this.geo_location = geo_location;
     }
 
     public String get_id() {
@@ -156,5 +158,13 @@ public class ImgPost {
 
     public void setLiked(boolean liked) {
         isLiked = liked;
+    }
+
+    public String getGeo_location() {
+        return geo_location;
+    }
+
+    public void setGeo_location(String geo_location) {
+        this.geo_location = geo_location;
     }
 }
