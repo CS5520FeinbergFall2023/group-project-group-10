@@ -1,16 +1,16 @@
-package northeastern.cs5520fa23.greenthumbs.model;
+package northeastern.cs5520fa23.greenthumbs.model.weather;
 
 import android.content.Context;
 
 import java.util.List;
 
 import northeastern.cs5520fa23.greenthumbs.R;
+import northeastern.cs5520fa23.greenthumbs.model.NotificationHelper;
 import northeastern.cs5520fa23.greenthumbs.model.services.WeatherService;
 import northeastern.cs5520fa23.greenthumbs.model.weather.WeatherForecast;
 
 public class WeatherAlertHelper {
     private WeatherService weatherService;
-    private NotificationHelper notificationHelper;
     private Context context;
 
     public WeatherAlertHelper(WeatherService service, Context context) {

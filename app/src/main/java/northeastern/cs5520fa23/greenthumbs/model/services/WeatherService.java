@@ -16,7 +16,6 @@ import java.util.List;
 
 import northeastern.cs5520fa23.greenthumbs.model.weather.WeatherForecast;
 import northeastern.cs5520fa23.greenthumbs.model.weather.WeatherResponse;
-import northeastern.cs5520fa23.greenthumbs.model.weather.WeatherUpdateReceiver;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;

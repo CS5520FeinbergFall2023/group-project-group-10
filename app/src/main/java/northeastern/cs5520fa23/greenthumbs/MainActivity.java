@@ -1,67 +1,50 @@
 package northeastern.cs5520fa23.greenthumbs;
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.work.Constraints;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 
 import android.content.pm.PackageManager;
-import android.graphics.drawable.LayerDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.LayerDrawable;
-import android.net.Uri;
-
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.View;
 import android.widget.Toast;
 import android.content.Context;
 import android.Manifest;
 
+import northeastern.cs5520fa23.greenthumbs.model.services.BackgroundService;
 import northeastern.cs5520fa23.greenthumbs.model.services.PlantRecommendationService;
 import northeastern.cs5520fa23.greenthumbs.model.services.WeatherService;
-import northeastern.cs5520fa23.greenthumbs.model.weather.WeatherUpdateReceiver;
-
-import northeastern.cs5520fa23.greenthumbs.model.services.WeatherService;
-import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat.ChatActivity;
+import northeastern.cs5520fa23.greenthumbs.model.weather.WeatherCheckWorker;
 
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.MessageHomeFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileFragment;
-import northeastern.cs5520fa23.greenthumbs.viewmodel.SetLocationFragment;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import android.view.MenuItem;
-import android.widget.Toast;
-
-import android.view.MenuItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.DashboardFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Garden.GardenFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Settings.SettingsFragment;
@@ -123,7 +106,8 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         uid = mAuth.getCurrentUser().getUid();
-
+        Intent serviceIntent = new Intent(this, BackgroundService.class);
+        serviceIntent.putExtra("userIdKey", uid);
 
         FirebaseDatabase.getInstance().getReference("users").child(uid).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
@@ -134,6 +118,8 @@ public class MainActivity extends AppCompatActivity {
                     User currUser = task.getResult().getValue(User.class);
                     assert currUser != null;
                     username = currUser.getUsername();
+                    serviceIntent.putExtra("username", username);
+                    startService(serviceIntent);
                 }
             }
         });
@@ -141,6 +127,17 @@ public class MainActivity extends AppCompatActivity {
         if (!isHomeLocationSet()) {
             requestLocationPermissions();
         }
+
+        PeriodicWorkRequest weatherCheckRequest = new PeriodicWorkRequest.Builder(WeatherCheckWorker.class,
+                1, TimeUnit.HOURS) // Run every 1 hour, for example
+                .setConstraints(new Constraints.Builder()
+                        .setRequiredNetworkType(NetworkType.CONNECTED) // Requires network connectivity
+                        .build())
+                .build();
+
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "weatherCheck",
+                ExistingPeriodicWorkPolicy.KEEP, weatherCheckRequest);
 
 
 
