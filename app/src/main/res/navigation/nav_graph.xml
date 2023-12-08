@@ -30,5 +30,10 @@
         android:name="northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.MessageHomeFragment"
         android:label="fragment_message_home"
         tools:layout="@layout/fragment_message_home" />
+    <fragment
+        android:id="@+id/appbar_profile"
+        android:name="northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
 
 </navigation>

@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.content.Intent;
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     private String goUid;
     private String uid;
     private Fragment profileFragment = new ProfileFragment();
+    private AppBarConfiguration appBarConfiguration;
 
     /*@Override
     protected void onStart() {
@@ -130,60 +132,17 @@ public class MainActivity extends AppCompatActivity {
         // ### Nav bar and toolbar ###
         navBar = findViewById(R.id.bottom_nav_menu);
         toolbar = findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
+//        setSupportActionBar(toolbar);
         toolbar.inflateMenu(R.menu.appbar);
         toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.appbar_profile) {
                 Fragment profileFragment = ProfileFragment.newInstance(username, Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, profileFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, profileFragment).addToBackStack("PROFILE").commit();
                 return true;
             }
             return false;
         });
-        // When app is opened go to dashboard
-//        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).commit();
-//        navBar.setOnItemSelectedListener(item -> {
-//
-//            if (item.getItemId() == R.id.dash_menu_item) {
-//                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment, "DASH").addToBackStack("DASH").commit();
-//                return true;
-//            } else if (item.getItemId() == R.id.social_menu_item) {
-//                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, socialFragment, "SOCIAL").addToBackStack("SOCIAL").commit();
-//                return true;
-//            } else if (item.getItemId() == R.id.garden_menu_item) {
-//                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, gardenFragment, "GARDEN").addToBackStack("GARDEN").commit();
-//                return true;
-//            } else if (item.getItemId() == R.id.settings_menu_item) {
-//                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, settingsFragment).commit();
-//                return true;
-//            } else if (item.getItemId() == R.id.messages_menu_item) {
-//                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment, "MESSAGE").addToBackStack("MESSAGE").commit();
-//                return true;
-//            }
-//            return false;
-//        });
 
-        /*
-        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                int i = getSupportFragmentManager().getBackStackEntryCount() - 1;
-                if (i >= 0) {
-                    FragmentManager.BackStackEntry entry = getSupportFragmentManager().getBackStackEntryAt(i);
-                    String fTag = entry.getName();
-                    if (fTag == "SOCIAL") {
-                        navBar.getMenu().getItem(1).setChecked(true);
-                    }
-                    getSupportFragmentManager().popBackStack(i, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                }
-
-
-
-            }
-        };
-        getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
-
-         */
 
         if (getIntent().getExtras() != null) {
             boolean goChat = getIntent().getBooleanExtra("to_chat", false);
@@ -225,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.onNavDestinationSelected(item, navController)
                 || super.onOptionsItemSelected(item);
     }
+
     private void startWeatherService() {
         SharedPreferences sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE);
         float latitude = sharedPreferences.getFloat("HomeLatitude", 0);
