@@ -256,7 +256,7 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
             Intent serviceIntent = new Intent(this.getContext(), WeatherService.class);
             serviceIntent.putExtra(WeatherService.latitude, latitude);
             serviceIntent.putExtra(WeatherService.longitude, longitude);
-            getContext().startService(serviceIntent);
+            requireContext().startService(serviceIntent);
         } else {
             //
         }

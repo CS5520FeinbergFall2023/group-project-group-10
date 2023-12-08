@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -75,7 +76,13 @@ public class WeatherService extends Service {
      * @param url URL to fetch temperature from
      */
     public static List<String> fetchPeriodData(String url) {
+        if (url==null) {
+            Log.e("WeatherService", "URL is null. Cannot fetch weather data.");
+            return new ArrayList<>();
+        }
+
         Request request = new Request.Builder().url(url).build();
+
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
