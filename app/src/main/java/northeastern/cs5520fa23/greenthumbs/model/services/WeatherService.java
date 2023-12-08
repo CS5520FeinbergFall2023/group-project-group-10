@@ -95,7 +95,7 @@ public class WeatherService extends Service {
 
 
     public static String checkWeatherCondition(String inputString) {
-        List<String> conditions = Arrays.asList("sunny", "cloudy", "rain", "snow", "clear", "fog");
+        List<String> conditions = Arrays.asList("sun", "cloud", "rain", "snow", "clear", "fog", "frost");
 
         for (String condition : conditions) {
             if (inputString.toLowerCase().contains(condition)) {

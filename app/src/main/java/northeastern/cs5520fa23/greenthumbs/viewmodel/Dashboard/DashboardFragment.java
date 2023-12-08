@@ -36,6 +36,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.model.plant_recommendations.PlantRecommendationReceiver;
@@ -230,14 +231,15 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
 
     private int getWeatherIconResource(String forecast) {
         switch (forecast.toLowerCase()) {
-            case "sunny":
+            case "sun":
             case "clear":
                 return R.drawable.sunny_24;
-            case "cloudy":
+            case "cloud":
                 return R.drawable.cloud_24;
             case "rain":
                 return R.drawable.water_drop_24;
             case "snow":
+            case "frost":
                 return R.drawable.snow_24;
             case "fog":
                 return R.drawable.fog_24;
@@ -247,7 +249,7 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
     }
 
     private void startWeatherService() {
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("AppPreferences", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("AppPreferences", Context.MODE_PRIVATE);
         float latitude = sharedPreferences.getFloat("latitude", 0);
         float longitude = sharedPreferences.getFloat("longitude", 0);
         if (latitude != 0 && longitude != 0) {
