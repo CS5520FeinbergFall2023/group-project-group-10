@@ -145,31 +145,15 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (getIntent().getExtras() != null) {
-            boolean goChat = getIntent().getBooleanExtra("to_chat", false);
-            if (goChat) {
-                navBar.setSelectedItemId(R.id.messages_menu_item);
-                //getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment).commit();
-            }
-            boolean goPosts = getIntent().getBooleanExtra("to_posts", false);
-            if (goPosts) {
-                navBar.setSelectedItemId(R.id.social_menu_item);
-            }
             if (getIntent().getBundleExtra("profile_info") != null) {
                 ArrayList<String> profileInfo = getIntent().getBundleExtra("profile_info").getStringArrayList("user_info");
                 if (profileInfo != null) {
                     String goUsername = profileInfo.get(0);
                     String goUid = profileInfo.get(1);
                     profileFragment = ProfileFragment.newInstance(goUsername, goUid);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).addToBackStack(null).commit();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, profileFragment).addToBackStack(null).commit();
-                    //toolbar.action(R.id.appbar_profile);
+                    getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, profileFragment).addToBackStack(null).commit();
                 }
             }
-
-
-        } else {
-            // When app is opened go to dashboard
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment, "DASH").commit();
         }
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
