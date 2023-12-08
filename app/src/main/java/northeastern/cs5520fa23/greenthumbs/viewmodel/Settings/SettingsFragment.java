@@ -81,15 +81,7 @@ public class SettingsFragment extends Fragment {
     }
 
     private void showSetLocationFragment() {
-        View view = getView();
-        if (view != null) {
-            View overlayFrame = view.findViewById(R.id.overlay_frame);
-            if (overlayFrame != null && overlayFrame.getVisibility() == View.GONE) {
-                overlayFrame.setVisibility(View.VISIBLE);
-                SetLocationFragment setLocationFragment = new SetLocationFragment();
-                setLocationFragment.show(getParentFragmentManager(), "setLocationFragment");
-                overlayFrame.setVisibility(View.GONE);
-            }
-        }
+        SetLocationFragment setLocationFragment = new SetLocationFragment();
+        setLocationFragment.show(getParentFragmentManager(), "setLocationFragment");
     }
 }
