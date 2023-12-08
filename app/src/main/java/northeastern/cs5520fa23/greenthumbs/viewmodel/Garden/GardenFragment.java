@@ -286,21 +286,11 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
                     // Determine whether this View can accept the dragged data.
                     if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
 
-                        // keep the blue stuff from bryan
-                        //int id = holder.getPlotImage().getId();
+                        ((ImageView)view).setColorFilter(Color.parseColor("#4B7DFA"));
+                        view.invalidate();
+                        return true;
+                    }
 
-                        //if (plant.getPlant_id() == null) {
-                            //Log.d("PLANT ID LOG", "onBindViewHolder: no image at" + position);
-                            ((ImageView)view).setColorFilter(Color.parseColor("#4B7DFA"));
-                            view.invalidate();
-                            return true;
-                        //} else {
-                          //  Log.d("PLANT ID LOG", "IMG AT " + position);
-                            //Log.d("PLANT ID LOG", "HOLDER ID " + holder.getPlantId());
-                            //Log.d("PLANT ID LOG", "PLANT ID  " + plant.getPlant_id());
-
-                        }
-                    //}
                     return false;
 
                 case DragEvent.ACTION_DRAG_ENTERED:
@@ -319,15 +309,9 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
 
                 case DragEvent.ACTION_DROP:
 
-                    // Get the item containing the dragged data.
                     ClipData.Item item = event.getClipData().getItemAt(0);
                     CharSequence dragData = item.getText();
-                    //plant.setPlant_id((String) dragData);
-                    //holder.setPlantId((String) dragData);
 
-                    // Set imageView in garden plot to display new image based on clipboard data
-                    //((ImageView) view).setImageResource(Integer.parseInt((String) dragData));
-                    //gardenPlotAdapter.harvestPlant(pl);
                     if (plantMoving != null) {
                         gardenPlotAdapter.harvestPlant(plantMoving);
                         plantMoving = null;
@@ -344,8 +328,6 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
                     // potentially ad this back in later
                     //Drawable d = context.getResources().getDrawable(R.drawable.rounded_corners_orange);
                     //v.setBackground(d);
-
-                    // Return true. The value is ignored.
                     return true;
                 default:
                     break;
@@ -361,24 +343,13 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
 
                 case DragEvent.ACTION_DRAG_STARTED:
 
-                    // Determine whether this View can accept the dragged data.
                     if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
 
-                        // keep the blue stuff from bryan
-                        //int id = holder.getPlotImage().getId();
-
-                        //if (plant.getPlant_id() == null) {
-                        //Log.d("PLANT ID LOG", "onBindViewHolder: no image at" + position);
                         ((ImageView)view).setColorFilter(Color.parseColor("#4B7DFA"));
                         view.invalidate();
                         return true;
-                        //} else {
-                        //  Log.d("PLANT ID LOG", "IMG AT " + position);
-                        //Log.d("PLANT ID LOG", "HOLDER ID " + holder.getPlantId());
-                        //Log.d("PLANT ID LOG", "PLANT ID  " + plant.getPlant_id());
 
                     }
-                    //}
                     return false;
 
                 case DragEvent.ACTION_DRAG_ENTERED:
@@ -431,228 +402,4 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
             return false;
         });
     }
-
-    /*
-    private void setMenuDragListeners() {
-        // TODo: replace testLettuce with function parameter
-        testLettuce.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-
-                // create data we want to send in drag event
-                // TODO: use tags for imageviews to get resourceID, no function to get resourceID.
-                ClipData.Item item = new ClipData.Item(String.valueOf(R.drawable.ic_lettuce));
-                String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
-                // Create a new ClipData using "Lettuce" as a label.
-                ClipData dragData = new ClipData("Lettuce", mimeTypes, item);
-                View.DragShadowBuilder myShadow = new View.DragShadowBuilder(testLettuce);
-                // Start the drag.
-                v.startDragAndDrop(dragData, myShadow, null, 0);
-
-//                img.setVisibility(View.INVISIBLE);
-                return true; // Indicate that the long-click is handled.
-            }
-        });
-    }
-
-     */
-
-    /*
-    private void setGridListeners() {
-        int rows = gardenPlot.getRowCount();
-        int cols = gardenPlot.getColumnCount();
-        for (int i = 0; i < rows; i ++) {
-            for (int j = 0; j < cols; j++) {
-                // all one list want
-                // 0,0 -> 0 but
-                // 1,0 -> 3
-                // i * cols + j
-                // 1,1 would be 1 * 3 + 1 = 4
-                // 1, 2 would be 1 * 3 + 2 = 5
-                // 0, 1 would be 1 * 0 + 1 = 1
-                int idx = (i * cols) + j;
-                View plot = gardenPlot.getChildAt(idx);
-                plot.setOnDragListener( (v, e) -> {
-
-                    // Handle each of the expected events.
-                    switch(e.getAction()) {
-
-                        case DragEvent.ACTION_DRAG_STARTED:
-
-                            // Determine whether this View can accept the dragged data.
-                            if (e.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
-
-                                // As an example, apply a blue color tint to the View to
-                                // indicate that it can accept data.
-                                ((ImageView)v).setColorFilter(Color.BLUE);
-
-                                // Invalidate the view to force a redraw in the new tint.
-                                v.invalidate();
-
-                                // Return true to indicate that the View can accept the dragged
-                                // data.
-                                return true;
-                            }
-                            return false;
-
-                        case DragEvent.ACTION_DRAG_ENTERED:
-
-                            // Apply a green tint to the View.
-                            ((ImageView)v).setColorFilter(Color.GREEN);
-
-                            // Invalidate the view to force a redraw in the new tint.
-                            v.invalidate();
-
-                            // Return true. The value is ignored.
-                            return true;
-
-                        case DragEvent.ACTION_DRAG_LOCATION:
-
-                            // Ignore the event.
-                            return true;
-
-                        case DragEvent.ACTION_DRAG_EXITED:
-
-                            // Reset the color tint to blue.
-                            ((ImageView)v).setColorFilter(Color.BLUE);
-
-                            // Invalidate the view to force a redraw in the new tint.
-                            v.invalidate();
-
-                            // Return true. The value is ignored.
-                            return true;
-
-                        case DragEvent.ACTION_DROP:
-
-                            // Get the item containing the dragged data.
-                            ClipData.Item item = e.getClipData().getItemAt(0);
-                            CharSequence dragData = item.getText();
-
-                            // Set imageView in garden plot to display new image based on clipboard data
-                            int w = ((ImageView) v).getWidth();
-                            int h = ((ImageView) v).getHeight();
-                            Picasso.get().load(Integer.parseInt((String) dragData)).resize(w,h).into((ImageView) v);
-                            Drawable d = getResources().getDrawable(R.drawable.rounded_corners_orange);
-                            v.setBackground(d);
-                            //((ImageView) v).setImageResource(Integer.parseInt((String) dragData));
-                            ((ImageView)v).clearColorFilter();
-
-                            v.invalidate();
-                            // Return true. DragEvent.getResult() returns true.
-                            return true;
-
-                        case DragEvent.ACTION_DRAG_ENDED:
-
-                            // Turn off color tinting.
-                            ((ImageView)v).clearColorFilter();
-
-
-                            // Invalidate the view to force a redraw.
-                            v.invalidate();
-
-
-                            // Return true. The value is ignored.
-                            return true;
-                        // An unknown action type is received.
-                        default:
-                            break;
-                    }
-                    return false;
-                });
-            }
-        }
-
-    }
-
-     */
-    /*
-    private void setReceivingListeners(View view) {
-
-        // TODO: Replace blankview with function parameter
-        View acceptingView = view.findViewById(R.id.testEmptySpot);
-        acceptingView.setOnDragListener( (v, e) -> {
-
-            // Handle each of the expected events.
-            switch(e.getAction()) {
-
-                case DragEvent.ACTION_DRAG_STARTED:
-
-                    // Determine whether this View can accept the dragged data.
-                    if (e.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
-
-                        // As an example, apply a blue color tint to the View to
-                        // indicate that it can accept data.
-                        ((ImageView)v).setColorFilter(Color.BLUE);
-
-                        // Invalidate the view to force a redraw in the new tint.
-                        v.invalidate();
-
-                        // Return true to indicate that the View can accept the dragged
-                        // data.
-                        return true;
-                    }
-                    return false;
-
-                case DragEvent.ACTION_DRAG_ENTERED:
-
-                    // Apply a green tint to the View.
-                    ((ImageView)v).setColorFilter(Color.GREEN);
-
-                    // Invalidate the view to force a redraw in the new tint.
-                    v.invalidate();
-
-                    // Return true. The value is ignored.
-                    return true;
-
-                case DragEvent.ACTION_DRAG_LOCATION:
-
-                    // Ignore the event.
-                    return true;
-
-                case DragEvent.ACTION_DRAG_EXITED:
-
-                    // Reset the color tint to blue.
-                    ((ImageView)v).setColorFilter(Color.BLUE);
-
-                    // Invalidate the view to force a redraw in the new tint.
-                    v.invalidate();
-
-                    // Return true. The value is ignored.
-                    return true;
-
-                case DragEvent.ACTION_DROP:
-
-                    // Get the item containing the dragged data.
-                    ClipData.Item item = e.getClipData().getItemAt(0);
-                    CharSequence dragData = item.getText();
-
-                    // Set imageView in garden plot to display new image based on clipboard data
-                    ((ImageView) v).setImageResource(Integer.parseInt((String) dragData));
-                    ((ImageView)v).clearColorFilter();
-
-                    v.invalidate();
-                    // Return true. DragEvent.getResult() returns true.
-                    return true;
-
-                case DragEvent.ACTION_DRAG_ENDED:
-
-                    // Turn off color tinting.
-                    ((ImageView)v).clearColorFilter();
-
-                    // Invalidate the view to force a redraw.
-                    v.invalidate();
-                    Drawable d = getResources().getDrawable(R.drawable.rounded_corners_orange);
-                    v.setBackground(d);
-
-                    // Return true. The value is ignored.
-                    return true;
-                // An unknown action type is received.
-                default:
-                    break;
-            }
-            return false;
-        });
-    }
-
-     */
 }
