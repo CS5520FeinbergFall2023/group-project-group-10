@@ -18,6 +18,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GreenThumbs"
         tools:targetApi="31">
+        <activity android:name=".viewmodel.Settings.UserSettingsActivity">
+        </activity>
         <activity
             android:name=".viewmodel.FriendsUsers.UsersActivity"
             android:exported="false" />

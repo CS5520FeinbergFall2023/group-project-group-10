@@ -50,14 +50,8 @@ public class SettingsFragment extends Fragment {
 
         Button accountSettingsButton = settingFragmentView.findViewById(R.id.AccountSettingsbtn);
         accountSettingsButton.setOnClickListener(v -> {
-            hideOtherUIElements();
-            UserSettingsFragment userSettingsFragment = new UserSettingsFragment();
-            FrameLayout fragmentContainer = settingFragmentView.findViewById(R.id.fragment_container);
-            fragmentContainer.setVisibility(View.VISIBLE);
-            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, userSettingsFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+            Intent intent = new Intent(getActivity(), UserSettingsActivity.class);
+            startActivity(intent);
         });
 
         Button btnShowSetLocation = settingFragmentView.findViewById(R.id.SetLocationbtn);
