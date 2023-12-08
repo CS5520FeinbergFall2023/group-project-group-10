@@ -91,6 +91,7 @@ public class ChatActivity extends AppCompatActivity {
         msgRecyclerView.setHasFixedSize(true);
         msgRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         msgAdapter = new MessageAdapter(msgList, this);
+        msgAdapter.setStateRestorationPolicy(RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY);
         msgRecyclerView.setAdapter(msgAdapter);
 
 

@@ -172,6 +172,7 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
         socialRecyclerView.setHasFixedSize(true);
         socialRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         socialAdapter = new SocialAdapter(postList, getContext(), this);
+        socialAdapter.setStateRestorationPolicy(RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY);
         socialRecyclerView.setAdapter(socialAdapter);
         fab = view.findViewById(R.id.post_fab);
         fab.setOnClickListener(new View.OnClickListener() {
