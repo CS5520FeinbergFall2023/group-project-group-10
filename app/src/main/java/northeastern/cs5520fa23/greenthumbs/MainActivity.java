@@ -238,8 +238,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void startPlantRecommendationService() {
         SharedPreferences sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE);
-        float latitude = sharedPreferences.getFloat("HomeLatitude", 0);
-        float longitude = sharedPreferences.getFloat("HomeLongitude", 0);
+        float latitude = sharedPreferences.getFloat("latitude", 0);
+        float longitude = sharedPreferences.getFloat("longitude", 0);
 
         if (latitude != 0 && longitude != 0) {
             Intent serviceIntent = new Intent(this, PlantRecommendationService.class);
@@ -266,6 +266,7 @@ public class MainActivity extends AppCompatActivity {
             if (lastKnownLocation != null) {
                 saveLocationInPreferences(lastKnownLocation);
                 startWeatherService();
+                startPlantRecommendationService();
             }
         } catch (SecurityException e) {
             e.printStackTrace();

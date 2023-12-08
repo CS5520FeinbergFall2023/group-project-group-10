@@ -36,10 +36,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import northeastern.cs5520fa23.greenthumbs.R;
+import northeastern.cs5520fa23.greenthumbs.model.plant_recommendations.PlantRecommendationReceiver;
+import northeastern.cs5520fa23.greenthumbs.model.services.PlantRecommendationService;
 import northeastern.cs5520fa23.greenthumbs.model.services.WeatherService;
 import northeastern.cs5520fa23.greenthumbs.model.weather.WeatherUpdateReceiver;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.FriendRequests.FriendRequest;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.FriendRequests.FriendRequestAdapter;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.PlantRecommendations.PlantRecommendationAdapter;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.PlantRecommendations.PlantViewModel;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.Weather.WeatherViewModel;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.MessageHistoryAdapter;
 
@@ -65,6 +69,10 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
     private FirebaseDatabase db;
     private WeatherUpdateReceiver weatherUpdateReceiver;
     private WeatherViewModel weatherViewModel;
+    private PlantRecommendationReceiver plantRecommendationReceiver;
+    private PlantViewModel plantViewModel;
+    private RecyclerView recyclerView;
+    private PlantRecommendationAdapter adapter;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -95,15 +103,18 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
         db = FirebaseDatabase.getInstance();
         friendRequestList = new ArrayList<>();
         weatherViewModel = new ViewModelProvider(requireActivity()).get(WeatherViewModel.class);
+        plantViewModel = new ViewModelProvider(requireActivity()).get(PlantViewModel.class);
         startWeatherService();
         weatherUpdateReceiver = new WeatherUpdateReceiver(weatherViewModel);
+        plantRecommendationReceiver = new PlantRecommendationReceiver(plantViewModel);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dashboard, container, false);
+        View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        return view;
     }
 
     @Override
@@ -116,6 +127,15 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
         frRecyclerView.setAdapter(friendRequestAdapter);
         getFriendRequests();
         weatherViewModel.getForecasts().observe(getViewLifecycleOwner(), this::updateUIWithWeatherData);
+
+        recyclerView = view.findViewById(R.id.plant_recommendations_rv);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        plantViewModel = new ViewModelProvider(this).get(PlantViewModel.class);
+        plantViewModel.getPlantRecommendations().observe(getViewLifecycleOwner(), newPlantRecommendations -> {
+            adapter = new PlantRecommendationAdapter(newPlantRecommendations);
+            recyclerView.setAdapter(adapter);
+        });
     }
 
     private void getFriendRequests() {
@@ -155,12 +175,15 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
         super.onResume();
         IntentFilter filter = new IntentFilter(WeatherService.ACTION_WEATHER_UPDATE);
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(weatherUpdateReceiver, filter);
+        IntentFilter filter_plant = new IntentFilter(PlantRecommendationService.ACTION_PLANT_RECOMMENDATIONS_UPDATE);
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(plantRecommendationReceiver, filter_plant);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(weatherUpdateReceiver);
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(plantRecommendationReceiver);
     }
 
     private void updateUIWithWeatherData(ArrayList<String> forecasts) {

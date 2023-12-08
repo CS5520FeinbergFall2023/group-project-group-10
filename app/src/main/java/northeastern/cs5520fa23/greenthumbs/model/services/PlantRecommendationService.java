@@ -1,12 +1,14 @@
 package northeastern.cs5520fa23.greenthumbs.model.services;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -24,6 +27,9 @@ import northeastern.cs5520fa23.greenthumbs.model.PlantInfo;
 public class PlantRecommendationService extends Service {
     public static final String latitude = "42.3458";
     public static final String longitude = "-71.0947";
+    public static final String ACTION_PLANT_RECOMMENDATIONS_UPDATE = "com.example.weatherapp.ACTION_PLANT_RECOMMENDATIONS_UPDATE";
+    public static final String EXTRA_PLANT_DATA = "com.example.greenthumbs.EXTRA_PLANT_DATA";
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -40,6 +46,7 @@ public class PlantRecommendationService extends Service {
             if (zipCode != null) {
                 String hardinessZone = getHardiness(zipCode);
                 List<String> plants = PlantInfo.getPlantsForZone(hardinessZone);
+                broadcastMessage(plants, this);
             }
         }).start();
 
@@ -108,5 +115,11 @@ public class PlantRecommendationService extends Service {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public void broadcastMessage(List<String> plants, Context context) {
+        Intent intent = new Intent(ACTION_PLANT_RECOMMENDATIONS_UPDATE);
+        intent.putStringArrayListExtra(EXTRA_PLANT_DATA, new ArrayList<>(plants));
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 }
