@@ -116,6 +116,11 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
                 }
             }
         });
+
+        if (savedInstanceState != null) {
+            String savedComment = savedInstanceState.getString("commentText", "");
+            commentText.setText(savedComment);
+        }
         addCommentButton = findViewById(R.id.add_comment_button);
         addCommentButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,6 +223,12 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
 
         return t;
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("commentText", commentText.getText().toString());
     }
 
     private void hideKeyboard() {
