@@ -9,6 +9,10 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -137,27 +141,27 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
         // When app is opened go to dashboard
-        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).commit();
-        navBar.setOnItemSelectedListener(item -> {
-
-            if (item.getItemId() == R.id.dash_menu_item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment, "DASH").addToBackStack("DASH").commit();
-                return true;
-            } else if (item.getItemId() == R.id.social_menu_item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, socialFragment, "SOCIAL").addToBackStack("SOCIAL").commit();
-                return true;
-            } else if (item.getItemId() == R.id.garden_menu_item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, gardenFragment, "GARDEN").addToBackStack("GARDEN").commit();
-                return true;
-            } else if (item.getItemId() == R.id.settings_menu_item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, settingsFragment).commit();
-                return true;
-            } else if (item.getItemId() == R.id.messages_menu_item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment, "MESSAGE").addToBackStack("MESSAGE").commit();
-                return true;
-            }
-            return false;
-        });
+//        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).commit();
+//        navBar.setOnItemSelectedListener(item -> {
+//
+//            if (item.getItemId() == R.id.dash_menu_item) {
+//                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment, "DASH").addToBackStack("DASH").commit();
+//                return true;
+//            } else if (item.getItemId() == R.id.social_menu_item) {
+//                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, socialFragment, "SOCIAL").addToBackStack("SOCIAL").commit();
+//                return true;
+//            } else if (item.getItemId() == R.id.garden_menu_item) {
+//                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, gardenFragment, "GARDEN").addToBackStack("GARDEN").commit();
+//                return true;
+//            } else if (item.getItemId() == R.id.settings_menu_item) {
+//                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, settingsFragment).commit();
+//                return true;
+//            } else if (item.getItemId() == R.id.messages_menu_item) {
+//                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment, "MESSAGE").addToBackStack("MESSAGE").commit();
+//                return true;
+//            }
+//            return false;
+//        });
 
         /*
         OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
@@ -208,32 +212,19 @@ public class MainActivity extends AppCompatActivity {
             // When app is opened go to dashboard
             getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment, "DASH").commit();
         }
+
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        NavController navController = navHostFragment.getNavController();
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_nav_menu);
+        NavigationUI.setupWithNavController(bottomNav, navController);
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        int checkedItemId = navBar.getSelectedItemId();
-        outState.putInt("selectedItemId", checkedItemId);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        return NavigationUI.onNavDestinationSelected(item, navController)
+                || super.onOptionsItemSelected(item);
     }
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        int checkItemId = savedInstanceState.getInt("selectedItemId");
-        if (checkItemId == R.id.dash_menu_item) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment, "DASH").addToBackStack("DASH").commit();
-        } else if (checkItemId == R.id.social_menu_item) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, socialFragment, "SOCIAL").addToBackStack("SOCIAL").commit();
-        } else if (checkItemId == R.id.garden_menu_item) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, gardenFragment, "GARDEN").addToBackStack("GARDEN").commit();
-        } else if (checkItemId == R.id.settings_menu_item) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, settingsFragment).commit();
-        } else if (checkItemId == R.id.messages_menu_item) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment, "MESSAGE").addToBackStack("MESSAGE").commit();
-        }
-    }
-
     private void startWeatherService() {
         SharedPreferences sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE);
         float latitude = sharedPreferences.getFloat("HomeLatitude", 0);

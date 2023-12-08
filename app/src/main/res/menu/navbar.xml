@@ -1,32 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
 
-        android:title="Dashboard"
+        android:id="@+id/dash_menu_item"
         android:icon="@drawable/dash_icon"
-        android:id="@+id/dash_menu_item"/>
+        android:menuCategory="secondary"
+        android:title="Dashboard" />
     <item
 
-        android:title="Social"
+        android:id="@+id/social_menu_item"
         android:icon="@drawable/baseline_people_24"
-        android:id="@+id/social_menu_item"/>
+        android:menuCategory="secondary"
+        android:title="Social" />
 
     <item
 
-        android:title="Garden"
-        android:icon="@drawable/garden_icon_bee"
         android:id="@+id/garden_menu_item"
-        />
+        android:icon="@drawable/garden_icon_bee"
+        android:menuCategory="secondary"
+        android:title="Garden" />
     <item
-        android:title="Messages"
+        android:id="@+id/messages_menu_item"
         android:icon="@drawable/messages_icon"
-        android:id="@+id/messages_menu_item"/>
+        android:menuCategory="secondary"
+        android:title="Messages" />
 
     <item
-        android:title="Settings"
         android:id="@+id/settings_menu_item"
-        android:icon="@drawable/baseline_settings_24"/>
+        android:icon="@drawable/baseline_settings_24"
+        android:menuCategory="secondary"
+        android:title="Settings" />
 
 </menu>
