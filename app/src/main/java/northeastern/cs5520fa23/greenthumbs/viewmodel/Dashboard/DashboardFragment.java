@@ -24,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -54,14 +56,17 @@ import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.Posts.PostAdapter
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Dashboard.Weather.WeatherViewModel;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.MessageHistoryAdapter;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.Friend;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.ImgPost;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.Like;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.SocialAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link DashboardFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DashboardFragment extends Fragment implements FriendRequestAdapter.FriendRequestCallback {
+public class DashboardFragment extends Fragment implements FriendRequestAdapter.FriendRequestCallback, PostAdapter.DashboardPostCallback {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -89,6 +94,7 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
     private RecyclerView dashPostsRecyclerView;
     private PostAdapter postAdapter;
     private List<ImgPost> postList;
+    private SocialAdapter socialAdapter;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -184,12 +190,14 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
         dashPostsRecyclerView.setLayoutManager(layoutManager);
 
         postList = new ArrayList<>();
-        postAdapter = new PostAdapter(postList);
+        postAdapter = new PostAdapter(postList, getContext(), this);
+
         dashPostsRecyclerView.setAdapter(postAdapter);
 
         addPosts();
 
     }
+
 
     private void getPlants() {
         DatabaseReference plantRef = db.getReference("users").child(currUser.getUid()).child("plants").child("growing");
@@ -233,6 +241,8 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
         });
 
     }
+
+
 
     private void getFriendRequests() {
         DatabaseReference frRef = db.getReference("users").child(currUser.getUid());
@@ -388,5 +398,19 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
             }
         });
     }
+
+
+    @Override
+    public void openProfileCallback(String username, String posterId) {
+        Intent i = new Intent(getContext(), ProfileActivity.class);
+        Bundle extras = new Bundle();
+        ArrayList<String> userInfo = new ArrayList<>();
+        userInfo.add(username);
+        userInfo.add(posterId);
+        extras.putStringArrayList("user_info", userInfo);
+        i.putExtra("profile_info", extras);
+        this.startActivity(i);
+    }
+
 
 }

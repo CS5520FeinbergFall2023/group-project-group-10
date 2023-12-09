@@ -166,7 +166,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/dash_posts_rv"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="250dp"
+                app:layout_constraintHeight_min="wrap"
                 android:background="@drawable/rounded_corners_background_lg"
                 android:padding="20dp"
                 app:layout_constraintWidth_percent=".9"
