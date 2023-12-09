@@ -20,7 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.SearchView;
+import android.widget.ProgressBar;
+import androidx.appcompat.widget.SearchView;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -84,6 +85,8 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
     private HashMap<String, Integer> numPlants;
     private List<ImgPost> friendPosts;
 
+    private ProgressBar progressBar;
+
     public SocialFragment() {
         // Required empty public constructor
     }
@@ -130,6 +133,8 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
         this.numPlants = new HashMap<>();
         this.friendPosts = new ArrayList<>();
 
+        this.progressBar = view.findViewById(R.id.progressBar);
+
         currUser = FirebaseAuth.getInstance().getCurrentUser();
         this.usersIcon = view.findViewById(R.id.social_search_icon);
         this.usersIcon.setOnClickListener(new View.OnClickListener() {
@@ -164,9 +169,9 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
         this.swipeRefreshLayout = view.findViewById(R.id.social_swipe_refresh);
         this.swipeRefreshLayout.setOnRefreshListener(() -> {
             if (friendsSwitch.isChecked()) {
-                addPosts(true);
+                addPosts(true, false);
             } else {
-                addPosts(false);
+                addPosts(false, false);
             }
         });
         socialRecyclerView = view.findViewById(R.id.social_recycler_view);
@@ -182,7 +187,7 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
                 openCreatePostDialog();
             }
         });
-        addPosts(false);
+        addPosts(false, true);
         friendsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -279,11 +284,14 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
 
      */
 
-    private void addPosts(boolean refreshOnFriends) {
+    private void addPosts(boolean refreshOnFriends, boolean showProgressBar) {
         postList.clear();
         originalPosts.clear();
         friendIds.clear();
         socialAdapter.notifyDataSetChanged();
+        if (showProgressBar) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("posts");
 
         List<String> friend_ids = new ArrayList<>();
@@ -316,6 +324,9 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
                             }
 
 
+                        }
+                        if (showProgressBar) {
+                            progressBar.setVisibility(View.GONE);
                         }
                         getUserTopPlants(refreshOnFriends);
                     }
