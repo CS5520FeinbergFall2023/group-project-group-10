@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import northeastern.cs5520fa23.greenthumbs.MainActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
@@ -151,7 +152,10 @@ public class ChatActivity extends AppCompatActivity {
         msgMap.put("senderId", currUser.getUid());
         msgMap.put("userId", currUser.getUid());
         msgMap.put("receiverId", otherUserID);
-        String currentTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).format(new Date());
+        //String currentTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).format(new Date());
+        SimpleDateFormat currentTimestampSDF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        currentTimestampSDF.setTimeZone(TimeZone.getTimeZone("EST"));
+        String currentTimestamp = currentTimestampSDF.format(new Date());
         msgMap.put("timestamp", currentTimestamp);
 
         uploadMessage(msgMap);

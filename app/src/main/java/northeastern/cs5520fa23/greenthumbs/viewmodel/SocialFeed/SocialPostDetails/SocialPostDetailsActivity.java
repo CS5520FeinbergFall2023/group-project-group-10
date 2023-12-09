@@ -48,6 +48,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.concurrent.CountDownLatch;
 
 import northeastern.cs5520fa23.greenthumbs.R;
@@ -151,26 +152,7 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
             } else {
                 //Toast.makeText(this, "NO IMAGE", Toast.LENGTH_SHORT).show();
                 postImage.setVisibility(View.GONE);
-                /*
-                ViewGroup.LayoutParams rvParams = commentRV.getLayoutParams();
-                double commentsHeight = SocialPostDetailsActivity.this.getWindow().getDecorView().getHeight() * 0.7;
-                rvParams.height = (int) commentsHeight;
-                commentRV.setLayoutParams(rvParams);
 
-                ViewGroup.LayoutParams svParams = scrollView.getLayoutParams();
-                double viewHeight = SocialPostDetailsActivity.this.getWindow().getDecorView().getHeight();
-                double textHeight = postText.getHeight();
-                double imgHeight = viewHeight * .3;
-                double availRoom = viewHeight - imgHeight;
-                double maxSVHeight = viewHeight * .125;
-                if (maxSVHeight < textHeight) {
-                    svParams.height = (int) ((viewHeight * .125) - textHeight - imgHeight);
-                } else {
-                    svParams.height = (int) ((viewHeight * .125) - textHeight - imgHeight);
-                }
-                scrollView.setLayoutParams(svParams);
-
-                 */
 
                 getComments();
             }
@@ -181,7 +163,10 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
     private Task addComment() {
         String commentContent = commentText.getText().toString();
         String commentId = commentRef.push().getKey();
-        String currentTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).format(new Date());
+        //String currentTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).format(new Date());
+        SimpleDateFormat currentTimestampSDF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        currentTimestampSDF.setTimeZone(TimeZone.getTimeZone("EST"));
+        String currentTimestamp = currentTimestampSDF.format(new Date());
         newComment.put("_id", commentId);
         newComment.put("post_id", _id);
         newComment.put("user_id", currUser.getUid().toString());
