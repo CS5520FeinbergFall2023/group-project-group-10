@@ -3,6 +3,7 @@ package northeastern.cs5520fa23.greenthumbs;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -62,6 +63,7 @@ public class LogInPageActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     progressDialog.dismiss();
                     if (task.isSuccessful()) {
+                        timerHandler.removeCallbacks(timerRunnable);
                         Intent i = new Intent(LogInPageActivity.this, MainActivity.class);
                         startActivity(i);
                         finish();
@@ -70,6 +72,8 @@ public class LogInPageActivity extends AppCompatActivity {
                         Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                     }
                 });
+
+        startLoginTimer();
     }
 
     @Override
@@ -89,6 +93,18 @@ public class LogInPageActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putString("email", emailEditText.getText().toString());
         outState.putString("password", passwordEditText.getText().toString());
+    }
+
+    private Handler timerHandler = new Handler();
+    private Runnable timerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Toast.makeText(LogInPageActivity.this, "Login is taking longer than expected", Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    private void startLoginTimer() {
+        timerHandler.postDelayed(timerRunnable, 5000);
     }
 
 }

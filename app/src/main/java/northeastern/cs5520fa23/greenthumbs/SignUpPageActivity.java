@@ -1,8 +1,12 @@
 package northeastern.cs5520fa23.greenthumbs;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,6 +75,11 @@ public class SignUpPageActivity extends AppCompatActivity {
                 String email = emailEditText.getText().toString().trim();
                 String password = passwordEditText.getText().toString().trim();
 
+                if (!isNetworkConnected()) {
+                    Toast.makeText(SignUpPageActivity.this, "No internet connection available", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 if(validateInput(username, firstName, lastName, email, password)) {
                     createUser(email, password, username, firstName, lastName, new UserCreationCallback() {
                         @Override
@@ -97,12 +106,15 @@ public class SignUpPageActivity extends AppCompatActivity {
         progressDialog.setCancelable(false); // Optional: make the dialog not cancelable
         progressDialog.show();
 
+        startSignupTimer();
+
         DatabaseReference dbref = FirebaseDatabase.getInstance().getReference("users");
         dbref.orderByChild("username").equalTo(username).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     progressDialog.dismiss();
+                    timerHandler.removeCallbacks(timerRunnable);
                     Toast.makeText(SignUpPageActivity.this, "Username already taken. Please choose another.", Toast.LENGTH_SHORT).show();
                 } else {
                     progressDialog.dismiss();
@@ -113,6 +125,7 @@ public class SignUpPageActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 progressDialog.dismiss();
+                timerHandler.removeCallbacks(timerRunnable);
                 Toast.makeText(SignUpPageActivity.this, "Error checking username uniqueness", Toast.LENGTH_SHORT).show();
             }
         });
@@ -121,7 +134,7 @@ public class SignUpPageActivity extends AppCompatActivity {
     private void createFirebaseUser(String email, String password, String username, String firstName, String lastName, UserCreationCallback callback) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
-                    progressDialog.dismiss();
+                    dismissProgressDialog();
                     if (task.isSuccessful()) {
                         FirebaseUser fbUser = mAuth.getCurrentUser();
                         if (fbUser != null) {
@@ -188,4 +201,28 @@ public class SignUpPageActivity extends AppCompatActivity {
         }
         return true;
     }
+
+    private Handler timerHandler = new Handler();
+    private Runnable timerRunnable = () -> Toast.makeText(SignUpPageActivity.this, "Signup is taking longer than expected", Toast.LENGTH_SHORT).show();
+
+    private void startSignupTimer() {
+        timerHandler.postDelayed(timerRunnable, 10000);
+    }
+
+    private void dismissProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        timerHandler.removeCallbacks(timerRunnable);
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm != null) {
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        }
+        return false;
+    }
+
 }
