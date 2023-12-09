@@ -1,13 +1,17 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.Settings;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
 import com.google.firebase.auth.FirebaseAuth;
+
 import northeastern.cs5520fa23.greenthumbs.LogInActivity;
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SetLocationFragment;
@@ -16,7 +20,8 @@ public class SettingsFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private View settingFragmentView;
     private static final String ARG_PARAM2 = "param2";
-    public SettingsFragment(){
+
+    public SettingsFragment() {
     }
 
     @Override
@@ -68,16 +73,21 @@ public class SettingsFragment extends Fragment {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
 
-        if(getActivity() != null){
+        if (getActivity() != null) {
             getActivity().finish();
 
         }
     }
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("accountSettingsVisibility", settingFragmentView.findViewById(R.id.AccountSettingsbtn).getVisibility());
-        outState.putInt("setLocationVisibility", settingFragmentView.findViewById(R.id.SetLocationbtn).getVisibility());
+        if (settingFragmentView != null) {
+            outState.putInt("accountSettingsVisibility", settingFragmentView.findViewById(R.id.AccountSettingsbtn).getVisibility());
+        }
+        if (settingFragmentView != null) {
+            outState.putInt("setLocationVisibility", settingFragmentView.findViewById(R.id.SetLocationbtn).getVisibility());
+        }
     }
 
     private void showSetLocationFragment() {
