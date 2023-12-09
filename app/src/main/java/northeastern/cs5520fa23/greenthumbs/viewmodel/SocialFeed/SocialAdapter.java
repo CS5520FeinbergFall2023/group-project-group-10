@@ -215,6 +215,12 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialPostViewHolder> {
                     holder.setStorageUri(null);
                     holder.setHasImg(false);
                 }
+                holder.getPostProfPic().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        usernameCallback.openProfileCallback(username, posterId);
+                    }
+                });
                 if (geolocation != null) {
                     holder.getGeolocationText().setText(geolocation);
                 } else {

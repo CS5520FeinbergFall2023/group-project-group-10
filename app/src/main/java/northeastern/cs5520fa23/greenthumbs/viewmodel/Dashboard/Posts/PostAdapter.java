@@ -225,6 +225,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 } else {
                     holder.getGeolocationText().setText("");
                 }
+                holder.getPostProfPic().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dashboardPostCallback.openProfileCallback(username, posterId);
+                    }
+                });
                 holder.getCommentIcon().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
