@@ -48,6 +48,7 @@
         app:layout_constraintWidth_percent=".9"
         app:layout_constraintHeight_percent=".05"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHeight_min="wrap"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/plant_pie_chart"
         app:layout_constraintBottom_toTopOf="@id/stats_recycler_view"
