@@ -1,6 +1,6 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat;
 
-public class ChatMessage {
+public class ChatMessage{
     private String senderId;
     private String receiverId;
     private String userId;

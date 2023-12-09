@@ -26,6 +26,7 @@
         tools:targetApi="31">
         <activity
             android:name=".viewmodel.Profile.ProfileActivity"
+            android:configChanges="orientation|screenSize"
             android:exported="false" />
         <activity android:name=".viewmodel.Settings.UserSettingsActivity"></activity>
         <activity
@@ -43,7 +44,6 @@
         <activity
             android:name=".viewmodel.Messages.Chat.ChatActivity"
             android:exported="false" />
-        <activity android:name=".viewmodel.Settings.UserSettingsActivity" />
         <activity
             android:name=".LogInActivity"
             android:exported="false" />
