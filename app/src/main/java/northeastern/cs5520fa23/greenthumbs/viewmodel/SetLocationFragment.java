@@ -2,6 +2,7 @@ package northeastern.cs5520fa23.greenthumbs.viewmodel;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -39,6 +40,8 @@ public class SetLocationFragment extends DialogFragment {
     private LocationManager locationManager;
     private LocationListener locationListener;
 
+    private ProgressDialog progressDialog;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -48,6 +51,7 @@ public class SetLocationFragment extends DialogFragment {
         Button btnSaveLocation = view.findViewById(R.id.btnSaveLocation);
         Button btnFetchLocation = view.findViewById(R.id.btnFetchLocation);
         btnSaveLocation.setOnClickListener(v -> {
+            //showLoadingDialog();
             String lat = editTextLatitude.getText().toString();
             String lon = editTextLongitude.getText().toString();
             if (lat.isEmpty() || lon.isEmpty()) {
@@ -58,6 +62,7 @@ public class SetLocationFragment extends DialogFragment {
                         Float.parseFloat(lon)
                 );
             }
+            //hideLoadingDialog();
         });
 
         btnFetchLocation.setOnClickListener(v -> requestLocationUpdates());
@@ -67,10 +72,12 @@ public class SetLocationFragment extends DialogFragment {
             @Override
             public void onLocationChanged(@NonNull Location location) {
                 //showLoadingDialog();
+                //showLoadingDialog();
                 double lat = location.getLatitude();
                 editTextLatitude.setText(String.valueOf(lat));
                 editTextLongitude.setText(String.valueOf(location.getLongitude()));
                 locationManager.removeUpdates(this); // Stop updates to save battery
+                //hideLoadingDialog();
                 //hideLoadingDialog();
             }
 
@@ -105,11 +112,13 @@ public class SetLocationFragment extends DialogFragment {
     }
 
     private void requestLocationUpdates() {
+        //showLoadingDialog();
         if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
         } else {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
         }
+        //hideLoadingDialog();
     }
 
     @Override
@@ -124,6 +133,7 @@ public class SetLocationFragment extends DialogFragment {
     }
 
     private void saveHomeLocation(float latitude, float longitude) {
+        //showLoadingDialog();
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppPreferences", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putFloat("latitude", latitude);
@@ -144,7 +154,9 @@ public class SetLocationFragment extends DialogFragment {
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.remove(this);
             transaction.commitAllowingStateLoss();
+            //hideLoadingDialog();
         }
+
     }
 
     private void prepopulateLocationIfSet() {
@@ -160,17 +172,16 @@ public class SetLocationFragment extends DialogFragment {
     private Dialog loadingDialog;
 
     private void showLoadingDialog() {
-        loadingDialog = new Dialog(requireContext());
-        loadingDialog.setContentView(R.layout.dialog_loading);
-        loadingDialog.setCancelable(false);
-        Objects.requireNonNull(loadingDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        loadingDialog.show();
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Fetching location...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
     }
 
     private void hideLoadingDialog() {
-        if (loadingDialog != null && loadingDialog.isShowing()) {
-            loadingDialog.dismiss();
-        }
+
+            progressDialog.dismiss();
+
     }
 
 }
