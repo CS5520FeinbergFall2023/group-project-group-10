@@ -168,6 +168,7 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
         });
         this.gardenMenuRV = view.findViewById(R.id.garden_menu_rv);
         this.gardenAdapter = new GardenAdapter(plantsItemList, getContext(), this);
+        gardenAdapter.setStateRestorationPolicy(RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY);
         this.gardenMenuRV.setHasFixedSize(true);
         this.gardenMenuRV.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         this.gardenMenuRV.setAdapter(gardenAdapter);
