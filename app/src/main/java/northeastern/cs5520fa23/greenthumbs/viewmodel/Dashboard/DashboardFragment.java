@@ -247,7 +247,7 @@ public class DashboardFragment extends Fragment implements FriendRequestAdapter.
     private void getFriendRequests() {
         DatabaseReference frRef = db.getReference("users").child(currUser.getUid());
         Query frQuery = frRef.child("friend_requests").orderByChild("approved").equalTo("false");
-        frQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+        frQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
