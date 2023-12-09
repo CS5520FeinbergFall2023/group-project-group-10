@@ -1,4 +1,6 @@
 package northeastern.cs5520fa23.greenthumbs;
+
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -6,6 +8,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 import androidx.work.Constraints;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.NetworkType;
@@ -21,6 +30,7 @@ import android.location.LocationManager;
 
 import android.os.Bundle;
 import android.widget.Toast;
+
 import android.content.Context;
 import android.Manifest;
 
@@ -32,6 +42,9 @@ import northeastern.cs5520fa23.greenthumbs.model.weather.WeatherCheckWorker;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.MessageHomeFragment;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileFragment;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.SetLocationFragment;
+
+import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -42,6 +55,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -72,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     private Fragment profileFragment = new ProfileFragment();
+    private AppBarConfiguration appBarConfiguration;
 
 
     /*@Override
@@ -161,15 +179,13 @@ public class MainActivity extends AppCompatActivity {
                 "weatherCheck",
                 ExistingPeriodicWorkPolicy.KEEP, weatherCheckRequest);
 
-
-
         //ImageButton btnShowSetLocation = findViewById(R.id.btnShowSetLocation);
         //btnShowSetLocation.setOnClickListener(view -> showSetLocationFragment());
         // #####
         // ### Nav bar and toolbar ###
         navBar = findViewById(R.id.bottom_nav_menu);
         toolbar = findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
+//        setSupportActionBar(toolbar);
         toolbar.inflateMenu(R.menu.appbar);
         toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.appbar_profile) {
@@ -187,80 +203,32 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
-        // When app is opened go to dashboard
-        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).commit();
-        navBar.setOnItemSelectedListener(item -> {
 
-            if (item.getItemId() == R.id.dash_menu_item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment, "DASH").addToBackStack("DASH").commit();
-                return true;
-            } else if (item.getItemId() == R.id.social_menu_item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, socialFragment, "SOCIAL").addToBackStack("SOCIAL").commit();
-                return true;
-            } else if (item.getItemId() == R.id.garden_menu_item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, gardenFragment, "GARDEN").addToBackStack("GARDEN").commit();
-                return true;
-            } else if (item.getItemId() == R.id.settings_menu_item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, settingsFragment).commit();
-                return true;
-            } else if (item.getItemId() == R.id.messages_menu_item) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment, "MESSAGE").addToBackStack("MESSAGE").commit();
-                return true;
-            }
-            return false;
-        });
-
-        /*
-        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                int i = getSupportFragmentManager().getBackStackEntryCount() - 1;
-                if (i >= 0) {
-                    FragmentManager.BackStackEntry entry = getSupportFragmentManager().getBackStackEntryAt(i);
-                    String fTag = entry.getName();
-                    if (fTag == "SOCIAL") {
-                        navBar.getMenu().getItem(1).setChecked(true);
-                    }
-                    getSupportFragmentManager().popBackStack(i, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                }
-
-
-
-            }
-        };
-        getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
-
-         */
 
         if (getIntent().getExtras() != null) {
-            boolean goChat  = getIntent().getBooleanExtra("to_chat", false);
-            if (goChat) {
-                navBar.setSelectedItemId(R.id.messages_menu_item);
-                //getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, messageHomeFragment).commit();
-            }
-
-            // can maybe be removed with new nav
-            boolean goPosts  = getIntent().getBooleanExtra("to_posts", false);
-            if (goPosts) {
-                navBar.setSelectedItemId(R.id.social_menu_item);
-            }
             if (getIntent().getBundleExtra("profile_info") != null) {
                 ArrayList<String> profileInfo = getIntent().getBundleExtra("profile_info").getStringArrayList("user_info");
                 if (profileInfo != null) {
                     String goUsername = profileInfo.get(0);
                     String goUid = profileInfo.get(1);
                     profileFragment = ProfileFragment.newInstance(goUsername, goUid);
-                    //getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment).addToBackStack(null).commit();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, profileFragment).addToBackStack(null).commit();
-                    //toolbar.action(R.id.appbar_profile);
+                    getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, profileFragment).addToBackStack(null).commit();
                 }
             }
-        } else {
-            // When app is opened go to dashboard
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, dashboardFragment, "DASH").commit();
         }
-    };
 
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        NavController navController = navHostFragment.getNavController();
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_nav_menu);
+        NavigationUI.setupWithNavController(bottomNav, navController);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        return NavigationUI.onNavDestinationSelected(item, navController)
+                || super.onOptionsItemSelected(item);
+    }
 
     private void startPlantRecommendationService() {
         SharedPreferences sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE);

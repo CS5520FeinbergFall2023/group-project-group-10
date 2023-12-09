@@ -63,15 +63,6 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                Intent i = new Intent(ChatActivity.this, MainActivity.class);
-                i.putExtra("to_chat", true);
-                startActivity(i);
-            }
-        };
-        getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
         this.db = FirebaseDatabase.getInstance();
         this.currUser = FirebaseAuth.getInstance().getCurrentUser();
         extras = getIntent().getExtras();
@@ -100,6 +91,7 @@ public class ChatActivity extends AppCompatActivity {
         msgRecyclerView.setHasFixedSize(true);
         msgRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         msgAdapter = new MessageAdapter(msgList, this);
+        msgAdapter.setStateRestorationPolicy(RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY);
         msgRecyclerView.setAdapter(msgAdapter);
 
 

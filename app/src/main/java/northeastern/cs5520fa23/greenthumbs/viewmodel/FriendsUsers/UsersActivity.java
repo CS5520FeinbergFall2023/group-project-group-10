@@ -51,15 +51,6 @@ public class UsersActivity extends AppCompatActivity implements FriendsAdapter.P
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                Intent i = new Intent(UsersActivity.this, MainActivity.class);
-                i.putExtra("to_posts", true);
-                startActivity(i);
-            }
-        };
-        getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
         setContentView(R.layout.activity_users);
         this.titleText = findViewById(R.id.friends_title);
         this.friendRV = findViewById(R.id.users_activity_rv);

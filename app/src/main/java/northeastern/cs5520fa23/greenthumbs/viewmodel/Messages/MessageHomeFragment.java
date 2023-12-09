@@ -102,6 +102,7 @@ public class MessageHomeFragment extends Fragment implements MessageHistoryAdapt
         msgHistoryRV.setHasFixedSize(true);
         msgHistoryRV.setLayoutManager(new LinearLayoutManager(getContext()));
         msgHistoryAdapter = new MessageHistoryAdapter(chats, getContext(), this, nameIdMap);
+        msgHistoryAdapter.setStateRestorationPolicy(RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY);
         msgHistoryRV.setAdapter(msgHistoryAdapter);
         //fab = view.findViewById(R.id.post_fab);
         msgUserSearch = view.findViewById(R.id.msg_user_search);
