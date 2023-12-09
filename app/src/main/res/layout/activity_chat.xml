@@ -70,6 +70,7 @@
         android:background="@drawable/rounded_corners_background_dg"
         android:src="@drawable/baseline_send_24"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_min="35dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent=".05"
         app:layout_constraintStart_toEndOf="@id/send_msg_input"

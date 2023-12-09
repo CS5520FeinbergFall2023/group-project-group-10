@@ -1,5 +1,6 @@
 package northeastern.cs5520fa23.greenthumbs;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +19,8 @@ public class LogInPageActivity extends AppCompatActivity {
     private EditText emailEditText;
     private EditText passwordEditText;
     private Button logInButton;
+
+    private ProgressDialog progressDialog;
     private FirebaseAuth mAuth;
 
     @Override
@@ -40,7 +43,13 @@ public class LogInPageActivity extends AppCompatActivity {
                 String email = emailEditText.getText().toString().trim();
                 String password = passwordEditText.getText().toString().trim();
 
-                if(validateInput(email, password)) {
+                if (validateInput(email, password)) {
+
+                    progressDialog = new ProgressDialog(LogInPageActivity.this);
+                    progressDialog.setMessage("Logging in...");
+                    progressDialog.setCancelable(false);
+                    progressDialog.show();
+
                     signInUser(email, password);
                 }
             }
@@ -51,6 +60,7 @@ public class LogInPageActivity extends AppCompatActivity {
     private void signInUser(String email, String password) {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
+                    progressDialog.dismiss();
                     if (task.isSuccessful()) {
                         Intent i = new Intent(LogInPageActivity.this, MainActivity.class);
                         startActivity(i);
@@ -60,6 +70,14 @@ public class LogInPageActivity extends AppCompatActivity {
                         Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
     }
 
     private boolean validateInput(String username, String password) {

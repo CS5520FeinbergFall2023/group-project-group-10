@@ -2,7 +2,6 @@ package northeastern.cs5520fa23.greenthumbs.viewmodel.Profile;
 
 import static android.content.ContentValues.TAG;
 import static northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.CreatePostDialog.REQUEST_GET_IMAGE;
-
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -12,8 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -23,11 +22,11 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -43,14 +42,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import northeastern.cs5520fa23.greenthumbs.R;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat.ChatActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed.ImgPost;
@@ -190,6 +187,35 @@ public class ProfileActivity extends AppCompatActivity implements SocialAdapter.
         socialAdapter = new SocialAdapter(postList, this, this);
         socialRecyclerView.setAdapter(socialAdapter);
 
+        if (savedInstanceState != null) {
+            loadData();
+            usernameView.setText(savedInstanceState.getString("username", ""));
+            userBioView.setText(savedInstanceState.getString("userBio", ""));
+            isEditing = savedInstanceState.getBoolean("isEditing", false);
+            headerEdited = savedInstanceState.getBoolean("headerEdited", false);
+            profilePictureEdited = savedInstanceState.getBoolean("profilePictureEdited", false);
+
+            if (headerEdited) {
+                Bitmap headerBitmap = savedInstanceState.getParcelable("headerBitmap");
+                if (headerBitmap != null) {
+                    headerImage.setImageBitmap(headerBitmap);
+                }
+            }
+            if (profilePictureEdited) {
+                Bitmap profileBitmap = savedInstanceState.getParcelable("profileBitmap");
+                if (profileBitmap != null) {
+                    profilePicture.setImageBitmap(profileBitmap);
+                }
+            }
+
+            if (isEditing) {
+                enableEditingMode();
+                userBioView.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(userBioView, InputMethodManager.SHOW_IMPLICIT);
+            }
+        }
+
         if (isUsersProfile) {
             this.sendMsgButton.setEnabled(false);
             this.sendMsgButton.setVisibility(View.GONE);
@@ -214,7 +240,7 @@ public class ProfileActivity extends AppCompatActivity implements SocialAdapter.
                             Toast.makeText(ProfileActivity.this, "Bio cannot be more than 40 characters", Toast.LENGTH_LONG).show();
                         } else {
                             saveProfileUpdates();
-                            editProfileButton.setText("Edit Profile");
+                            editProfileButton.setText("Edit");
                             isEditing = false;
                         }
                     }
@@ -266,12 +292,29 @@ public class ProfileActivity extends AppCompatActivity implements SocialAdapter.
         loadData();
     }
 
+    private void enableEditingMode() {
+        usernameView.setEnabled(true);
+        userBioView.setEnabled(true);
+        editProfileButton.setText(R.string.finish_editing);
+        headerImage.setClickable(true);
+        profilePicture.setClickable(true);
+    }
+
+    private void disableEditingMode() {
+        usernameView.setEnabled(false);
+        userBioView.setEnabled(false);
+        headerImage.setClickable(false);
+        profilePicture.setClickable(false);
+        editProfileButton.setText(R.string.edit_profile);
+    }
+
     private void saveProfileUpdates() {
         //uploadProfilePic();
         //uploadHeaderImage();
 
         Map<String, Object> updates = new HashMap<>();
         uploadProfilePic(updates);
+        disableEditingMode();
         //isEditing = false;
         /*
         if (headerUri != null) {
@@ -581,6 +624,26 @@ public class ProfileActivity extends AppCompatActivity implements SocialAdapter.
             }
         }
     }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("username", usernameView.getText().toString());
+        outState.putString("userBio", userBioView.getText().toString());
+        outState.putBoolean("isEditing", isEditing);
+        outState.putBoolean("headerEdited", headerEdited);
+        outState.putBoolean("profilePictureEdited", profilePictureEdited);
+
+        if (headerEdited && headerImage.getDrawable() != null) {
+            Bitmap headerBitmap = ((BitmapDrawable) headerImage.getDrawable()).getBitmap();
+            outState.putParcelable("headerBitmap", headerBitmap);
+        }
+        if (profilePictureEdited && profilePicture.getDrawable() != null) {
+            Bitmap profileBitmap = ((BitmapDrawable) profilePicture.getDrawable()).getBitmap();
+            outState.putParcelable("profileBitmap", profileBitmap);
+        }
+    }
+
 
 
     @Override

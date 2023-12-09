@@ -82,6 +82,9 @@ public class ChatActivity extends AppCompatActivity {
         sendMsgButton = findViewById(R.id.send_msg_button);
         otherUsernameHeader = findViewById(R.id.chat_activity_header_username);
         otherUsernameHeader.setText(this.otherUsername);
+        if (savedInstanceState != null) {
+            msgInput.setText(savedInstanceState.getString("messageInput", ""));
+        }
         sendMsgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,6 +100,14 @@ public class ChatActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("messageInput", msgInput.getText().toString());
+
+    }
+
 
     private void getMessages() {
         setChatID(otherUsername);
