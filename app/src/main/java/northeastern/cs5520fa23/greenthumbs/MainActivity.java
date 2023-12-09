@@ -55,6 +55,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -311,5 +312,20 @@ public class MainActivity extends AppCompatActivity {
                     "in the settings menu.", Toast.LENGTH_LONG).show();
         }
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        updateUserLastActiveTimestamp();
+    }
+
+    private void updateUserLastActiveTimestamp() {
+        if (mAuth.getCurrentUser() != null) {
+            String currentUserId = mAuth.getCurrentUser().getUid();
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(currentUserId);
+            userRef.child("lastActiveTime").setValue(System.currentTimeMillis());
+        }
+    }
+
 
 }

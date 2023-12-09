@@ -32,7 +32,7 @@ public class NotificationHelper {
             return;
         }
 
-        createNotificationChannelIfNeeded(notificationManager);
+        //createNotificationChannelIfNeeded(notificationManager);
 
         int notificationID = generateUniqueNotificationId();
         Intent notificationIntent = new Intent(context, MainActivity.class);
@@ -73,11 +73,10 @@ public class NotificationHelper {
             Notification notification = builder.build();
             notificationManager.notify(generateUniqueNotificationId(), notification);
         }
-
+        /*
         builder.setChannelId(CHANNEL_ID);
-
         Notification notification = builder.build();
-        notificationManager.notify(notificationID, notification);
+        notificationManager.notify(notificationID, notification);*/
     }
 
     private static void createNotificationChannelIfNeeded(NotificationManager notificationManager) {

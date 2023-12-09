@@ -2,6 +2,7 @@ package northeastern.cs5520fa23.greenthumbs.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -12,12 +13,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.time.Instant;
+import java.util.HashSet;
 
 import northeastern.cs5520fa23.greenthumbs.R;
 
 public class PostNotificationHelper {
     private final Context context;
     private final SharedPreferences sharedPreferences;
+    private HashSet<String> notifiedPostIds = new HashSet<>();
 
     public PostNotificationHelper(Context context) {
         this.context = context;
@@ -34,7 +37,6 @@ public class PostNotificationHelper {
                 for (DataSnapshot friendSnapshot : dataSnapshot.getChildren()) {
                     String friendUserId = friendSnapshot.child("friend_id").getValue(String.class);
 
-                    // Listen for posts made by this friend
                     postsRef.orderByChild("uid").equalTo(friendUserId).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot postSnapshot) {
@@ -42,21 +44,32 @@ public class PostNotificationHelper {
                                 String timestampString = snapshot.child("timestamp").getValue(String.class) + "Z";
                                 Instant instant = Instant.parse(timestampString);
                                 long postTimestamp = instant.toEpochMilli();
-                                if (postTimestamp > getLastNotifiedTimestamp()) {
-                                    String postText = snapshot.child("post_text").getValue(String.class);
-                                    String friendUsername = snapshot.child("username").getValue(String.class);
-                                    String image_uri = snapshot.child("img_uri").getValue(String.class);
+                                String postId = snapshot.getKey();
 
-                                    // Trigger a notification for the new post
-                                    NotificationHelper.showNotification(
-                                            context,
-                                            friendUsername + " made a new post",
-                                            postText,
-                                            R.drawable.baseline_notifications_24, image_uri
-                                    );
-                                    setLastNotifiedTimestamp(postTimestamp);
+                                if(notifiedPostIds.contains(postId)){
                                     break;
                                 }
+                                fetchLastActiveTimestamp(currentUserId, new OnTimestampFetchedListener() {
+                                    @Override
+                                    public void onTimestampFetched(long timestamp) {
+                                        if (postTimestamp > timestamp && postTimestamp > getLastNotifiedTimestamp()) {
+                                            String postText = snapshot.child("post_text").getValue(String.class);
+                                            String friendUsername = snapshot.child("username").getValue(String.class);
+                                            String image_uri = snapshot.child("img_uri").getValue(String.class);
+
+                                            // Trigger a notification for the new post
+                                            NotificationHelper.showNotification(
+                                                    context,
+                                                    friendUsername + " made a new post",
+                                                    postText,
+                                                    R.drawable.baseline_notifications_24, image_uri
+                                            );
+                                            setLastNotifiedTimestamp(postTimestamp);
+                                            notifiedPostIds.add(postId);
+                                        }
+                                    }
+                                });
+
                             }
                         }
 
@@ -76,7 +89,6 @@ public class PostNotificationHelper {
     }
 
     private long getLastNotifiedTimestamp() {
-        // Retrieve the last notified timestamp, default to 0 if not found
         return sharedPreferences.getLong("lastNotifiedTimestamp", 0);
     }
 
@@ -84,5 +96,35 @@ public class PostNotificationHelper {
         // Store the new timestamp
         sharedPreferences.edit().putLong("lastNotifiedTimestamp", timestamp).apply();
     }
+
+    private void fetchLastActiveTimestamp(String userId, final OnTimestampFetchedListener listener) {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+        userRef.child("lastActiveTime").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Long lastActiveTime = dataSnapshot.getValue(Long.class);
+                    if (lastActiveTime != null) {
+                        listener.onTimestampFetched(lastActiveTime);
+                    } else {
+                        listener.onTimestampFetched(0L);
+                    }
+                } else {
+                    listener.onTimestampFetched(0L);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w("TAG", "loadPost:onCancelled", databaseError.toException());
+                listener.onTimestampFetched(0L);
+            }
+        });
+    }
+
+    public interface OnTimestampFetchedListener {
+        void onTimestampFetched(long timestamp);
+    }
+
 }
 
