@@ -240,7 +240,7 @@ public class ProfileActivity extends AppCompatActivity implements SocialAdapter.
                             Toast.makeText(ProfileActivity.this, "Bio cannot be more than 40 characters", Toast.LENGTH_LONG).show();
                         } else {
                             saveProfileUpdates();
-                            editProfileButton.setText("Edit Profile");
+                            editProfileButton.setText("Edit");
                             isEditing = false;
                         }
                     }
