@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -125,21 +126,32 @@ public class SetLocationFragment extends DialogFragment {
     private void saveHomeLocation(float latitude, float longitude) {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppPreferences", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putFloat("HomeLatitude", (float) latitude);
-        editor.putFloat("HomeLongitude", (float) longitude);
+        editor.putFloat("latitude", latitude);
+        editor.putFloat("longitude", longitude);
         editor.apply();
 
-        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.remove(SetLocationFragment.this);
-        transaction.commit();
+        FragmentManager fragmentManager;
+
+        if (isAdded()) {
+            Fragment parentFragment = getParentFragment();
+
+            if (parentFragment != null) {
+                 fragmentManager = parentFragment.getChildFragmentManager();
+            } else {
+                fragmentManager = requireActivity().getSupportFragmentManager();
+            }
+
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.remove(this);
+            transaction.commitAllowingStateLoss();
+        }
     }
 
     private void prepopulateLocationIfSet() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppPreferences", Context.MODE_PRIVATE);
-        if (sharedPreferences.contains("HomeLatitude") && sharedPreferences.contains("HomeLongitude")) {
-            float latitude = sharedPreferences.getFloat("HomeLatitude", 0);
-            float longitude = sharedPreferences.getFloat("HomeLongitude", 0);
+        if (sharedPreferences.contains("latitude") && sharedPreferences.contains("longitude")) {
+            float latitude = sharedPreferences.getFloat("latitude", 0);
+            float longitude = sharedPreferences.getFloat("longitude", 0);
             editTextLatitude.setText(String.valueOf(latitude));
             editTextLongitude.setText(String.valueOf(longitude));
         }
@@ -150,7 +162,7 @@ public class SetLocationFragment extends DialogFragment {
     private void showLoadingDialog() {
         loadingDialog = new Dialog(requireContext());
         loadingDialog.setContentView(R.layout.dialog_loading);
-        loadingDialog.setCancelable(false); // Optional, depending on your needs
+        loadingDialog.setCancelable(false);
         Objects.requireNonNull(loadingDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         loadingDialog.show();
     }
