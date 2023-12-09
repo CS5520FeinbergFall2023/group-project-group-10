@@ -134,9 +134,6 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-        //gardenPlot = view.findViewById(R.id.garden_plot);
-        //testLettuce = view.findViewById(R.id.testLettuce);
         this.plantsItemList = new ArrayList<>();
         this.gardenPlotPlants= new ArrayList<>();
         this.currUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -178,21 +175,12 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
         this.gardenPlotAdapter = new GardenPlotAdapter(gardenPlotPlants, this.getContext(), this);
         this.gardenPlotView.setAdapter(gardenPlotAdapter);
 
-
-        // TODO: dialog asking user for ?x? plot
-
-
-        //setMenuDragListeners(); // for menu
-        //setReceivingListeners(view); // for garden plot
-        //setGridListeners();
         populateGarden();
 
-        // TODO: connect whats in garden plot to a data structure for DB, and reload on launch
     }
 
     private void populateGarden() {
         Query gardenRef = db.getReference("users").child(currUser.getUid()).child("plants").child("garden").orderByKey();
-        //Query query = gardenRef.orderByChild("position");
         gardenRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -203,28 +191,28 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
                     HashMap <Integer, GardenPlotPlant> plantPositions = new HashMap<>();
                     for (DataSnapshot plantSnapshot: snapshot.getChildren()) {
                         GardenPlotPlant plant = plantSnapshot.getValue(GardenPlotPlant.class);
-                        plantPositions.put(plant.getPosition(), plant);
+                        plantPositions.put(plant.getPosition(), plant); // put the plant in the plot with their position
                     }
 
+                    // Go through each potential plot position
                     for (int i = 0; i < 16; i++) {
                         Integer j = i;
-                        if (plantPositions.containsKey(j)) {
+                        if (plantPositions.containsKey(j)) { // if there is a plant skip because it's already added
                             //gardenPlotPlants.add(plantPositions.get(j));
                         } else {
-                            GardenPlotPlant plant = new GardenPlotPlant();
+                            GardenPlotPlant plant = new GardenPlotPlant(); // otherwise add an empty plant with the position
                             plant.setPosition(j);
                             plantPositions.put(j, plant);
                         }
-                        //gardenPlotPlants.add(gardenPlotPlants.get(j));
-                        //gardenPlotAdapter.notifyDataSetChanged();
+
                     }
                     for (int i = 0; i < 16; i++) {
-                        gardenPlotPlants.add(plantPositions.get(i));
+                        gardenPlotPlants.add(plantPositions.get(i)); // add all the plants from the positions list to the garden plot list
                         gardenPlotAdapter.notifyDataSetChanged();
                     }
 
 
-                } else {
+                } else { // if there were no plants they are all empty
                     for (int i = 0; i < 16; i++) {
                         GardenPlotPlant plant = new GardenPlotPlant();
                         plant.setPosition(i);
@@ -244,52 +232,42 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
 
     @Override
     public boolean dragPlant(String plantName, int resId, ImageView plantImage) {
-        //ImageView
+
         String plantNameMenu = "menu_" + plantName;
         ClipData.Item item = new ClipData.Item(String.valueOf(resId));
         String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
-        // Create a new ClipData using "Lettuce" as a label.
         ClipData dragData = new ClipData(plantNameMenu, mimeTypes, item);
         View.DragShadowBuilder myShadow = new View.DragShadowBuilder(plantImage);
-        // Start the drag.
         plantImage.startDragAndDrop(dragData, myShadow, null, 0);
 
-
-//                img.setVisibility(View.INVISIBLE);
         return true;
     }
 
     @Override
     public boolean dragPlotPlant(GardenPlotPlant plant, ImageView plotImage) {
 
-        //ImageView plantImage = plant.getHolderView();
-        //viewHolder.
         plantMoving = plant;
         ClipData.Item item = new ClipData.Item(String.valueOf(plantIds.get(plant.getPlant_type().toLowerCase())));
         String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
-        // Create a new ClipData using "Lettuce" as a label.
         ClipData dragData = new ClipData(plant.getPlant_type(), mimeTypes, item);
         View.DragShadowBuilder myShadow = new View.DragShadowBuilder(plotImage);
-        // Start the drag.
         plotImage.startDragAndDrop(dragData, myShadow, null, 0);
 
         return true;
     }
 
     private void setHarvestListener() {
-        // When this is is dragged onto / dropped onto
+        // when dragged onto the harvest icon
         harvestIcon.setOnDragListener((view, event) -> {
 
             switch(event.getAction()) {
 
                 case DragEvent.ACTION_DRAG_STARTED:
 
-                    // Determine whether this View can accept the dragged data.
                     if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
-
                         ((ImageView)view).setColorFilter(Color.parseColor("#4B7DFA"));
                         view.invalidate();
-                        return true;
+                        return true; // view can accept the data
                     }
 
                     return false;
@@ -338,6 +316,7 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
     }
 
     private void setDeleteListener() {
+        // if it's dragged onto the delete icon
         deleteIcon.setOnDragListener((view, event) -> {
 
             switch(event.getAction()) {
@@ -369,15 +348,9 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
 
                 case DragEvent.ACTION_DROP:
 
-                    // Get the item containing the dragged data.
                     ClipData.Item item = event.getClipData().getItemAt(0);
                     CharSequence dragData = item.getText();
-                    //plant.setPlant_id((String) dragData);
-                    //holder.setPlantId((String) dragData);
 
-                    // Set imageView in garden plot to display new image based on clipboard data
-                    //((ImageView) view).setImageResource(Integer.parseInt((String) dragData));
-                    //gardenPlotAdapter.harvestPlant(pl);
                     if (plantMoving != null) {
                         gardenPlotAdapter.deletePlant(plantMoving);
                         plantMoving = null;
@@ -391,11 +364,6 @@ public class GardenFragment extends Fragment implements GardenAdapter.PlantDragC
                     ((ImageView)view).clearColorFilter();
                     view.invalidate();
 
-                    // potentially ad this back in later
-                    //Drawable d = context.getResources().getDrawable(R.drawable.rounded_corners_orange);
-                    //v.setBackground(d);
-
-                    // Return true. The value is ignored.
                     return true;
                 default:
                     break;

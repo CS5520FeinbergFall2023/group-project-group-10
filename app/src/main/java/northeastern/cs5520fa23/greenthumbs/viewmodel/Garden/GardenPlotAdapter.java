@@ -121,13 +121,7 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
 
                     }
                 }
-                /*else {
-                    plant.setPlant_type("default");
-                    plant.setResId(plantIds.get(plantType.toLowerCase()));
-                    holder.getPlotImage().setImageResource(R.drawable.baseline_nature_24);
-                    plant.setHolderView(holder.getPlotImage());
-                  }
-                 */
+
                  else {
                     plant.setPlant_type("empty");
                     plant.setResId(plantIds.get(plant.getPlant_type().toLowerCase()));
@@ -159,25 +153,23 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
                 holder.getPlotImage().setImageResource(R.drawable.baseline_crop_square_24);
             }
 
-            // When this is is dragged onto / dropped onto
             holder.getPlotImage().setOnDragListener((view, event) -> {
 
                 switch(event.getAction()) {
 
                     case DragEvent.ACTION_DRAG_STARTED:
 
-                        // Determine whether this View can accept the dragged data.
                         if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
-                            //int id = holder.getPlotImage().getId();
+
                             if (plant.getPlant_id() == null) {
-                                Log.d("PLANT ID LOG", "onBindViewHolder: no image at" + position);
+                                //Log.d("PLANT ID LOG", "onBindViewHolder: no image at" + position);
                                 ((ImageView)view).setColorFilter(Color.parseColor("#4B7DFA"));
                                 view.invalidate();
                                 return true;
                             } else {
-                                Log.d("PLANT ID LOG", "IMG AT " + position);
-                                Log.d("PLANT ID LOG", "HOLDER ID " + holder.getPlantId());
-                                Log.d("PLANT ID LOG", "PLANT ID  " + plant.getPlant_id());
+                                //Log.d("PLANT ID LOG", "IMG AT " + position);
+                                //Log.d("PLANT ID LOG", "HOLDER ID " + holder.getPlantId());
+                                //Log.d("PLANT ID LOG", "PLANT ID  " + plant.getPlant_id());
                                 return false;
 
                             }
@@ -217,10 +209,6 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
                                     Log.d("ON DROP NAME", "plant name: " + plantNameString);
                                     plant.setPlant_type(plantNameString);
 
-                                    // Set imageView in garden plot to display new image based on clipboard data
-                                    //((ImageView) view).setImageResource(Integer.parseInt((String) dragData));
-                                    //((ImageView) view).setImageResource();
-
                                     Picasso.get().load(plantIds.get(plantNameString)).resize(60,60).into((ImageView) view);
 
                                 }
@@ -234,17 +222,11 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
                         else {
                             return false;
                         }
-                        //return true;
 
                     case DragEvent.ACTION_DRAG_ENDED:
                         ((ImageView)view).clearColorFilter();
                         view.invalidate();
 
-                        // potentially ad this back in later
-                        //Drawable d = context.getResources().getDrawable(R.drawable.rounded_corners_orange);
-                        //v.setBackground(d);
-
-                        // Return true. The value is ignored.
                         return true;
                     default:
                         break;
@@ -257,36 +239,15 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
                 @Override
                 public boolean onLongClick(View v) {
 
-                    if (plant.getPlant_type() != null && plantIds.containsKey(plant.getPlant_type().toLowerCase())) {
+                    if (plant.getPlant_type() != null && plantIds.containsKey(plant.getPlant_type().toLowerCase()) && plant.getPlant_type() != "empty") { // don't drag empty plot
                         plotPlantDragCallback.dragPlotPlant(plant, holder.getPlotImage());
-                        /*
-                        ClipData.Item item = new ClipData.Item(String.valueOf(plantIds.get(plant.getPlant_type().toLowerCase())));
-                        String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
-                        // Create a new ClipData using "Lettuce" as a label.
-                        ClipData dragData = new ClipData("Lettuce", mimeTypes, item);
-                        View.DragShadowBuilder myShadow = new View.DragShadowBuilder(holder.getPlotImage());
-                        // Start the drag.
-                        v.startDragAndDrop(dragData, myShadow, null, 0);
-
-                         */
                     }
                     else {
-                        plotPlantDragCallback.dragPlotPlant(plant, holder.getPlotImage());
-                        /*
-                        ClipData.Item item = new ClipData.Item(String.valueOf(R.drawable.baseline_nature_24));
-                        String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
-                        // Create a new ClipData using "Lettuce" as a label.
-                        ClipData dragData = new ClipData("Lettuce", mimeTypes, item);
-                        View.DragShadowBuilder myShadow = new View.DragShadowBuilder(holder.getPlotImage());
-                        // Start the drag.
-                        v.startDragAndDrop(dragData, myShadow, null, 0);
+                        //plotPlantDragCallback.dragPlotPlant(plant, holder.getPlotImage());
 
-                         */
                     }
 
-
-//                img.setVisibility(View.INVISIBLE);
-                    return true; // Indicate that the long-click is handled.
+                    return true;
                 }
             });
         }
@@ -298,23 +259,13 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
         } catch (Exception e) {
 
         }
-        //updateHarvestDatabasePlants(plant);
-        // want to wait for this and delete so things arent messed up with the double updates for growing stats
+
 
     }
 
     public void deletePlant(GardenPlotPlant plant) {
         updateDeleteDatabasePlants(plant);
-        /*
-        plant.getHolderView().setImageResource(plantIds.get("empty"));
-        plant.getViewHolder().getPlotImage().setImageResource(plantIds.get("empty"));
-        plant.getHolderView().setBackgroundResource(0);
-        plant.getViewHolder().getPlotImage().setBackgroundResource(0);
-        plant.setResId(plantIds.get("empty"));
-        plant.setPlant_type(null);
-        plant.setPlant_id(null);
 
-         */
     }
 
     private void addPlantToDatabase(GardenPlotPlant plant, String plantNameString) {
@@ -330,12 +281,9 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
             String date_planted = formatter.format(today);
             Date expectedFinish = calendar.getTime();
             String expected_finish = formatter.format(expectedFinish);
-            //plant.setDate_planted(date_planted);
-            //plant.setExpected_finish(expected_finish);
-            //plant.setIs_growing(true);
+
             Boolean is_growing = true;
             Integer plantPostion = plant.getPosition();
-            //plant.setPlant_type(plantNameString);
             DatabaseReference userPlantsRef = db.getReference("users").child(currUser.getUid()).child("plants").child("growing").child(plantNameString);
             userPlantsRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
@@ -403,8 +351,7 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
                     } catch (Exception e) {
 
                     }
-                    //
-                    //updateHarvestDatabaseGarden(plantHarvested ,plantHarvestedId);
+
                 }
             }
         });
@@ -412,30 +359,7 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
         return updateTask;
     }
 
-    /*
-    private void updateHarvestDatabasePlants(GardenPlotPlant plantHarvested) {
-        Map<String, Object> plantHarvestedData = new HashMap<>();
-        plantHarvestedData.put("plant_id",plantHarvested.getPlant_id());
-        plantHarvestedData.put("plant_type", plantHarvested.getPlant_type());
-        plantHarvestedData.put("expected_finish", plantHarvested.getExpected_finish());
-        plantHarvestedData.put("date_planted", plantHarvested.getDate_planted());
-        plantHarvestedData.put("is_growing", false);
-        String plantHarvestedType = plantHarvested.getPlant_type();
-        String plantHarvestedId = plantHarvested.getPlant_id();
-        DatabaseReference userPlantsRef = db.getReference("users").child(currUser.getUid()).child("plants").child("growing").child(plantHarvestedType).child(plantHarvestedId);
-        userPlantsRef.updateChildren(plantHarvestedData).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (!task.isSuccessful()) {
 
-                } else {
-                    updateHarvestDatabaseGarden(plantHarvested ,plantHarvestedId);
-                }
-            }
-        });
-    }
-
-     */
 
     private Task updateHarvestDatabaseGarden(GardenPlotPlant plantHarvested,String plantHarvestedId) {
         DatabaseReference userGardenRef = db.getReference("users").child(currUser.getUid()).child("plants").child("garden").child(plantHarvestedId);
@@ -463,30 +387,6 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
     }
 
 
-    /*
-    private void updateHarvestDatabaseGarden(GardenPlotPlant plantHarvested,String plantHarvestedId) {
-        DatabaseReference userGardenRef = db.getReference("users").child(currUser.getUid()).child("plants").child("garden").child(plantHarvestedId);
-
-        userGardenRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (!task.isSuccessful()) {
-
-                } else {
-                    plantHarvested.clearPlant();
-                    plantHarvested.getHolderView().setImageResource(plantIds.get("empty"));
-                    plantHarvested.getViewHolder().getPlotImage().setImageResource(plantIds.get("empty"));
-                    plantHarvested.getHolderView().setBackgroundResource(0);
-                    plantHarvested.getViewHolder().getPlotImage().setBackgroundResource(0);
-                    plantHarvested.setResId(plantIds.get("empty"));
-                }
-            }
-        });
-
-    }
-
-
-     */
     private void updateDeleteDatabasePlants(GardenPlotPlant plantDeleting) {
         String plantDeletingId = plantDeleting.getPlant_id();
         String plantDeletingType = plantDeleting.getPlant_type();

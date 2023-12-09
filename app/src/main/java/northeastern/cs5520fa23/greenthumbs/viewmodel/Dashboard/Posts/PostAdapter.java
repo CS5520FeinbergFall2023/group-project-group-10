@@ -72,17 +72,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
-        ImgPost post = postList.get(position);/*
-        holder.postUsername.setText(post.getUsername());
-        holder.postText.setText(post.getPost_text());
-        holder.numLikes.setText(String.valueOf(post.getNum_likes()));
-        holder.numComments.setText(String.valueOf(post.getNum_comments()));
-        String uri = post.getImg_uri();
-        if (uri != null && !uri.isEmpty()) {
-            Picasso.get().load(uri).into(holder.postImage);
-        }
+        ImgPost post = postList.get(position);
 
-         */
         if (post != null) {
 
             String _id = post.get_id();
@@ -112,7 +103,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     FirebaseDatabase.getInstance().getReference("posts").child(post.get_id()).child("likes").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            //int num = (int) snapshot.getChildrenCount();
+
                             int num = 0;
                             String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                             for (DataSnapshot likeSnapshot : snapshot.getChildren()) {
@@ -135,7 +126,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     holder.getLikesIcon().setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //usernameCallback.addLikeCallback(post);
+
                             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("posts").child(post.get_id()).child("likes").child(currUser.getUid());
                             if (!post.isLiked()) {
                                 Like newLike = new Like(currUser.getUid(), currUser.getUid());
@@ -161,9 +152,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                             }
                         }
                     });
-                    //if (num_likes > 0) {
-                    //    holder.getLikesIcon().setImageResource(R.drawable.like_filled);
-                    //}
+
                 }
                 if (replies != null) {
                     holder.getReplies().setText(replies.toString());
