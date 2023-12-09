@@ -35,19 +35,22 @@ public class MessageNotificationHelper {
         DatabaseReference userChatsRef = FirebaseDatabase.getInstance().getReference("chats");
 
         // Listen for any chat nodes that include the user
-        userChatsRef.orderByKey().startAt(userId + "_")//.endAt(userId + "_\uf8ff")
+        userChatsRef.orderByKey().startAt(userId + "_").endAt(userId + "_\uf8ff")
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String previousChildName) {
                         String chatNode = dataSnapshot.getKey();
-                        if (chatNode != null && chatNode.contains(userId)) {
+                        if (chatNode != null && chatNode.startsWith(userId)) {
                             listenToChatMessages(chatNode);
                         }
                     }
 
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String previousChildName) {
-
+                        String chatNode = dataSnapshot.getKey();
+                        if (chatNode != null && chatNode.startsWith(userId)) {
+                            listenToChatMessages(chatNode);
+                        }
                     }
 
                     @Override
@@ -67,7 +70,7 @@ public class MessageNotificationHelper {
                 });
     }
 
-    public void listenToChatMessages(String userId) {
+    public void listenToChatMessages(String chatNode) {
         DatabaseReference chatsRef = FirebaseDatabase.getInstance().getReference("chats");
 
         chatsRef.addChildEventListener(new ChildEventListener() {
@@ -75,7 +78,7 @@ public class MessageNotificationHelper {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String previousChildName) {
                 // Check if the node starts with the user ID
                 String chatNodeKey = dataSnapshot.getKey();
-                if (chatNodeKey != null && chatNodeKey.contains(userId)) {
+                if (chatNodeKey != null && chatNodeKey.contains(chatNode)) {
                     dataSnapshot.getRef().child("messages").orderByChild("timestamp").limitToLast(1)
                             .addChildEventListener(new ChildEventListener() {
                                 @Override
@@ -130,7 +133,7 @@ public class MessageNotificationHelper {
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 String chatNodeKey = snapshot.getKey();
-                if (chatNodeKey != null && chatNodeKey.startsWith(userId)) {
+                if (chatNodeKey != null && chatNodeKey.startsWith(chatNode)) {
                     snapshot.getRef().child("messages").orderByChild("timestamp").limitToLast(1)
                             .addChildEventListener(new ChildEventListener() {
                                 @Override
@@ -156,7 +159,22 @@ public class MessageNotificationHelper {
 
                                 @Override
                                 public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                    String messageTimestamp = snapshot.child("timestamp").getValue(String.class);
+                                    String lastNotifiedTimestamp = lastNotifiedPrefs.getString(chatNodeKey, "");
 
+                                    if (messageTimestamp != null && !messageTimestamp.equals(lastNotifiedTimestamp)) {
+                                        String messageContent = snapshot.child("messageContent").getValue(String.class);
+
+                                        lastNotifiedPrefs.edit().putString(chatNodeKey, messageTimestamp).apply();
+
+                                        if (messageContent != null) {
+                                            showNotification(
+                                                    "New Message in " + chatNodeKey,
+                                                    messageContent,
+                                                    R.drawable.baseline_notifications_24
+                                            );
+                                        }
+                                    }
                                 }
 
                                 @Override
@@ -174,7 +192,6 @@ public class MessageNotificationHelper {
 
                                 }
 
-                                // ... Implement other ChildEventListener methods as necessary ...
                             });
                 }
             }
@@ -207,7 +224,9 @@ public class MessageNotificationHelper {
                     .setAutoCancel(true);
 
             Notification notification = builder.build();
-            notificationManager.notify(generateUniqueNotificationId(), notification);
+            //builder.setChannelId("NOTIFICATION_CHANNEL");
+            //notificationManager.notify(generateUniqueNotificationId(), notification);
+            NotificationHelper.showNotification(this.context, title, content, iconResourceId);
         } else {
             // Permission is not granted, request the permission or handle accordingly
             // If this is an Activity, you can use ActivityCompat.requestPermissions to request the permission
@@ -215,7 +234,6 @@ public class MessageNotificationHelper {
     }
 
     private int generateUniqueNotificationId() {
-        // Implement a method to generate a unique notification ID
         return (int) (System.currentTimeMillis() & 0xfffffff);
     }
 }
