@@ -46,17 +46,28 @@
                 app:layout_constraintWidth_percent="0.9"
                 android:backgroundTint="@color/light_green"
                 android:background="@drawable/rounded_corners_background_lg">
-
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:text="Today"
+                    android:fontFamily="@font/youngserifregular"
+                    android:textAlignment="center"
+                    android:id="@+id/today_weather_header"
+                    app:layout_constraintBottom_toTopOf="@id/img_weather_today"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/img_weather_today"
+                    app:layout_constraintEnd_toEndOf="@id/img_weather_today"/>
                 <ImageView
                     android:id="@+id/img_weather_today"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:src="@drawable/baseline_question_mark_24"
-
+                    app:layout_constraintTop_toBottomOf="@id/today_weather_header"
                     app:layout_constraintEnd_toEndOf="@id/txt_weather_today"
                     app:layout_constraintStart_toStartOf="@id/txt_weather_today"
                     app:layout_constraintBottom_toTopOf="@id/txt_weather_today"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    />
 
                 <TextView
                     android:id="@+id/txt_weather_today"
@@ -71,12 +82,24 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/txt_weather_tomorrow"/>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:text="Tomorrow"
+                    android:fontFamily="@font/youngserifregular"
+                    android:textAlignment="center"
+                    android:id="@+id/tomorrow_weather_header"
+                    app:layout_constraintBottom_toTopOf="@id/img_weather_tomorrow"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/img_weather_tomorrow"
+                    app:layout_constraintEnd_toEndOf="@id/img_weather_tomorrow"/>
                 <ImageView
                     android:id="@+id/img_weather_tomorrow"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:src="@drawable/baseline_question_mark_24"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tomorrow_weather_header"
                     app:layout_constraintBottom_toTopOf="@id/txt_weather_tomorrow"
                     app:layout_constraintEnd_toEndOf="@id/txt_weather_tomorrow"
                     app:layout_constraintStart_toStartOf="@id/txt_weather_tomorrow"/>
@@ -94,12 +117,25 @@
                     app:layout_constraintStart_toEndOf="@id/txt_weather_today"
                     app:layout_constraintTop_toBottomOf="@id/img_weather_tomorrow" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:text="In Two Days"
+                    android:fontFamily="@font/youngserifregular"
+                    android:textAlignment="center"
+                    android:id="@+id/two_days_weather_header"
+                    app:layout_constraintBottom_toTopOf="@id/img_weather_day_after"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/img_weather_day_after"
+                    app:layout_constraintEnd_toEndOf="@id/img_weather_day_after"/>
+
                 <ImageView
                     android:id="@+id/img_weather_day_after"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:src="@drawable/baseline_question_mark_24"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/two_days_weather_header"
                     app:layout_constraintStart_toStartOf="@id/txt_weather_day_after"
                     app:layout_constraintEnd_toEndOf="@id/txt_weather_day_after"
                     app:layout_constraintBottom_toTopOf="@id/txt_weather_day_after"
