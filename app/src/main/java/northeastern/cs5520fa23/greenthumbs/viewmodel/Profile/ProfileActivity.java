@@ -210,9 +210,13 @@ public class ProfileActivity extends AppCompatActivity implements SocialAdapter.
                         headerImage.setEnabled(true);
                         profilePicture.setEnabled(true);
                     } else {
-                        saveProfileUpdates();
-                        editProfileButton.setText("Edit Profile");
-                        isEditing = false;
+                        if (userBioView.getText().length() > 40) {
+                            Toast.makeText(ProfileActivity.this, "Bio cannot be more than 40 characters", Toast.LENGTH_LONG).show();
+                        } else {
+                            saveProfileUpdates();
+                            editProfileButton.setText("Edit Profile");
+                            isEditing = false;
+                        }
                     }
                 }
             });

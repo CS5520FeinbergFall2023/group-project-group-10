@@ -38,8 +38,9 @@
     <EditText
         android:id="@+id/profile_name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         app:layout_constraintHeight_percent="0.025"
+        app:layout_constraintHeight_min="wrap"
         app:layout_constraintTop_toBottomOf="@id/profile_prof_pic"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -50,6 +51,7 @@
         android:id="@+id/profile_user_bio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="15dp"
         app:layout_constraintHeight_percent="0.025"
         app:layout_constraintTop_toBottomOf="@id/profile_name"
         app:layout_constraintStart_toStartOf="parent"
