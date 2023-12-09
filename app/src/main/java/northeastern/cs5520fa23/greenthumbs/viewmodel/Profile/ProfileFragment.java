@@ -309,7 +309,7 @@ public class ProfileFragment extends Fragment implements SocialAdapter.UsernameC
                         profilePicture.setEnabled(true);
                     } else {
                         saveProfileUpdates();
-                        editProfileButton.setText("Edit Profile");
+                        editProfileButton.setText("Edit");
                         isEditing = false;
                     }
                 }
