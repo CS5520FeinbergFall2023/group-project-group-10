@@ -29,7 +29,8 @@
         app:layout_constraintHeight_min="wrap"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintHeight_percent=".08"
+        app:layout_constraintBottom_toTopOf="@id/social_swipe_refresh"
+        app:layout_constraintHeight_percent=".1"
         app:layout_constraintWidth_percent=".45"/>
     <Switch
         android:id="@+id/friends_switch"
@@ -41,15 +42,17 @@
         app:layout_constraintHeight_percent=".08"
         android:text="Toggle Friends Only"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/social_swipe_refresh"
         app:layout_constraintStart_toEndOf="@id/social_search_view" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintHeight_percent=".92"
+        app:layout_constraintHeight_percent=".88"
         android:id="@+id/social_swipe_refresh"
-        app:layout_constraintTop_toBottomOf="@id/friends_switch"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/social_recycler_view"
             android:layout_width="match_parent"
@@ -57,7 +60,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/friends_switch" />
+            app:layout_constraintTop_toBottomOf="parent" />
 
 
 
