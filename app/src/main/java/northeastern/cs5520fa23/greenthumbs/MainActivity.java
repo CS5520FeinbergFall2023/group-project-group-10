@@ -204,19 +204,8 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
 
-
-        if (getIntent().getExtras() != null) {
-            if (getIntent().getBundleExtra("profile_info") != null) {
-                ArrayList<String> profileInfo = getIntent().getBundleExtra("profile_info").getStringArrayList("user_info");
-                if (profileInfo != null) {
-                    String goUsername = profileInfo.get(0);
-                    String goUid = profileInfo.get(1);
-                    profileFragment = ProfileFragment.newInstance(goUsername, goUid);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, profileFragment).addToBackStack(null).commit();
-                }
-            }
-        }
-
+        // Set Up Navigation Component by giving bottom navbar and fragment container to the controller.
+        // Menu item and fragments are linked because they share same id
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         NavController navController = navHostFragment.getNavController();
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav_menu);
