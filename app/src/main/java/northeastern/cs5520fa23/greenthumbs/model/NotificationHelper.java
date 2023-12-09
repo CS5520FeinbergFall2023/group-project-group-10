@@ -32,7 +32,7 @@ public class NotificationHelper {
             return;
         }
 
-        //createNotificationChannelIfNeeded(notificationManager);
+        createNotificationChannelIfNeeded(notificationManager);
 
         int notificationID = generateUniqueNotificationId();
         Intent notificationIntent = new Intent(context, MainActivity.class);
@@ -54,7 +54,7 @@ public class NotificationHelper {
                 @Override
                 public void onBitmapLoaded(Bitmap bmp, Picasso.LoadedFrom from) {
                     builder.setLargeIcon(bmp);
-
+                    builder.setChannelId(CHANNEL_ID);
                     Notification notification = builder.build();
                     notificationManager.notify(generateUniqueNotificationId(), notification);
                 }
@@ -70,11 +70,12 @@ public class NotificationHelper {
             });
         } else {
             // If no image URL, just show the notification as usual
+            builder.setChannelId(CHANNEL_ID);
             Notification notification = builder.build();
             notificationManager.notify(generateUniqueNotificationId(), notification);
         }
-        /*
-        builder.setChannelId(CHANNEL_ID);
+
+        /*builder.setChannelId(CHANNEL_ID);
         Notification notification = builder.build();
         notificationManager.notify(notificationID, notification);*/
     }
