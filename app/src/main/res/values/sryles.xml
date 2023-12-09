@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ToolbarTheme">
+        <item name="android:fontFamily">@font/youngserifregular</item>
+    </style>
+
+</resources>
