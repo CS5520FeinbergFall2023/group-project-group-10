@@ -167,7 +167,7 @@ public class CreatePostDialog extends DialogFragment {
                 post.put("post_text", postText.getText().toString());
                 post.put("uid", currUser.getUid().toString());
                 post.put("geo_location", getCurrentLocation());
-                if (post.get(postId) == null) {
+                if (post.get("_id") == null) {
                     Toast.makeText(getContext(), "Unable to create post", Toast.LENGTH_SHORT).show();
                     CreatePostDialog.this.getDialog().cancel();
                 }
@@ -248,7 +248,7 @@ public class CreatePostDialog extends DialogFragment {
             dbRef.child("posts").child(postId).setValue(post).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void unused) {
-                    CreatePostDialog.this.getDialog().cancel();
+                    Objects.requireNonNull(CreatePostDialog.this.getDialog()).cancel();
                 }
             });
         }
