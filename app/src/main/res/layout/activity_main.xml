@@ -15,7 +15,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:title="GreenThumbs"
-        app:titleTextColor="#356859" />
+        app:titleTextColor="#356859"
+        />
     <FrameLayout
         android:id="@+id/main_frame"
         android:layout_width="0dp"
@@ -50,6 +51,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/navbar"
         android:background="#379665"
-        android:id="@+id/bottom_nav_menu"/>
+        android:id="@+id/bottom_nav_menu"
+        app:itemIconTint="@color/light_yellow"
+        app:itemTextColor="@color/light_yellow"
+        app:itemIconSize="28dp"
+        app:itemTextAppearanceActive="@font/youngserifregular"
+        app:itemTextAppearanceActiveBoldEnabled="false"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
