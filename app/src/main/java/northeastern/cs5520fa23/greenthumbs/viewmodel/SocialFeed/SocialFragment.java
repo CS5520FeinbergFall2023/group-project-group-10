@@ -51,6 +51,7 @@ import northeastern.cs5520fa23.greenthumbs.model.SocialAlgo;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.FriendsUsers.UsersActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Messages.Chat.ChatActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.Friend;
+import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileActivity;
 import northeastern.cs5520fa23.greenthumbs.viewmodel.Profile.ProfileFragment;
 
 /**
@@ -304,8 +305,16 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                             ImgPost currPost = dataSnapshot.getValue(ImgPost.class);
-                                postList.add(currPost);
-                                originalPosts.add(currPost);
+                            if (currPost != null) {
+                                if (currPost.get_id() != null) {
+                                    //if (currPost.getTags() != null) {
+                                        postList.add(currPost);
+                                        originalPosts.add(currPost);
+                                        //socialAdapter.notifyDataSetChanged();
+                                    //}
+                                }
+                            }
+
 
                         }
                         getUserTopPlants(refreshOnFriends);
@@ -333,8 +342,16 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
 
     @Override
     public void openProfileCallback(String username, String posterId) {
-        Fragment profileFragment = ProfileFragment.newInstance(username, posterId);
-        getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), profileFragment).addToBackStack(null).commit();
+        //Fragment profileFragment = ProfileFragment.newInstance(username, posterId);
+        //getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), profileFragment).addToBackStack(null).commit();
+        Intent i = new Intent(getContext(), ProfileActivity.class);
+        Bundle extras = new Bundle();
+        ArrayList<String> userInfo = new ArrayList<>();
+        userInfo.add(username);
+        userInfo.add(posterId);
+        extras.putStringArrayList("user_info", userInfo);
+        i.putExtra("profile_info", extras);
+        this.startActivity(i);
     }
 
     @Override

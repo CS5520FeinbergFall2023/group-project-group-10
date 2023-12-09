@@ -48,6 +48,14 @@ public class SignUpPageActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.editTextTextPassword);
         signUpButton = findViewById(R.id.SignUpbutton);
 
+        if (savedInstanceState != null) {
+            usernameEditText.setText(savedInstanceState.getString("username", ""));
+            firstNameEditText.setText(savedInstanceState.getString("firstName", ""));
+            lastNameEditText.setText(savedInstanceState.getString("lastName", ""));
+            emailEditText.setText(savedInstanceState.getString("email", ""));
+            passwordEditText.setText(savedInstanceState.getString("password", ""));
+        }
+
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,6 +121,17 @@ public class SignUpPageActivity extends AppCompatActivity {
         startActivity(i);
         finish();
     }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("username", usernameEditText.getText().toString());
+        outState.putString("firstName", firstNameEditText.getText().toString());
+        outState.putString("lastName", lastNameEditText.getText().toString());
+        outState.putString("email", emailEditText.getText().toString());
+        outState.putString("password", passwordEditText.getText().toString());
+    }
+
 
     private boolean validateInput(String username, String firstName, String lastName, String email, String password) {
         if(username.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()){

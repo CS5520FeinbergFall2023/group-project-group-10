@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+
+<gradient
+android:type="radial"
+android:gradientRadius="100"
+android:startX="100"
+android:startY="100"
+android:endX="100"
+android:endY="100"
+android:startColor="#00FFFFFF"
+android:endColor="#FFFFFFFF"
+android:centerX="50%"
+android:centerY="50%"/>
+
+<path
+android:fillColor="@android:color/white"
+android:pathData="M60,130
+                         a40,20 0 1,0 80,0
+                         a40,20 0 1,0 -80,0
+                         M140,130
+                         a40,20 0 1,0 80,0
+                         a40,20 0 1,0 -80,0
+                         M100,100
+                         a50,25 0 1,0 100,0
+                         a50,25 0 1,0 -100,0"/>
+    </vector>

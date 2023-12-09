@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_yellow"
+    tools:context=".viewmodel.Profile.ProfileActivity">
+
+    <ImageView
+        android:id="@+id/profile_header_image_activity"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/black"
+        app:layout_constraintHeight_percent=".2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/profile_name_activity"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"/>
+    <ImageView
+        android:id="@+id/profile_prof_pic_activity"
+        android:background="@color/white"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:layout_constraintBottom_toBottomOf="@id/profile_header_image_activity"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"/>
+
+    <Button
+        android:id="@+id/profile_edit_button_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:text="edit profile"
+        android:backgroundTint="@color/dark_green"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <EditText
+        android:id="@+id/profile_name_activity"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_min="wrap"
+        app:layout_constraintHeight_percent="0.04"
+        app:layout_constraintWidth_percent="1"
+        android:gravity="center"
+        android:fontFamily="@font/youngserifregular"
+        android:textColor="@color/dark_green"
+        app:layout_constraintTop_toBottomOf="@id/profile_prof_pic_activity"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/profile_user_bio_activity"
+        android:text="NAME HERE"
+        android:background="@null"
+        android:inputType="none"/>
+    <EditText
+        android:id="@+id/profile_user_bio_activity"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_min="wrap"
+        android:fontFamily="@font/youngserifregular"
+        android:textColor="@color/dark_green"
+        app:layout_constraintHeight_percent="0.04"
+        app:layout_constraintWidth_percent="1"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/profile_name_activity"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        android:text="No Bio Yet"
+        android:background="@null"/>
+
+    <Button
+        android:id="@+id/profile_friend_button_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="Add Friend"
+        android:backgroundTint="@color/dark_green"
+        app:layout_constraintHeight_min="40dp"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintTop_toBottomOf="@id/profile_user_bio_activity"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/profile_posts_rv_activity"
+        app:layout_constraintEnd_toStartOf="@id/profile_msg_button_activity"/>
+    <Button
+        android:id="@+id/profile_msg_button_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="Message"
+        android:backgroundTint="@color/dark_green"
+        app:layout_constraintHeight_min="40dp"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintTop_toBottomOf="@id/profile_user_bio_activity"
+        app:layout_constraintStart_toEndOf="@+id/profile_friend_button_activity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/profile_posts_rv_activity"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/profile_posts_rv_activity"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.65"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_friend_button_activity"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

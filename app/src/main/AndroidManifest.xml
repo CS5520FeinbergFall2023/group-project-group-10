@@ -7,8 +7,12 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -20,6 +24,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GreenThumbs"
         tools:targetApi="31">
+        <activity
+            android:name=".viewmodel.Profile.ProfileActivity"
+            android:exported="false" />
+        <activity android:name=".viewmodel.Settings.UserSettingsActivity"></activity>
         <activity
             android:name=".viewmodel.Garden.GardenStats.GardenStatsActivity"
             android:exported="false" />
@@ -59,6 +67,8 @@
         </activity>
 
         <service android:name=".model.services.WeatherService" />
+        <service android:name=".model.services.PlantRecommendationService" />
+        <service android:name=".model.services.BackgroundService" android:exported="false"/>
     </application>
 
 </manifest>
