@@ -24,6 +24,7 @@ import androidx.work.WorkManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -210,6 +211,15 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = navHostFragment.getNavController();
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav_menu);
         NavigationUI.setupWithNavController(bottomNav, navController);
+
+        // Lock orientation for garden fragment
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            if (destination.getId() == R.id.garden_menu_item) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            } else if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+            }
+        });
     }
 
     @Override
