@@ -65,6 +65,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TimeZone;
 
 import northeastern.cs5520fa23.greenthumbs.R;
 
@@ -158,7 +159,9 @@ public class CreatePostDialog extends DialogFragment {
                 progress_bar.setVisibility(View.VISIBLE);
 
                 String postId = dbRef.child("posts").push().getKey();
-                String currentTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).format(new Date());
+                SimpleDateFormat currentTimestampSDF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                currentTimestampSDF.setTimeZone(TimeZone.getTimeZone("EST"));
+                String currentTimestamp = currentTimestampSDF.format(new Date());
                 post.put("_id", postId);
                 post.put("num_likes", 0);
                 post.put("timestamp", currentTimestamp);
