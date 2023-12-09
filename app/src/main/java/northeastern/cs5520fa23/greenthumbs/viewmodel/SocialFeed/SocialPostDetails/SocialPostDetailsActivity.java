@@ -67,7 +67,7 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
     private FirebaseDatabase db;
     private DatabaseReference dbRef;
     private DatabaseReference commentRef;
-    private NestedScrollView scrollView;
+    //private NestedScrollView scrollView;
     FirebaseUser currUser;
     private Map<String, Object> newComment;
 
@@ -78,7 +78,7 @@ public class SocialPostDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.social_post_detailed);
         this._id = getIntent().getStringExtra("_id");
         currUser = FirebaseAuth.getInstance().getCurrentUser();
-        scrollView = findViewById(R.id.post_detail_content_sv);
+        //scrollView = findViewById(R.id.post_detail_content_sv);
         newComment = new HashMap<>();
         db = FirebaseDatabase.getInstance();
         //String postPath = "posts/" + this._id;
