@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,7 +18,7 @@ public class LogInPageActivity extends AppCompatActivity {
     private EditText passwordEditText;
     private Button logInButton;
     private FirebaseAuth mAuth;
-
+    private ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +27,7 @@ public class LogInPageActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.edit_text_email_login);
         passwordEditText = findViewById(R.id.edit_text_pass_login);
         logInButton = findViewById(R.id.enter_log_in);
+        progressBar = findViewById(R.id.progressBar);
 
         if (savedInstanceState != null) {
             emailEditText.setText(savedInstanceState.getString("email", ""));
@@ -47,6 +49,7 @@ public class LogInPageActivity extends AppCompatActivity {
     }
 
     private void signInUser(String email, String password) {
+        progressBar.setVisibility(View.VISIBLE);
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
@@ -56,6 +59,7 @@ public class LogInPageActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                     }
+                    progressBar.setVisibility(View.GONE);
                 });
     }
 

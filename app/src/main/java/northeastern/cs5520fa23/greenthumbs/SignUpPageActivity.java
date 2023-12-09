@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +33,7 @@ public class SignUpPageActivity extends AppCompatActivity {
     private FirebaseFirestore db;
 
     private FirebaseAuth mAuth;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,7 @@ public class SignUpPageActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.editTextemail);
         passwordEditText = findViewById(R.id.editTextTextPassword);
         signUpButton = findViewById(R.id.SignUpbutton);
+        progressBar = findViewById(R.id.progressBar);
 
         if (savedInstanceState != null) {
             usernameEditText.setText(savedInstanceState.getString("username", ""));
@@ -66,16 +69,19 @@ public class SignUpPageActivity extends AppCompatActivity {
                 String password = passwordEditText.getText().toString().trim();
 
                 if(validateInput(username, firstName, lastName, email, password)) {
+                    progressBar.setVisibility(View.VISIBLE);
                     createUser(email, password, username, firstName, lastName, new UserCreationCallback() {
                         @Override
                         public void onSuccess(FirebaseUser fbUser) {
                             Toast.makeText(SignUpPageActivity.this, "Successfully created the user!", Toast.LENGTH_SHORT).show();
+                            progressBar.setVisibility(View.GONE);
                             moveToLogin();
                         }
 
                         @Override
                         public void onFailure(Exception e) {
                             // Handle failure in user creation
+                            progressBar.setVisibility(View.GONE);
                             Toast.makeText(SignUpPageActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
