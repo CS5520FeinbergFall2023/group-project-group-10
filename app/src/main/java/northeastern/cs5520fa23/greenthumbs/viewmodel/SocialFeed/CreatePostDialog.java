@@ -156,6 +156,9 @@ public class CreatePostDialog extends DialogFragment {
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                cancelButton.setEnabled(false);
+                addImgButton.setEnabled(false);
+                postButton.setEnabled(false);
                 progress_bar.setVisibility(View.VISIBLE);
 
                 String postId = dbRef.child("posts").push().getKey();

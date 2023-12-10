@@ -18,6 +18,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -118,12 +119,18 @@ public class ProfileActivity extends AppCompatActivity implements SocialAdapter.
                         Intent data = o.getData();
                         if (data.getData() != null) {
                             Uri uri = data.getData();
-                            try {
-                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                                headerImage.setImageBitmap(bitmap);
-                                headerEdited = true;
-                            } catch (Exception e) {
-                                Toast.makeText(ProfileActivity.this, "Unable to get image", Toast.LENGTH_SHORT).show();
+                            if (uri != null) {
+                                try {
+                                    //Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                                    //if (bitmap != null) {
+                                        //headerImage.setImageBitmap(bitmap);
+                                        headerUri = uri;
+                                        headerImage.setImageURI(uri);
+                                        headerEdited = true;
+                                    //}
+                                } catch (Exception e) {
+                                    Toast.makeText(ProfileActivity.this, "Unable to get image", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
                     }
@@ -139,13 +146,20 @@ public class ProfileActivity extends AppCompatActivity implements SocialAdapter.
                         Intent data = o.getData();
                         if (data.getData() != null) {
                             Uri uri = data.getData();
-                            try {
-                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                                profilePicture.setImageBitmap(bitmap);
-                                profilePictureEdited = true;
-                            } catch (Exception e) {
-                                Toast.makeText(ProfileActivity.this, "Unable to get image", Toast.LENGTH_SHORT).show();
+                            if (uri != null) { // bitmaps were too large to bundle
+                                try {
+                                    //Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                                    //if (bitmap != null) {
+                                        //profilePicture.setImageBitmap(bitmap);
+                                        profPicUri = uri;
+                                        profilePicture.setImageURI(uri);
+                                        profilePictureEdited = true;
+                                    //}
+                                } catch (Exception e) {
+                                    Toast.makeText(ProfileActivity.this, "Unable to get image", Toast.LENGTH_SHORT).show();
+                                }
                             }
+
                         }
                     }
                 }
@@ -198,16 +212,61 @@ public class ProfileActivity extends AppCompatActivity implements SocialAdapter.
             profilePictureEdited = savedInstanceState.getBoolean("profilePictureEdited", false);
 
             if (headerEdited) {
-                Bitmap headerBitmap = savedInstanceState.getParcelable("headerBitmap");
-                if (headerBitmap != null) {
-                    headerImage.setImageBitmap(headerBitmap);
+                if (savedInstanceState.containsKey("headerUri")) {
+                    Uri savedHeaderUri = savedInstanceState.getParcelable("headerUri");
+                    headerUri = savedHeaderUri;
+                    headerImage.setImageURI(headerUri);
                 }
+                /*
+                if (savedInstanceState.containsKey("headerByteArraySize")
+                        && savedInstanceState.containsKey("headerByteArray")) {
+                    int arraySize = savedInstanceState.getInt("headerByteArraySize");
+                    byte[] byteArray = savedInstanceState.getByteArray("headerByteArray");
+                    Bitmap headerBitmap = BitmapFactory.decodeByteArray(byteArray, 0, arraySize);
+                    if (headerBitmap != null) {
+                        headerImage.setImageBitmap(headerBitmap);
+                    }
+                }
+
+                 */
+                /*
+                if (savedInstanceState.containsKey("headerBitmap")) {
+                    Bitmap headerBitmap = savedInstanceState.getParcelable("headerBitmap");
+                    if (headerBitmap != null) {
+                        headerImage.setImageBitmap(headerBitmap);
+                    }
+                }
+
+                 */
             }
             if (profilePictureEdited) {
-                Bitmap profileBitmap = savedInstanceState.getParcelable("profileBitmap");
-                if (profileBitmap != null) {
-                    profilePicture.setImageBitmap(profileBitmap);
+                if (savedInstanceState.containsKey("profilePicUri")) {
+                    Uri savedProfPicUri = savedInstanceState.getParcelable("profilePicUri");
+                    profPicUri = savedProfPicUri;
+                    profilePicture.setImageURI(profPicUri);
                 }
+                /*
+                if (savedInstanceState.containsKey("proPicByteArraySize")
+                        && savedInstanceState.containsKey("proPicByteArray")) {
+                    int arraySize = savedInstanceState.getInt("proPicByteArraySize");
+                    byte[] byteArray = savedInstanceState.getByteArray("proPicByteArraySize");
+                    Bitmap proPicBitmap = BitmapFactory.decodeByteArray(byteArray, 0, arraySize);
+                    if (proPicBitmap != null) {
+                        headerImage.setImageBitmap(proPicBitmap);
+                    }
+                }
+
+                 */
+
+                /*
+                if (savedInstanceState.containsKey("profileBitmap")) {
+                    Bitmap profileBitmap = savedInstanceState.getParcelable("profileBitmap");
+                    if (profileBitmap != null) {
+                        profilePicture.setImageBitmap(profileBitmap);
+                    }
+                }
+
+                 */
             }
 
             if (isEditing) {
@@ -438,36 +497,43 @@ public class ProfileActivity extends AppCompatActivity implements SocialAdapter.
             //Boolean t = profPicStorageRef == null;
             //Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_LONG).show();
             Bitmap bitmap = ((BitmapDrawable) profilePicture.getDrawable()).getBitmap();
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-            byte[] data = outputStream.toByteArray();
-
-
-            UploadTask uploadTask = profPicStorageRef.putBytes(data); // upload then on the upload get the download link for the post
-            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            String link = uri.toString();
-                            db.getReference("users").child(currUser.getUid()).child("profile_pic").setValue(link).addOnSuccessListener(new OnSuccessListener<Void>() {
+            if (bitmap != null) {
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                if (outputStream != null) {
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                    if (bitmap != null) {
+                        byte[] data = outputStream.toByteArray();
+                        if (data != null && data.length > 0) {
+                            UploadTask uploadTask = profPicStorageRef.putBytes(data); // upload then on the upload get the download link for the post
+                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override
-                                public void onSuccess(Void unused) {
-                                    if (headerEdited) {
-                                        updates.put("profile_picture", link);
-                                        uploadHeaderImage(updates);
-                                    } else {
-                                        finishProfileUpdates(updates);
-                                    }
-                                    //CreatePostDialog.this.getDialog().cancel();
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            String link = uri.toString();
+                                            db.getReference("users").child(currUser.getUid()).child("profile_pic").setValue(link).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+                                                    if (headerEdited) {
+                                                        updates.put("profile_picture", link);
+                                                        uploadHeaderImage(updates);
+                                                    } else {
+                                                        finishProfileUpdates(updates);
+                                                    }
+                                                    //CreatePostDialog.this.getDialog().cancel();
+                                                }
+                                            });
+                                        }
+                                    });
+
                                 }
                             });
                         }
-                    });
 
+                    }
                 }
-            });
+            }
         } else {
             uploadHeaderImage(updates);
             finishProfileUpdates(updates);
@@ -488,32 +554,41 @@ public class ProfileActivity extends AppCompatActivity implements SocialAdapter.
             //Boolean t = profPicStorageRef == null;
             //Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_LONG).show();
             Bitmap bitmap = ((BitmapDrawable) headerImage.getDrawable()).getBitmap();
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-            byte[] data = outputStream.toByteArray();
-
-
-            UploadTask uploadTask = headerStorageRef.putBytes(data); // upload then on the upload get the download link for the post
-            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            String link = uri.toString();
-                            db.getReference("users").child(currUser.getUid()).child("header_image").setValue(link).addOnSuccessListener(new OnSuccessListener<Void>() {
+            if (bitmap != null) {
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                if (outputStream != null) {
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                    if (bitmap != null) {
+                        byte[] data = outputStream.toByteArray();
+                        if (data != null && data.length > 0) {
+                            UploadTask uploadTask = headerStorageRef.putBytes(data); // upload then on the upload get the download link for the post
+                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override
-                                public void onSuccess(Void unused) {
-                                    updates.put("header_image", link);
-                                    finishProfileUpdates(updates);
-                                    //CreatePostDialog.this.getDialog().cancel();
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            String link = uri.toString();
+                                            db.getReference("users").child(currUser.getUid()).child("header_image").setValue(link).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+                                                    updates.put("header_image", link);
+                                                    finishProfileUpdates(updates);
+                                                    //CreatePostDialog.this.getDialog().cancel();
+                                                }
+                                            });
+                                        }
+                                    });
+
                                 }
                             });
                         }
-                    });
-
+                    }
                 }
-            });
+            }
+
+
+
         } else {
             finishProfileUpdates(updates);
         }
@@ -636,13 +711,50 @@ public class ProfileActivity extends AppCompatActivity implements SocialAdapter.
         outState.putBoolean("headerEdited", headerEdited);
         outState.putBoolean("profilePictureEdited", profilePictureEdited);
 
-        if (headerEdited && headerImage.getDrawable() != null) {
+        if (headerEdited && headerImage.getDrawable() != null && headerUri != null) {
+            outState.putParcelable("headerUri", headerUri);
+            /*
             Bitmap headerBitmap = ((BitmapDrawable) headerImage.getDrawable()).getBitmap();
-            outState.putParcelable("headerBitmap", headerBitmap);
+            if (headerBitmap != null) {
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                if (outputStream != null) {
+                    headerBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                    if (headerBitmap != null) {
+                        byte[] data = outputStream.toByteArray();
+                        if (data != null && data.length > 0) {
+                            outState.putInt("headerByteArraySize", data.length);
+                            //outState.putParcelable("headerBitmap", headerBitmap);
+                            outState.putByteArray("headerByteArray", data);
+                        }
+                    }
+                }
+
+            }
+
+             */
         }
-        if (profilePictureEdited && profilePicture.getDrawable() != null) {
+        if (profilePictureEdited && profilePicture.getDrawable() != null && profPicUri != null) {
+            outState.putParcelable("profilePicUri", profPicUri);
+            /*
             Bitmap profileBitmap = ((BitmapDrawable) profilePicture.getDrawable()).getBitmap();
-            outState.putParcelable("profileBitmap", profileBitmap);
+            if (profileBitmap != null) {
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                if (outputStream != null) {
+                    profileBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                    if (profileBitmap != null) {
+                        byte[] data = outputStream.toByteArray();
+                        if (data != null && data.length > 0) {
+                            outState.putInt("proPicByteArraySize", data.length);
+                            //outState.putParcelable("headerBitmap", headerBitmap);
+                            outState.putByteArray("proPicByteArray", data);
+                        }
+                    }
+                }
+                //outState.putParcelable("profileBitmap", profileBitmap);
+                }
+             */
+
+
         }
     }
 
