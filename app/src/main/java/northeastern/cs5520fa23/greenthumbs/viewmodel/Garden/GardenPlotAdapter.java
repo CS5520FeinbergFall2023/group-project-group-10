@@ -167,9 +167,7 @@ public class GardenPlotAdapter extends RecyclerView.Adapter<GardenPlotViewHolder
                                 view.invalidate();
                                 return true;
                             } else {
-                                //Log.d("PLANT ID LOG", "IMG AT " + position);
-                                //Log.d("PLANT ID LOG", "HOLDER ID " + holder.getPlantId());
-                                //Log.d("PLANT ID LOG", "PLANT ID  " + plant.getPlant_id());
+
                                 return false;
 
                             }

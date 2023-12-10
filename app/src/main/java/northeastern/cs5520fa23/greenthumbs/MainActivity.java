@@ -94,25 +94,6 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
 
 
-    /*@Override
-    protected void onStart() {
-        super.onStart();
-
-    }
-
-     */
-
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        toolbar = findViewById(R.id.toolbar);
-        MenuItem notifications = menu.findItem(R.id.appbar_notifications);
-        // use a layerdrawable with the number of notifications
-
-        return true;
-    }
-
-     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

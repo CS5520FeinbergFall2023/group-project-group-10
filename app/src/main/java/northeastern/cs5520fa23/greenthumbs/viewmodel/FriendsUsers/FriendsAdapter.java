@@ -66,7 +66,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendViewHolder> {
     @NonNull
     @Override
     public FriendViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        //Friend f = new Friend(parent.getContext());
+
         return new FriendViewHolder(LayoutInflater.from(context).inflate(R.layout.user_activity_friend_card, parent, false));
     }
 
@@ -105,10 +105,10 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendViewHolder> {
                         public void onComplete(@NonNull Task<Uri> task) {
                             if (!task.isSuccessful()) {
                                 Log.d("HAS_NO_PIC", profPicRef.toString());
-                                //Picasso.get().load(R.drawable.baseline_person_24).resize(50, 50).centerCrop().into(holder.getProfilePicture());
+
                             } else {
                                 Uri uri = task.getResult();
-                                //Picasso.get().load(uri).resize(40, 40).centerCrop().into(holder.getPostProfPic());
+
                                 Picasso.get().load(uri).resize(30, 30).into(holder.getProfilePicture(), new Callback() {
                                     @Override
                                     public void onSuccess() {
@@ -129,23 +129,6 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendViewHolder> {
                         }
                     });
                 }
-                /*
-                if (fId.equals(currUid)) {
-                    holder.getIsFriendText().setText("YOU");
-                    holder.getAddFriendButton().setImageResource(R.drawable.baseline_check_24);
-
-                }
-                if (friendIds.containsKey(fId)) {
-                    Friend friend = friendIds.get(fId);
-                    if (friend.getStatus() != null) {
-                        holder.getIsFriendText().setText(friend.getStatus());
-                    }
-                    if (friend.getStatus().toLowerCase().contains("friends")) {
-                        holder.getAddFriendButton().setImageResource(R.drawable.baseline_check_24);
-                    }
-                }
-
-                 */
 
             }
         } catch (Exception e) {
