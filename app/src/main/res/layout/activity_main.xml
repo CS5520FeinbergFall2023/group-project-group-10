@@ -14,33 +14,35 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="         GreenThumbs"
-        app:titleTextColor="#356859" />
+        app:title="GreenThumbs"
+        app:titleTextColor="#356859"
+        android:theme="@style/ToolbarTheme"
+        />
     <FrameLayout
         android:id="@+id/main_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="-16dp"
-        tools:layout_editor_absoluteY="347dp">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/bottom_nav_menu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        android:visibility="gone"
+        >
 
-        <ImageButton
-            android:id="@+id/btnShowSetLocation"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/home_image"
-            android:contentDescription="@string/set_location_description"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:backgroundTint="#FFFBE6"/>
     </FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/overlay_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toTopOf="@id/bottom_nav_menu"
+
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"
@@ -50,6 +52,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/navbar"
         android:background="#379665"
-        android:id="@+id/bottom_nav_menu"/>
+        android:id="@+id/bottom_nav_menu"
+        app:itemIconTint="@color/light_yellow"
+        app:itemTextColor="@color/light_yellow"
+        app:itemIconSize="28dp"
+        app:itemTextAppearanceActive="@font/youngserifregular"
+        app:itemTextAppearanceActiveBoldEnabled="false"
+        android:theme="@style/ToolbarTheme"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

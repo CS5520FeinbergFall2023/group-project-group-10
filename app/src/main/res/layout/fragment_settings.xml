@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_yellow">
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/AccountSettingsbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/dark_green"
+        android:fontFamily="@font/youngserifregular"
+        android:text="@string/account_settings"
+        android:textColor="@color/light_green"
+        app:layout_constraintBottom_toTopOf="@+id/SetLocationbtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        android:layout_marginBottom="32dp"/>
+
+    <Button
+        android:id="@+id/SetLocationbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/dark_green"
+        android:fontFamily="@font/youngserifregular"
+        android:text="@string/set_location"
+        android:textColor="@color/light_green"
+        app:layout_constraintBottom_toTopOf="@id/Informationbtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/AccountSettingsbtn"
+        android:layout_marginBottom="32dp"
+        />
+
+    <Button
+        android:id="@+id/Informationbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/dark_green"
+        android:fontFamily="@font/youngserifregular"
+        android:text="@string/information"
+        android:textColor="@color/light_green"
+        app:layout_constraintBottom_toTopOf="@id/LogOutBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/SetLocationbtn"
+        android:layout_marginBottom="32dp"
+        />
+
+    <Button
+        android:id="@+id/LogOutBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/dark_green"
+        android:fontFamily="@font/youngserifregular"
+        android:text="@string/log_out"
+        android:textColor="@color/light_green"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Informationbtn"
+        android:layout_marginBottom="32dp"
+        />
+
+    <FrameLayout
+        android:id="@+id/overlay_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/light_yellow"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/AccountSettingsLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/youngserifregular"
+        android:textColor="@color/dark_green"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toTopOf="@id/editUsernameSetting"
+        android:text="@string/account_settings"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <EditText
+        android:id="@+id/editUsernameSetting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+
+        android:fontFamily="@font/youngserifregular"
+        android:textColorHint="@color/dark_green"
+        app:layout_constraintBottom_toTopOf="@id/editFirstNameSetting"
+        app:layout_constraintTop_toBottomOf="@id/AccountSettingsLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <EditText
+        android:id="@+id/editFirstNameSetting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+
+        android:fontFamily="@font/youngserifregular"
+        android:textColorHint="@color/dark_green"
+        app:layout_constraintBottom_toTopOf="@id/editLastNameSetting"
+        app:layout_constraintTop_toBottomOf="@id/editUsernameSetting"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <EditText
+        android:id="@+id/editLastNameSetting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:fontFamily="@font/youngserifregular"
+        android:textColorHint="@color/dark_green"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/save_changes_settings"
+        app:layout_constraintTop_toBottomOf="@id/editFirstNameSetting" />
+
+    <Button
+        android:id="@+id/save_changes_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/light_green"
+        android:fontFamily="@font/youngserifregular"
+        android:text="@string/save_changes"
+        android:textColor="@color/dark_green"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editLastNameSetting"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/EditUsernameTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:fontFamily="@font/youngserifregular"
+        android:textColor="@color/dark_green"
+        app:layout_constraintBottom_toTopOf="@id/editUsernameSetting"
+        android:text="@string/edit_username"
+        tools:layout_editor_absoluteX="80dp"
+        tools:layout_editor_absoluteY="181dp" />
+
+    <TextView
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/EditFirstNameTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/youngserifregular"
+        android:textColor="@color/dark_green"
+        android:text="@string/edit_first_name"
+        app:layout_constraintBottom_toTopOf="@+id/editFirstNameSetting"
+        tools:layout_editor_absoluteX="81dp"
+        tools:layout_editor_absoluteY="315dp" />
+
+    <TextView
+        android:id="@+id/EditLastNameTV"
+        android:layout_width="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/editLastNameSetting"
+        android:layout_height="wrap_content"
+        android:text="@string/edit_last_name"
+        android:fontFamily="@font/youngserifregular"
+        android:textColor="@color/dark_green"
+        tools:layout_editor_absoluteX="90dp"
+        tools:layout_editor_absoluteY="448dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

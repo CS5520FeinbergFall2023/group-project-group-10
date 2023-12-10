@@ -8,14 +8,62 @@
     android:background="#FFFBE6"
     tools:context=".viewmodel.SocialFeed.SocialFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/social_recycler_view"
+
+    <ImageView
+        android:id="@+id/social_search_icon"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintHeight_min="wrap"
+        android:paddingTop="4dp"
+        app:layout_constraintWidth_percent=".15"
+        android:src="@drawable/baseline_people_24"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/social_search_view"
+        app:layout_constraintStart_toEndOf="@id/friends_switch"/>
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/social_search_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:paddingTop="4dp"
+        app:layout_constraintHeight_min="wrap"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/social_swipe_refresh"
+        app:layout_constraintHeight_percent=".1"
+        app:layout_constraintWidth_percent=".45"/>
+    <Switch
+        android:id="@+id/friends_switch"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_min="wrap"
+        app:layout_constraintWidth_percent=".4"
+        android:paddingTop="4dp"
+        app:layout_constraintHeight_percent=".08"
+        android:text="Toggle Friends Only"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/social_swipe_refresh"
+        app:layout_constraintStart_toEndOf="@id/social_search_view" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent=".88"
+        android:id="@+id/social_swipe_refresh"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/social_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent" />
+
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/post_fab"
@@ -29,4 +77,21 @@
         app:backgroundTint="#6F5329"
         app:layout_constraintBottom_toBottomOf="@+id/social_layout"
         app:layout_constraintEnd_toEndOf="@id/social_layout" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/dark_green"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        android:visibility="gone"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

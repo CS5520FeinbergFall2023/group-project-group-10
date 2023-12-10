@@ -16,14 +16,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -35,23 +38,23 @@ public class SetLocationFragment extends DialogFragment {
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     private EditText editTextLatitude;
     private EditText editTextLongitude;
-
     private LocationManager locationManager;
     private LocationListener locationListener;
+    private TextView gpsStatus;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_set_location, container, false);
-
         editTextLatitude = view.findViewById(R.id.editTextLatitude);
         editTextLongitude = view.findViewById(R.id.editTextLongitude);
+        gpsStatus = view.findViewById(R.id.gpsStatus);
         Button btnSaveLocation = view.findViewById(R.id.btnSaveLocation);
         Button btnFetchLocation = view.findViewById(R.id.btnFetchLocation);
-
         btnSaveLocation.setOnClickListener(v -> {
             String lat = editTextLatitude.getText().toString();
             String lon = editTextLongitude.getText().toString();
+            gpsStatus.setVisibility(View.GONE);
             if (lat.isEmpty() || lon.isEmpty()) {
                 Toast.makeText(getContext(), "Please set a location", Toast.LENGTH_SHORT).show();
             } else {
@@ -62,10 +65,10 @@ public class SetLocationFragment extends DialogFragment {
             }
         });
 
-        btnFetchLocation.setOnClickListener(v -> requestLocationUpdates());
-
+        btnFetchLocation.setOnClickListener(v -> {
+            requestLocationUpdates();
+        });
         locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
-
         prepopulateLocationIfSet();
         locationListener = new LocationListener() {
             @Override
@@ -108,10 +111,20 @@ public class SetLocationFragment extends DialogFragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
+        params.width = LayoutParams.MATCH_PARENT;
+        params.height = LayoutParams.WRAP_CONTENT;
+        getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
+    }
+
     private void requestLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
         } else {
+            gpsStatus.setVisibility(View.VISIBLE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
         }
     }
@@ -130,21 +143,32 @@ public class SetLocationFragment extends DialogFragment {
     private void saveHomeLocation(float latitude, float longitude) {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppPreferences", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putFloat("HomeLatitude", (float) latitude);
-        editor.putFloat("HomeLongitude", (float) longitude);
+        editor.putFloat("latitude", latitude);
+        editor.putFloat("longitude", longitude);
         editor.apply();
 
-        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.remove(SetLocationFragment.this);
-        transaction.commit();
+        FragmentManager fragmentManager;
+
+        if (isAdded()) {
+            Fragment parentFragment = getParentFragment();
+
+            if (parentFragment != null) {
+                 fragmentManager = parentFragment.getChildFragmentManager();
+            } else {
+                fragmentManager = requireActivity().getSupportFragmentManager();
+            }
+
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.remove(this);
+            transaction.commitAllowingStateLoss();
+        }
     }
 
     private void prepopulateLocationIfSet() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppPreferences", Context.MODE_PRIVATE);
-        if (sharedPreferences.contains("HomeLatitude") && sharedPreferences.contains("HomeLongitude")) {
-            float latitude = sharedPreferences.getFloat("HomeLatitude", 0);
-            float longitude = sharedPreferences.getFloat("HomeLongitude", 0);
+        if (sharedPreferences.contains("latitude") && sharedPreferences.contains("longitude")) {
+            float latitude = sharedPreferences.getFloat("latitude", 0);
+            float longitude = sharedPreferences.getFloat("longitude", 0);
             editTextLatitude.setText(String.valueOf(latitude));
             editTextLongitude.setText(String.valueOf(longitude));
         }
@@ -155,7 +179,7 @@ public class SetLocationFragment extends DialogFragment {
     private void showLoadingDialog() {
         loadingDialog = new Dialog(requireContext());
         loadingDialog.setContentView(R.layout.dialog_loading);
-        loadingDialog.setCancelable(false); // Optional, depending on your needs
+        loadingDialog.setCancelable(false);
         Objects.requireNonNull(loadingDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         loadingDialog.show();
     }

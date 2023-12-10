@@ -2,6 +2,11 @@
     <string name="app_name">Green Thumbs</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+
+    <string name="sign_up">Sign Up</string>
+    <string name="log_in">Log In</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
@@ -92,4 +97,32 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="set_location_description">set_location_description</string>
+    <string name="email">Email</string>
+    <string name="enter">Enter</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="account_settings">Account Settings</string>
+    <string name="notifications">Notifications</string>
+    <string name="log_out">Log Out</string>
+    <string name="set_activity_status">Set Activity Status</string>
+    <string name="privacy">Privacy</string>
+    <string name="edit_username">Edit Username</string>
+    <string name="edit_first_name">Edit First Name</string>
+    <string name="edit_last_name">Edit Last Name</string>
+    <string name="edit_email">Edit Email</string>
+    <string name="edit_password">Edit Password</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="information">Information</string>
+    <string name="set_location">Set Location</string>
+    <string name="adrian_theodor">Adrian Theodor</string>
+    <string name="raphael_russo">Raphael Russo</string>
+    <string name="karthik_jayaram_bharadwaj">Karthik Jayaram Bharadwaj</string>
+    <string name="bryan_teck_yean_ang">Bryan Teck Yean Ang</string>
+    <string name="application_by">Application By</string>
+    <string name="finish_editing">Finish Editing</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="enter_location_desc">Enter your location here to get personalized plant recommendations and posts.</string>
+    <string name="set_location_desc">Or retrieve your location automatically from GPS</string>
+    <string name="gps_status">GPS active, retrieving location. (Turns off after update)</string>
 </resources>

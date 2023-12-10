@@ -1,7 +1,14 @@
 package northeastern.cs5520fa23.greenthumbs.viewmodel.SocialFeed;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -11,13 +18,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import northeastern.cs5520fa23.greenthumbs.R;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link CreatePostFragment#newInstance} factory method to
- * create an instance of this fragment.
+THIS IS AN OLD CLASS AND CAN PROBABLY BE DELETED
  */
 public class CreatePostFragment extends Fragment {
 
@@ -30,10 +36,12 @@ public class CreatePostFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    EditText postText;
-    EditText postTags;
-    Button addImgButton;
-    Button postButton;
+    private EditText postText;
+    private EditText postTags;
+    private Button addImgButton;
+    private ImageView postImage;
+    private Button postButton;
+    private final int PERMISSION_REQUEST_READ_MEDIA_IMAGES = 1;
 
     public CreatePostFragment() {
         // Required empty public constructor
@@ -74,8 +82,39 @@ public class CreatePostFragment extends Fragment {
         postText = view.findViewById(R.id.create_post_text);
         postTags = view.findViewById(R.id.create_post_tags);
         addImgButton = view.findViewById(R.id.create_post_add_image_button);
+        postImage = view.findViewById(R.id.create_post_image);
+        postImage.setVisibility(View.GONE);
+        addImgButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(requireActivity(),
+                        Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+
+                    ActivityCompat.requestPermissions(requireActivity(),
+                            new String[]{Manifest.permission.READ_MEDIA_IMAGES},
+                            PERMISSION_REQUEST_READ_MEDIA_IMAGES);
+                } else {
+                    // Permission has already been granted, proceed with getting image
+                    getImg();
+                }
+            }
+        });
         //postButton = view.findViewById(R.id.create_post_button);
 
         return view;
+    }
+
+    private void getImg() {
+        Toast.makeText(getContext(), "HERE", Toast.LENGTH_LONG).show();
+        ActivityResultLauncher<PickVisualMediaRequest> imgSelect = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+            if (uri != null) {
+                postImage.setImageURI(uri);
+                postImage.setVisibility(View.VISIBLE);
+            } else {
+
+            }
+        });
+
+        imgSelect.launch(new PickVisualMediaRequest.Builder().setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE).build());
     }
 }
