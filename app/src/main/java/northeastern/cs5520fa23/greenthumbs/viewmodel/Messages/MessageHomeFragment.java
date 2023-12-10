@@ -39,6 +39,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -77,6 +78,7 @@ public class MessageHomeFragment extends Fragment implements MessageHistoryAdapt
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /*
         chats = new ArrayList<>();
         currUser = FirebaseAuth.getInstance().getCurrentUser();
         currUsername = currUser.getUid();
@@ -86,6 +88,8 @@ public class MessageHomeFragment extends Fragment implements MessageHistoryAdapt
         otherUsers = new ArrayList<>();
         nameIdMap = new HashMap<>();
         populateOtherUsers();
+
+         */
     }
 
     @Override
@@ -98,6 +102,15 @@ public class MessageHomeFragment extends Fragment implements MessageHistoryAdapt
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        chats = new ArrayList<>();
+        currUser = FirebaseAuth.getInstance().getCurrentUser();
+        currUsername = currUser.getUid();
+        db = FirebaseDatabase.getInstance();
+        allChatRef = db.getReference().child("chats");
+        userChatRef = db.getReference().child("users").child(currUsername).child("chats");
+        otherUsers = new ArrayList<>();
+        nameIdMap = new HashMap<>();
+        populateOtherUsers();
         msgHistoryRV = view.findViewById(R.id.message_recycler_view);
         msgHistoryRV.setHasFixedSize(true);
         msgHistoryRV.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -138,7 +151,31 @@ public class MessageHomeFragment extends Fragment implements MessageHistoryAdapt
     }
 
     private void addChats() {
+        Query query = userChatRef.orderByChild("timestamp");
+        query.addValueEventListener(new ValueEventListener() { // sort by timestamp
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    chats.clear();
+                    for (DataSnapshot chatSnapshot : snapshot.getChildren()) {
+                        MessageHistoryItem chat = chatSnapshot.getValue(MessageHistoryItem.class);
+                        chats.add(chat);
+                        msgHistoryAdapter.notifyDataSetChanged();
+                        nameIdMap.put(chat.getOther_username(), chatSnapshot.getKey());
+                    }
+                    Collections.reverse(chats);
+                    msgHistoryAdapter.notifyDataSetChanged();
+                    //populateProfilePics(ids);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w("CommentsError", "Failed to get comments.", error.toException());
+            }
+        });
         //this.chats.add(new MessageHistoryItem("garden_star", "Isn't that plant great :O ?!"));
+        /*
         userChatRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -161,6 +198,8 @@ public class MessageHomeFragment extends Fragment implements MessageHistoryAdapt
                 Log.w("CommentsError", "Failed to get comments.", error.toException());
             }
         });
+
+         */
     }
 
 
