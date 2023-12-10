@@ -122,4 +122,7 @@
     <string name="application_by">Application By</string>
     <string name="finish_editing">Finish Editing</string>
     <string name="edit_profile">Edit Profile</string>
+    <string name="enter_location_desc">Enter your location here to get personalized plant recommendations and posts.</string>
+    <string name="set_location_desc">Or retrieve your location automatically from GPS</string>
+    <string name="gps_status">GPS active, retrieving location. (Turns off after update)</string>
 </resources>

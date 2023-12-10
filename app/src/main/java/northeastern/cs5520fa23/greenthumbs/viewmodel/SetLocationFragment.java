@@ -16,8 +16,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -38,6 +40,7 @@ public class SetLocationFragment extends DialogFragment {
     private EditText editTextLongitude;
     private LocationManager locationManager;
     private LocationListener locationListener;
+    private TextView gpsStatus;
 
     @Nullable
     @Override
@@ -45,11 +48,13 @@ public class SetLocationFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.fragment_set_location, container, false);
         editTextLatitude = view.findViewById(R.id.editTextLatitude);
         editTextLongitude = view.findViewById(R.id.editTextLongitude);
+        gpsStatus = view.findViewById(R.id.gpsStatus);
         Button btnSaveLocation = view.findViewById(R.id.btnSaveLocation);
         Button btnFetchLocation = view.findViewById(R.id.btnFetchLocation);
         btnSaveLocation.setOnClickListener(v -> {
             String lat = editTextLatitude.getText().toString();
             String lon = editTextLongitude.getText().toString();
+            gpsStatus.setVisibility(View.GONE);
             if (lat.isEmpty() || lon.isEmpty()) {
                 Toast.makeText(getContext(), "Please set a location", Toast.LENGTH_SHORT).show();
             } else {
@@ -60,7 +65,9 @@ public class SetLocationFragment extends DialogFragment {
             }
         });
 
-        btnFetchLocation.setOnClickListener(v -> requestLocationUpdates());
+        btnFetchLocation.setOnClickListener(v -> {
+            requestLocationUpdates();
+        });
         locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
         prepopulateLocationIfSet();
         locationListener = new LocationListener() {
@@ -104,10 +111,20 @@ public class SetLocationFragment extends DialogFragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
+        params.width = LayoutParams.MATCH_PARENT;
+        params.height = LayoutParams.WRAP_CONTENT;
+        getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
+    }
+
     private void requestLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
         } else {
+            gpsStatus.setVisibility(View.VISIBLE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
         }
     }
