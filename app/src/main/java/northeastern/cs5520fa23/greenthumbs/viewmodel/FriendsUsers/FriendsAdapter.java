@@ -4,15 +4,27 @@ import static android.app.PendingIntent.getActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +66,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendViewHolder> {
     @NonNull
     @Override
     public FriendViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        //Friend f = new Friend(parent.getContext());
+
         return new FriendViewHolder(LayoutInflater.from(context).inflate(R.layout.user_activity_friend_card, parent, false));
     }
 
@@ -86,24 +98,37 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendViewHolder> {
                 }
                 if (fId != null) {
                     holder.setFriendUserId(fId);
-                }
-                /*
-                if (fId.equals(currUid)) {
-                    holder.getIsFriendText().setText("YOU");
-                    holder.getAddFriendButton().setImageResource(R.drawable.baseline_check_24);
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                    StorageReference profPicRef = storage.getReference("profile_pics/"+fId);
+                    profPicRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (!task.isSuccessful()) {
+                                Log.d("HAS_NO_PIC", profPicRef.toString());
 
-                }
-                if (friendIds.containsKey(fId)) {
-                    Friend friend = friendIds.get(fId);
-                    if (friend.getStatus() != null) {
-                        holder.getIsFriendText().setText(friend.getStatus());
-                    }
-                    if (friend.getStatus().toLowerCase().contains("friends")) {
-                        holder.getAddFriendButton().setImageResource(R.drawable.baseline_check_24);
-                    }
-                }
+                            } else {
+                                Uri uri = task.getResult();
 
-                 */
+                                Picasso.get().load(uri).resize(30, 30).into(holder.getProfilePicture(), new Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        Bitmap bitmap = ((BitmapDrawable) holder.getProfilePicture().getDrawable()).getBitmap();
+                                        RoundedBitmapDrawable round = RoundedBitmapDrawableFactory.create(context.getResources(), bitmap);
+                                        round.setCircular(true);
+                                        round.setCornerRadius(30/2.0f);
+                                        holder.getProfilePicture().setImageDrawable(round);
+                                    }
+
+                                    @Override
+                                    public void onError(Exception e) {
+                                        //holder.getPostProfPic().setImageResource(R.drawable.baseline_tag_faces_24);
+                                    }
+                                });
+
+                            }
+                        }
+                    });
+                }
 
             }
         } catch (Exception e) {

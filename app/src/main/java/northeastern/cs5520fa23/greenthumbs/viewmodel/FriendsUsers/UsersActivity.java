@@ -78,18 +78,7 @@ public class UsersActivity extends AppCompatActivity implements FriendsAdapter.P
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                /*
-                if (query.length() >= 5) {
-                    filterUsers(query);
-                } else {
 
-                    friendUserList.clear();
-                    friendsAdapter.notifyDataSetChanged();
-                    friendUserList.addAll(originalFriendsList);
-                    friendsAdapter.notifyDataSetChanged();
-                }
-
-                 */
                 filterUsers(query);
                 return true;
             }
@@ -203,17 +192,6 @@ public class UsersActivity extends AppCompatActivity implements FriendsAdapter.P
     @Override
     public void openProfileCallback(String username, String userId) {
 
-        /*
-        Intent i = new Intent(this, MainActivity.class);
-        Bundle extras = new Bundle();
-        ArrayList<String> userInfo = new ArrayList<>();
-        userInfo.add(username);
-        userInfo.add(userId);
-        extras.putStringArrayList("user_info", userInfo);
-        i.putExtra("profile_info", extras);
-        this.startActivity(i);
-
-         */
         Intent i = new Intent(this, ProfileActivity.class);
         Bundle extras = new Bundle();
         ArrayList<String> userInfo = new ArrayList<>();

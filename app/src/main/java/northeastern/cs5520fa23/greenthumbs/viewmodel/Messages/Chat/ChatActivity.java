@@ -148,14 +148,7 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
     private void sendMsg() {
-        /*
-        this.senderId = senderId;
-        this.receiverId = receiverId;
-        this.userId = userId;
-        this.timestamp = timestamp;
-        this.messageContent = messageContent;
-        this.chatID = chatID;
-         */
+
         String messageContent = msgInput.getText().toString();
         Map<String, Object> msgMap = new HashMap<>();
         msgMap.put("messageContent", messageContent);

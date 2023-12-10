@@ -137,7 +137,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                                             Toast.makeText(context, "Unable to add like", Toast.LENGTH_LONG).show();
                                         } else {
                                             post.setLiked(true);
-                                            //post.setNum_likes(post.getNum_likes() + 1);
+
                                             holder.getLikes().setText(Integer.toString(post.getNum_likes()));
                                             holder.getLikesIcon().setImageResource(R.drawable.like_filled);
                                         }
@@ -173,7 +173,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                                 holder.getPostProfPic().setImageDrawable(d);
                             } else {
                                 Uri uri = task.getResult();
-                                //Picasso.get().load(uri).resize(40, 40).centerCrop().into(holder.getPostProfPic());
+
                                 Picasso.get().load(uri).resize(40, 40).into(holder.getPostProfPic(), new Callback() {
                                     @Override
                                     public void onSuccess() {
@@ -186,7 +186,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
                                     @Override
                                     public void onError(Exception e) {
-                                        //holder.getPostProfPic().setImageResource(R.drawable.baseline_tag_faces_24);
+
                                     }
                                 });
 

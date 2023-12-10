@@ -81,10 +81,8 @@ public class MessageHistoryAdapter extends RecyclerView.Adapter<MessageHistoryVi
                     public void onComplete(@NonNull Task<Uri> task) {
                         if (!task.isSuccessful()) {
                             Log.d("HAS_NO_PIC", profPicRef.toString());
-                            //Picasso.get().load(R.drawable.baseline_tag_faces_24).resize(40, 40).centerCrop().into(holder.getPostProfPic());
                         } else {
                             Uri uri = task.getResult();
-                            //Picasso.get().load(uri).resize(40, 40).centerCrop().into(holder.getPostProfPic());
                             Picasso.get().load(uri).resize(30, 30).into(holder.getProfPic(), new Callback() {
                                 @Override
                                 public void onSuccess() {
@@ -108,11 +106,7 @@ public class MessageHistoryAdapter extends RecyclerView.Adapter<MessageHistoryVi
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    /*Intent i = new Intent(context, ChatActivity.class);
-                    i.putExtra("other_username", username);
-                    context.startActivity(i);
 
-                     */
                     Log.d("OTHER_UN", username + "!!!!");
                     messageHistoryCallback.openChatCallback(username);
                 }

@@ -24,6 +24,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="08/10/2023"
+        android:textColor="@color/white"
+        android:fontFamily="@font/youngserifregular"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/plant_progress_progress_bar"
         app:layout_constraintTop_toBottomOf="@id/plant_progress_progress_bar" />
@@ -48,6 +50,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="10/10/2023"
+        android:textColor="@color/white"
+        android:fontFamily="@font/youngserifregular"
         app:layout_constraintEnd_toEndOf="@id/plant_progress_progress_bar"
         app:layout_constraintTop_toTopOf="@id/plant_progress_item_date_planted"
         app:layout_constraintBottom_toBottomOf="@id/plant_progress_item_date_planted"

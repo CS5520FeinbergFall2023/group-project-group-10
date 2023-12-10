@@ -203,86 +203,6 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
         });
     }
 
-    /*
-    private void addPosts() {
-        postList.clear();
-        originalPosts.clear();
-        socialAdapter.notifyDataSetChanged();
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("posts");
-        if (friendsSwitch.isChecked()) {
-            List<String> friend_ids = new ArrayList<>();
-            DatabaseReference friendRef = FirebaseDatabase.getInstance().getReference("users").child(currUser.getUid()).child("friends");
-            Query query = friendRef.orderByChild("friend_id").limitToLast(100);
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        Friend user_friend = dataSnapshot.getValue(Friend.class);
-                        if (user_friend.getStatus().equals("friends")) {
-                            friend_ids.add(user_friend.getFriend_id());
-                            friendIds.add(user_friend.getFriend_id());
-                        }
-                         //socialAdapter.notifyDataSetChanged();
-                    }
-                    Query query = dbRef.orderByChild("timestamp").limitToLast(100);
-                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                ImgPost currPost = dataSnapshot.getValue(ImgPost.class);
-                                if (friend_ids.contains(currPost.getUid())) {
-                                    postList.add(currPost);
-                                    originalPosts.add(currPost);
-                                    socialAdapter.notifyDataSetChanged();
-                                }
-                            }
-
-                            Collections.reverse(postList);
-                            Collections.reverse(originalPosts);
-                            socialAdapter.notifyDataSetChanged();
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        } else {
-            Query query = dbRef.orderByChild("timestamp").limitToLast(100);
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        ImgPost currPost = dataSnapshot.getValue(ImgPost.class);
-                        postList.add(currPost);
-                        originalPosts.add(currPost);
-                        socialAdapter.notifyDataSetChanged();
-
-                    }
-
-                    Collections.reverse(postList);
-                    Collections.reverse(originalPosts);
-                    socialAdapter.notifyDataSetChanged();
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        }
-    }
-
-     */
 
     private void addPosts(boolean refreshOnFriends, boolean showProgressBar) {
         postList.clear();
@@ -382,27 +302,7 @@ public class SocialFragment extends Fragment implements SocialAdapter.UsernameCa
                 }
             });
         }
-        /*
-        FirebaseDatabase.getInstance().getReference("posts").child(postId).runTransaction(new Transaction.Handler() {
-            @NonNull
-            @Override
-            public Transaction.Result doTransaction(@NonNull MutableData currentData) {
-                ImgPost updatePost = currentData.getValue(ImgPost.class);
-                if (updatePost == null) {
-                    return Transaction.success(currentData);
-                }
-                updatePost.setNum_likes(updatePost.getNum_likes() + 1);
-                currentData.setValue(updatePost);
-                return Transaction.success(currentData);
-            }
 
-            @Override
-            public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
-
-            }
-        });
-
-         */
     }
 
     private boolean inFilter(ImgPost post, String filterQuery) {

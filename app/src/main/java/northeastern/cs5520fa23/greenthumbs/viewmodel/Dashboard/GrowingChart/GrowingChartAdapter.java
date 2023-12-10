@@ -57,7 +57,7 @@ public class GrowingChartAdapter extends RecyclerView.Adapter<GrowingChartViewHo
     @NonNull
     @Override
     public GrowingChartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        //GardenViewHolder(LayoutInflater.from(context).inflate(R.layout.garden_plant_item, parent, false))
+
         return new GrowingChartViewHolder(LayoutInflater.from(context).inflate(R.layout.plant_progress_item, parent, false));
     }
 

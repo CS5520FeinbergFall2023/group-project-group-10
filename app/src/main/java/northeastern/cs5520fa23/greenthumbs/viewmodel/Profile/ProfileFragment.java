@@ -166,21 +166,7 @@ public class ProfileFragment extends Fragment implements SocialAdapter.UsernameC
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        /*
-        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                FragmentManager manager = getActivity().getSupportFragmentManager();
-                manager.popBackStackImmediate();
 
-
-
-
-
-            }
-        };
-        getActivity().getOnBackPressedDispatcher().addCallback(getActivity(), backPressedCallback);
-        */
         currUser = FirebaseAuth.getInstance().getCurrentUser();
 
         // determine if this is the users own profile
@@ -272,28 +258,7 @@ public class ProfileFragment extends Fragment implements SocialAdapter.UsernameC
         this.postList = new ArrayList<>();
         socialAdapter = new SocialAdapter(postList, getContext(), this);
         socialRecyclerView.setAdapter(socialAdapter);
-        /*
-        headerImgSelect = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-            if (uri != null) {
-                //headerImage.setImageURI(uri);
-                headerUri = uri;
-                headerImage.setImageURI(headerUri);
-            } else {
-                // something here like a toast or something
-            }
-        });
-        profPicSelect = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-            if (uri != null) {
-                //profilePicture.setImageURI(uri);
-                profPicUri = uri;
-                profilePicture.setImageURI(profPicUri);
-            } else {
-                // something here like a toast or something
-            }
-        });
 
-         */
-        //uploadProfilePic();
 
         // hide message and add friend button if this is their own profile and enable edit profile
         if (isUsersProfile) {
